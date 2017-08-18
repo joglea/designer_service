@@ -1,0 +1,84 @@
+
+<div class="page-footer">
+    <div class="copyright">
+        2017 &copy; XX .
+    </div>
+    <div class="scroll-to-top">
+        <i class="icon-arrow-up"></i>
+    </div>
+</div>
+
+<script>
+
+function showNotify(code,msg,is_html,msg_type,time)
+{
+    if(!time)
+    {
+        time = 5000;
+    }
+	var isfadeOut;
+	//alert(code+''+msg+''+is_html+''+msg_type+''+time);
+	//是否是成功提示  0表示是成功   否则表示各种失败提示
+	if(code==0)
+	{
+        isfadeOut={ enabled: true, delay: time };
+	}
+	else
+	{
+        isfadeOut={ enabled: false };
+	}
+	if(msg_type=='')
+	{
+		msg_type='warning';
+	}
+	
+	var notifyObj;
+    //是否使用html来填充提示内容   1表示是用html  否则表示用text
+	if(is_html)
+	{
+		notifyObj = { message: { html: msg }, type: msg_type, fadeOut: isfadeOut };
+	}
+	else
+	{
+		notifyObj = { message: { text: msg }, type: msg_type, fadeOut: isfadeOut };
+	}
+    //alert(code+' '+msg+' '+is_html+' '+msg_type+' '+time);
+	if($('.in_dialog_notify').length>0){
+        $('.in_dialog_notify').notify(notifyObj).show();
+    }else if($('.dialog_notify').length>0){
+        $('.dialog_notify').notify(notifyObj).show();
+    }else{
+    	
+        $('.global_notify').notify(notifyObj).show();
+    }
+}
+
+(function(){
+    return true;
+    var tt = $('.page-bar');
+    var ott=$('.hide-page-bar');
+    var cl = $('#content-list');
+    //垂直滚动是  固定page-bar
+    window.addEventListener('scroll',function(e){
+
+        if(window.scrollY>25){
+            tt.css({
+                'width':cl.width(),
+                'position':'fixed',
+                'top':'46px',
+                'z-index':'1001',
+                'border-top-left-radius':'0',
+                'border-top-right-radius':'0'
+            });
+            ott.show();
+        }else{
+            tt.removeAttr('style');
+            ott.hide();
+        }
+    });
+    window.addEventListener('resize',function(e){
+        tt.css('width',cl.width());
+    });
+
+})();
+</script>

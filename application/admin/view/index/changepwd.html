@@ -1,0 +1,87 @@
+
+<div class="dialog_notify"></div>
+<form id="changepwdform" role="form" class="form-horizontal" method="post">
+    <div class="form-body">
+        <div class="form-group">
+
+            <label class="col-md-3 control-label" for="oldpasswd">原密码</label>
+            <div class="col-md-8">
+                <input type="password" autofocus="" required="" placeholder=""
+                    value=""
+                name="oldpasswd" id="oldpasswd" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="newpasswd">新密码</label>
+            <div class="col-md-8">
+                <input type="password" autofocus="" required="" placeholder=""
+                       value=""
+                       name="newpasswd" id="newpasswd" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="confirmpasswd">重复</label>
+            <div class="col-md-8">
+                <input type="password" autofocus="" required="" placeholder=""
+                       value=""
+                       name="confirmpasswd" id="confirmpasswd" class="form-control">
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+$('#changepwdform').bootstrapValidator({
+    feedbackIcons: {
+        valid: 'fa fa-check',
+        invalid: 'fa fa-times',
+        validating: 'fa fa-refresh'
+    },
+    //container:'custom',
+    fields: {
+        'oldpasswd': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">原密码不能为空</div>'
+                },
+                stringLength: {
+                    min: 6,
+                    max: 32,
+                    message: '<div class="arrow"></div><div class="popover-content">原密码字符长度字符长度不能小于6个且不能大于32个</div>'
+                }
+            }
+        },
+        'newpasswd': {
+            validators: {
+                stringLength: {
+                    min: 6,
+                    max: 32,
+                    message: '<div class="arrow"></div><div class="popover-content">新密码字符长度字符长度不能小于6个且不能大于32个</div>'
+                }
+            }
+        },
+        'confirmpasswd': {
+            validators: {
+                identical: {
+                    message: '<div class="arrow"></div><div class="popover-content">密码不一致</div>',
+                    field:'newpasswd'
+                },
+                stringLength: {
+                    min: 6,
+                    max: 32,
+                    message: '<div class="arrow"></div><div class="popover-content">密码字符长度字符长度不能小于6个且不能大于32个</div>'
+                }
+            }
+        }
+    }/* ,
+    onSuccess: function(e) {
+        //$('#loginForm').submit();
+    } */
+}) 
+.on('success.form.bv', function(e) {
+    
+});  
+
+</script>

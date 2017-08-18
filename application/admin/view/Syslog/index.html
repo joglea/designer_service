@@ -1,0 +1,516 @@
+{extend name="public/base" /}
+
+{block name="body"}
+<div class="row">
+    <div class="col-md-12">
+
+        <!-- Begin: life time stats -->
+        <div class="portlet">
+
+            <div class="portlet-body">
+                <div class="table-container">
+
+                    <table class="table table-striped table-bordered table-hover" id="datatable_list">
+                        <thead>
+                        <tr role="row" class="heading">
+                            <!--<th width="1%">
+                                <input type="checkbox" class="group-checkable">
+                            </th>-->
+                            <th class="sorting_disabled" width="8%">
+                                日志ID
+                            </th>
+                            <th width="8%">
+                                操作人ID
+                            </th>
+                            <th width="25%">
+                                操作描述
+                            </th>
+                            <th width="10%">
+                                操作人IP
+                            </th>
+                            <th width="10%">
+                                模块名
+                            </th>
+                            <th width="8%">
+                                操作名
+                            </th>
+                            <th class="sorting_disabled" width="13%">
+                                操作时间
+                            </th>
+                            <th class="sorting_disabled" width="8%">
+                                操作
+                            </th>
+                        </tr>
+                        <tr role="row" class="filter">
+                            <td>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="creatorid">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="description">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="ip">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="moduleidentity">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="rightname">
+                            </td>
+                            <td>
+                                <div id="starttimepicker" class="input-group date date-picker">
+                                    <input class="form-control form-filter " name="starttime" id="starttime"
+                                           value="" data-format="yyyy-MM-dd hh:mm:ss" type="text" readonly  placeholder="开始日期"/>
+                                    <span class="add-on input-group-addon">
+                                      <i class="fa fa-calendar fa-6" data-time-icon="fa fa-clock-o" data-date-icon="fa fa-calendar">
+                                      </i>
+                                    </span>
+                                </div>
+                                <div id="endtimepicker" class="input-group date date-picker">
+                                    <input class="form-control form-filter " name="endtime" id="endtime"
+                                           value="" data-format="yyyy-MM-dd hh:mm:ss" type="text" readonly placeholder="结束日期"/>
+                                    <span class="add-on input-group-addon">
+                                      <i class="fa fa-calendar fa-6" data-time-icon="fa fa-clock-o" data-date-icon="fa fa-calendar">
+                                      </i>
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="text-center">
+                                    <button class="btn btn-xs yellow filter-submit margin-bottom"><i class="fa fa-search"></i>搜索</button>
+                                    <button class="btn btn-xs red filter-cancel"><i class="fa fa-times"></i>重置</button>
+                                </div>
+                            </td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- End: life time stats -->
+    </div>
+</div>
+
+<script>
+var Datatable = function() {
+
+    var tableOptions; // main options
+    var dataTable; // datatable object
+    var table; // actual table jquery object
+    var tableContainer; // actual table container object
+    var tableWrapper; // actual table wrapper jquery object
+    var tableInitialized = false;
+    var ajaxParams = {}; // set filter mode
+    var the;
+
+    var countSelectedRecords = function() {
+        var selected = $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).size();
+        var text = tableOptions.dataTable.language.metronicGroupActions;
+        if (selected > 0) {
+            $('.table-group-actions > span', tableWrapper).text(text.replace("_TOTAL_", selected));
+        } else {
+            $('.table-group-actions > span', tableWrapper).text("");
+        }
+    };
+
+    return {
+
+        //main function to initiate the module
+        init: function(options) {
+
+            if (!$().dataTable) {
+                return;
+            }
+
+            the = this;
+
+            // default settings
+            options = $.extend(true, {
+                src: "", // actual table
+                filterApplyAction: "filter",
+                filterCancelAction: "filter_cancel",
+                resetGroupActionInputOnSuccess: true,
+                loadingMessage: 'Loading...',
+                dataTable: {
+                    "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r><'table-scrollable't><'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>", // datatable layout
+                    "pageLength": 10, // default records per page
+                    "language": { // language settings
+                        // metronic spesific
+                        "metronicGroupActions": "_TOTAL_ records selected:  ",
+                        "metronicAjaxRequestGeneralError": "请求无法完成，请检查你的网络连接状况",
+
+                        // data tables spesific
+                        "lengthMenu": "<span class='seperator'>|</span>每页 _MENU_ 条记录",
+                        "info": "<span class='seperator'>|</span>总共 _TOTAL_ 条记录",
+                        "infoEmpty": "",//没有找到记录
+                        "emptyTable": "没有可用记录",
+                        "zeroRecords": "未找到匹配记录",
+                        "paginate": {
+                            "previous": "上一页",
+                            "next": "下一页",
+                            "last": "最后一页",
+                            "first": "第一页",
+                            "page": "第",
+                            "pageOf": "共"
+                        }
+                    },
+
+                    "orderCellsTop": true,
+                    "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
+                        'orderable': false,
+                        'targets': [0,3,4]
+                    }],
+
+                    "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
+                    "autoWidth": false, // disable fixed width and enable fluid table
+                    "processing": false, // enable/disable display message box on record load
+                    "serverSide": true, // enable/disable server side ajax loading
+
+                    "ajax": { // define ajax settings
+                        "url": "", // ajax URL
+                        "type": "POST", // request type
+                        "timeout": 20000,
+                        "data": function(data) { // add request parameters before submit
+                            $.each(ajaxParams, function(key, value) {
+                                data[key] = value;
+                            });
+                            Metronic.blockUI({
+                                message: tableOptions.loadingMessage,
+                                target: tableContainer,
+                                overlayColor: 'none',
+                                cenrerY: true,
+                                boxed: true
+                            });
+                        },
+                        "dataSrc": function(res) { // Manipulate the data returned from the server
+                            if (res.customActionMessage) {
+                                Metronic.alert({
+                                    type: (res.customActionStatus == 'OK' ? 'success' : 'danger'),
+                                    icon: (res.customActionStatus == 'OK' ? 'check' : 'warning'),
+                                    message: res.customActionMessage,
+                                    container: tableWrapper,
+                                    place: 'prepend'
+                                });
+                            }
+
+                            if (res.customActionStatus) {
+                                if (tableOptions.resetGroupActionInputOnSuccess) {
+                                    $('.table-group-action-input', tableWrapper).val("");
+                                }
+                            }
+
+                            if ($('.group-checkable', table).size() === 1) {
+                                $('.group-checkable', table).attr("checked", false);
+                                $.uniform.update($('.group-checkable', table));
+                            }
+
+                            if (tableOptions.onSuccess) {
+                                tableOptions.onSuccess.call(undefined, the);
+                            }
+
+                            Metronic.unblockUI(tableContainer);
+
+                            return res.data;
+                        },
+                        "error": function() { // handle general connection errors
+                            if (tableOptions.onError) {
+                                tableOptions.onError.call(undefined, the);
+                            }
+
+                            Metronic.alert({
+                                type: 'danger',
+                                icon: 'warning',
+                                message: tableOptions.dataTable.language.metronicAjaxRequestGeneralError,
+                                container: tableWrapper,
+                                place: 'prepend'
+                            });
+
+                            Metronic.unblockUI(tableContainer);
+                        }
+                    },
+
+                    "drawCallback": function(oSettings) { // run some code on table redraw
+                        if (tableInitialized === false) { // check if table has been initialized
+                            tableInitialized = true; // set table initialized
+                            table.show(); // display table
+                        }
+                        Metronic.initUniform($('input[type="checkbox"]', table)); // reinitialize uniform checkboxes on each table reload
+                        countSelectedRecords(); // reset selected records indicator
+                    }
+                }
+            }, options);
+
+            tableOptions = options;
+
+            // create table's jquery object
+            table = $(options.src);
+            tableContainer = table.parents(".table-container");
+
+            // apply the special class that used to restyle the default datatable
+            var tmp = $.fn.dataTableExt.oStdClasses;
+
+            $.fn.dataTableExt.oStdClasses.sWrapper = $.fn.dataTableExt.oStdClasses.sWrapper + " dataTables_extended_wrapper";
+            $.fn.dataTableExt.oStdClasses.sFilterInput = "form-control input-small input-sm input-inline";
+            $.fn.dataTableExt.oStdClasses.sLengthSelect = "form-control input-xsmall input-sm input-inline";
+
+            // initialize a datatable
+            dataTable = table.DataTable(options.dataTable);
+
+            // revert back to default
+            $.fn.dataTableExt.oStdClasses.sWrapper = tmp.sWrapper;
+            $.fn.dataTableExt.oStdClasses.sFilterInput = tmp.sFilterInput;
+            $.fn.dataTableExt.oStdClasses.sLengthSelect = tmp.sLengthSelect;
+
+            // get table wrapper
+            tableWrapper = table.parents('.dataTables_wrapper');
+
+            // build table group actions panel
+            if ($('.table-actions-wrapper', tableContainer).size() === 1) {
+                $('.table-group-actions', tableWrapper).html($('.table-actions-wrapper', tableContainer).html()); // place the panel inside the wrapper
+                $('.table-actions-wrapper', tableContainer).remove(); // remove the template container
+            }
+            // handle group checkboxes check/uncheck
+            $('.group-checkable', table).change(function() {
+                var set = $('tbody > tr > td:nth-child(1) input[type="checkbox"]', table);
+                var checked = $(this).is(":checked");
+                $(set).each(function() {
+                    $(this).attr("checked", checked);
+                });
+                $.uniform.update(set);
+                countSelectedRecords();
+            });
+
+            // handle row's checkbox click
+            table.on('change', 'tbody > tr > td:nth-child(1) input[type="checkbox"]', function() {
+                countSelectedRecords();
+            });
+
+            // handle filter submit button click
+            table.on('click', '.filter-submit', function(e) {
+                e.preventDefault();
+                the.submitFilter();
+            });
+
+            // 回车自动触发搜索
+            $('.form-filter').bind('keypress',function(e){
+                if (e.which == 13) {
+                    e.preventDefault();
+                    the.submitFilter();
+                }
+            });
+
+            // handle filter cancel button click
+            table.on('click', '.filter-cancel', function(e) {
+                e.preventDefault();
+                the.resetFilter();
+            });
+        },
+
+        submitFilter: function() {
+            the.setAjaxParam("action", tableOptions.filterApplyAction);
+
+            // get all typeable inputs
+            $('textarea.form-filter, select.form-filter, input.form-filter:not([type="radio"],[type="checkbox"])', table).each(function() {
+                the.setAjaxParam($(this).attr("name"), $(this).val());
+            });
+
+            // get all checkboxes
+            $('input.form-filter[type="checkbox"]:checked', table).each(function() {
+                the.addAjaxParam($(this).attr("name"), $(this).val());
+            });
+
+            // get all radio buttons
+            $('input.form-filter[type="radio"]:checked', table).each(function() {
+                the.setAjaxParam($(this).attr("name"), $(this).val());
+            });
+
+            dataTable.ajax.reload();
+        },
+
+        resetFilter: function() {
+            $('textarea.form-filter, input.form-filter', table).each(function() {
+                $(this).val("");
+            });
+            $('select.form-filter', table).each(function() {
+                $(this).val("-1");
+            });
+            $('input.form-filter[type="checkbox"]', table).each(function() {
+                $(this).attr("checked", false);
+            });
+            the.clearAjaxParams();
+            the.addAjaxParam("action", tableOptions.filterCancelAction);
+            dataTable.ajax.reload();
+        },
+
+        getSelectedRowsCount: function() {
+            return $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).size();
+        },
+
+        getSelectedRows: function() {
+            var rows = [];
+            $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).each(function() {
+                rows.push($(this).val());
+            });
+
+            return rows;
+        },
+
+        setAjaxParam: function(name, value) {
+            ajaxParams[name] = value;
+        },
+
+        addAjaxParam: function(name, value) {
+            if (!ajaxParams[name]) {
+                ajaxParams[name] = [];
+            }
+
+            skip = false;
+            for (var i = 0; i < (ajaxParams[name]).length; i++) { // check for duplicates
+                if (ajaxParams[name][i] === value) {
+                    skip = true;
+                }
+            }
+
+            if (skip === false) {
+                ajaxParams[name].push(value);
+            }
+        },
+
+        clearAjaxParams: function(name, value) {
+            ajaxParams = {};
+        },
+
+        getDataTable: function() {
+            return dataTable;
+        },
+
+        getTableWrapper: function() {
+            return tableWrapper;
+        },
+
+        gettableContainer: function() {
+            return tableContainer;
+        },
+
+        getTable: function() {
+            return table;
+        }
+
+    };
+
+};
+var DataList = function () {
+
+    var initPickers = function () {
+        //init date pickers
+        $('#starttimepicker').datetimepicker({
+            language: 'en',
+            format : 'yyyy-MM-dd hh:mm:ss',
+            pickTime: true
+        });
+        $('#endtimepicker').datetimepicker({
+            language: 'en',
+            format : 'yyyy-MM-dd hh:mm:ss',
+            pickTime: true
+        });
+
+    }
+
+    var handleList = function() {
+        var grid = new Datatable();
+
+        grid.init({
+            src: $("#datatable_list"),
+            onSuccess: function (grid) {
+                // execute some code after table records loaded
+            },
+            onError: function (grid) {
+                // execute some code on network or other general error
+            },
+            loadingMessage: '...',
+            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
+                "lengthMenu": [
+                    [10, 20, 50, 100, 150],
+                    [10, 20, 50, 100, 150] // change per page values here
+                ],
+                "pageLength": 10, // default record count per page
+                "ajax": {
+                    "url": "{url('Syslog/index')}" // ajax source
+                },
+                "order": [
+                    [7, "desc"]
+                ] // set first column as a default sort by asc
+            }
+        });
+
+        //手动刷新用户列表
+        $('.refreshsyslog').on('click',function(){
+            grid.getDataTable().ajax.reload();
+        });
+        // handle group actionsubmit button click
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+            e.preventDefault();
+            var action = $(".table-group-action-input", grid.getTableWrapper());
+            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                grid.setAjaxParam("customActionType", "group_action");
+                grid.setAjaxParam("customActionName", action.val());
+                grid.setAjaxParam("id", grid.getSelectedRows());
+                grid.getDataTable().ajax.reload();
+                grid.clearAjaxParams();
+            } else if (action.val() == "") {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please select an action',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            } else if (grid.getSelectedRowsCount() === 0) {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'No record selected',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            }
+        });
+    }
+
+    return {
+
+        //main function to initiate the module
+        init: function () {
+
+            handleList();
+            initPickers();
+
+        }
+
+    };
+
+}();
+
+jQuery(document).ready(function() {
+    DataList.init();
+    $('#status').change(function (){
+        if($(this).val()==1)
+        {
+            $('#report_number').show();
+        }
+        else
+        {
+            $('#report_number').hide();
+        }
+    });
+});
+
+
+</script>
+
+{/block}

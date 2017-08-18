@@ -1,0 +1,610 @@
+
+
+<div id="sample_1_wrapper" class="dataTables_wrapper no-footer">
+
+    <div class="table-scrollable">
+        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="sample_1" role="grid" aria-describedby="sample_1_info">
+        <thead>
+            <tr role="row">
+                <th class="table-checkbox sorting_disabled" rowspan="1" colspan="1" aria-label=" " style="width: 24px;">
+                    <div class="checker">
+                        <span>
+                            <input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes">
+                        </span>
+                    </div>
+                </th>
+                <th class="sorting_asc" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1" aria-sort="ascending"
+                    aria-label="名称排序" style="width: 245px;">
+                    模块(分组)名
+                </th>
+                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Email" style="width: 408px;">
+                    排序值
+                </th>
+                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Points" style="width: 156px;">
+                    唯一标志
+                </th>
+                <th class="sorting" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1" aria-label="排序" style="width: 208px;">
+                    访问路径
+                </th>
+                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Status" style="width: 238px;">
+                    模块状态
+                </th>
+                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Status" style="width: 238px;">
+                    描述信息
+                </th>
+                <th class="sorting_disabled" rowspan="1" colspan="1" aria-label="Status" style="width: 238px;">
+                    操作
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="gradeX odd" role="row">
+                <td>
+                    <div class="checker"><span><input type="checkbox" class="checkboxes" value="1"></span></div>
+                </td>
+                <td class="sorting_1">
+                    coop
+                </td>
+                <td>
+                    <a href="mailto:userwow@gmail.com">
+                        good@gmail.com </a>
+                </td>
+                <td>
+                    20
+                </td>
+                <td class="center">
+                    19.11.2010
+                </td>
+                <td>
+                                            <span class="label label-sm label-success">
+                                            Approved </span>
+                </td>
+            </tr><tr class="gradeX even" role="row">
+                <td>
+                    <div class="checker"><span><input type="checkbox" class="checkboxes" value="1"></span></div>
+                </td>
+                <td class="sorting_1">
+                    foopl
+                </td>
+                <td>
+                    <a href="mailto:userwow@gmail.com">
+                        good@gmail.com </a>
+                </td>
+                <td>
+                    20
+                </td>
+                <td class="center">
+                    19.11.2010
+                </td>
+                <td>
+                                            <span class="label label-sm label-success">
+                                            Approved </span>
+                </td>
+            </tr><tr class="gradeX odd" role="row">
+                <td>
+                    <div class="checker"><span><input type="checkbox" class="checkboxes" value="1"></span></div>
+                </td>
+                <td class="sorting_1">
+                    fop
+                </td>
+                <td>
+                    <a href="mailto:userwow@gmail.com">
+                        good@gmail.com </a>
+                </td>
+                <td>
+                    20
+                </td>
+                <td class="center">
+                    13.11.2010
+                </td>
+                <td>
+                                            <span class="label label-sm label-warning">
+                                            Suspended </span>
+                </td>
+            </tr><tr class="gradeX even" role="row">
+                <td>
+                    <div class="checker"><span><input type="checkbox" class="checkboxes" value="1"></span></div>
+                </td>
+                <td class="sorting_1">
+                    goop
+                </td>
+                <td>
+                    <a href="mailto:userwow@gmail.com">
+                        good@gmail.com </a>
+                </td>
+                <td>
+                    20
+                </td>
+                <td class="center">
+                    12.11.2010
+                </td>
+                <td>
+                                            <span class="label label-sm label-success">
+                                            Approved </span>
+                </td>
+            </tr><tr class="gradeX odd" role="row">
+                <td>
+                    <div class="checker"><span><input type="checkbox" class="checkboxes" value="1"></span></div>
+                </td>
+                <td class="sorting_1">
+                    kop
+                </td>
+                <td>
+                    <a href="mailto:userwow@gmail.com">
+                        good@gmail.com </a>
+                </td>
+                <td>
+                    20
+                </td>
+                <td class="center">
+                    17.11.2010
+                </td>
+                <td>
+                                            <span class="label label-sm label-success">
+                                            Approved </span>
+                </td>
+            </tr></tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<div class="box-content">
+	<table class="table table-striped table-bordered  table-condensed table-hover">
+		<thead>
+	      	<tr>
+		        <th style="text-align:center">模块(分组)名</th>
+		        <!-- 
+		        <th width="10%" style="text-align:center">移动排序位置</th>
+		         -->
+		        <th width="40px" style="text-align:center">排序值</th>
+		        <th width="15%">唯一标志</th>
+		        <th width="25%">访问路径</th>
+		        <th width="50px" style="text-align:center">模块状态</th>
+		        <th >描述信息</th>
+		        <th width="165px" style="text-align:center">操作</th>
+	      	</tr>
+	    </thead>
+	    <tbody>   
+		<foreach name="moduleGroupList" item="oneModuleGroup">
+		  	<tr id="module_group_{$oneModuleGroup.module_group_id}">
+		  		<if condition="$oneModuleGroup.module_group_pid gt 0 "  >
+		  		<td align="left" style="text-align:left;background-color:#eaeaea;">
+			    	<span>&nbsp;&nbsp;{$oneModuleGroup.module_group_name}</span>
+			    </td>
+		  		<else/>
+		  		<td align="left" style="text-align:left;background-color:#e0e0e0;">
+			    	<b>{$oneModuleGroup.module_group_name}</b>
+			    </td>
+		  		</if>
+				<td>{$oneModuleGroup.module_group_sort}</td>
+				<td></td><td></td><td></td><td></td>
+			    <td>
+			    	
+			    	<if condition="$oneModuleGroup.module_group_pid gt 0 "  >
+			    	<a class="btn btn-primary btn-xs" title="添加模块" onclick="addModule({$oneModuleGroup.module_group_id})" href="javascript:">
+						<i class="fa fa-plus"></i>添加
+					</a>
+					<else/>
+					<a class="btn btn-primary btn-xs" title="添加二级分组" onclick="addModuleGroup({$oneModuleGroup.module_group_id})" href="javascript:">
+						<i class="fa fa-plus"></i>添加
+					</a>
+					</if>
+					<a class="btn btn-warning btn-xs" title="修改模块分组" onclick="editModuleGroup({$oneModuleGroup.module_group_id})" href="javascript:">
+						<i class="fa fa-pencil-square-o"></i>修改
+					</a>
+					<a class="btn btn-danger btn-xs" title="添加二级分组" onclick="removeModuleGroup({$oneModuleGroup.module_group_id})" href="javascript:">
+						<i class="fa fa-trash-o"></i>删除
+					</a>
+				</td>
+		  	</tr>
+			<foreach name="moduleList" item="oneModule">
+			<if condition="$oneModuleGroup.module_group_id eq $oneModule.module_group_id " >
+			<tr id="module_{$oneModule.module_id}">
+				<td style="text-align:left;">&nbsp;&nbsp;&nbsp;&nbsp;{$oneModule.module_name}</td>
+				<td align="center">{$oneModule.module_sort}</td>
+				<td>{$oneModule.identity_name}</td>
+				<td>{$oneModule.url}</td>
+				<td align="center"><if condition="$oneModule.module_state eq 1 ">正常<else />禁用</if></td>
+				<td>{$oneModule.description}</td>
+				<td align="center">
+					<a class="btn btn-primary btn-xs" title="权限列表" onclick="moduleRightList({$oneModule.module_id})" href="javascript:">
+						<i class="fa fa-list"></i>权限
+					</a>
+					<a class="btn btn-warning btn-xs" title="修改" onclick="editModule({$oneModule.module_id})" href="javascript:">
+						<i class="fa fa-pencil-square-o"></i>修改
+					</a>
+					<a class="btn btn-danger btn-xs" title="删除" onclick="removeModule({$oneModule.module_id})" href="javascript:">
+						<i class="fa fa-trash-o"></i>删除
+					</a>
+				</td>
+			</tr>
+			</if>
+			</foreach>
+		</foreach>
+	    </tbody>
+  	</table>
+</div>
+
+<script type="text/javascript">
+
+function addModuleGroup(module_group_pid)
+{
+    BootstrapDialog.show({
+    	title:'添加模块分组',
+        message: function(dialog) {
+            var $message = $('<div></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: true,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/addModuleGroup?module_group_pid='+module_group_pid
+        },
+        buttons: [{
+            id: 'btn-1',
+            label: '添加',
+            cssClass: 'btn-primary',
+            action: function(dialog) {
+                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                $button.disable();
+                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
+                dialog.setClosable(false);
+                if(!$('#addModuleGroupForm').data('bootstrapValidator').validate().isValid())
+                {
+                    $button.enable();
+                    dialog.setClosable(true);
+                    $button.find('.fa-spinner').remove();
+                    return;
+                }
+                var formData=$('#addModuleGroupForm').serialize();
+                $.ajax({
+                    url: '__URL__' + '/addModuleGroup',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    timeout: 30000, //超时时间：30秒
+                    data: formData,
+                    error: function () {
+                    	$button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        
+                        showNotify(-1,'添加模块分组错误',1,'warning',0);
+                    },
+                    success: function (data) {
+                    	$button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        //alert(data.code);
+                        if(data.code==0)
+                        {
+                        	$('.dialog_notify').remove();
+                        	dialog.close();
+                            $('#content-list').html(data.html);
+                        }
+                        //alert(3);
+                        showNotify(data.code,data.msg,1,data.msg_type,0);
+                        //alert(3);
+                    }
+                });
+            }
+        },
+        {
+            label: '取消',
+            action: function(dialog){
+            	dialog.close();
+            }
+        }]
+    });
+}
+
+function editModuleGroup(module_group_id)
+{
+	BootstrapDialog.show({
+    	title:'修改模块分组',
+        message: function(dialog) {
+            var $message = $('<div></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: true,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/editModuleGroup?module_group_id='+module_group_id
+        },
+        buttons: [{
+            id: 'btn-1',
+            label: '保存',
+            cssClass: 'btn-success',
+            action: function(dialog) {
+                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                $button.disable();
+                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
+                dialog.setClosable(false);
+                if(!$('#editModuleGroupForm').data('bootstrapValidator').validate().isValid())
+                {
+                    $button.enable();
+                    dialog.setClosable(true);
+                    $button.find('.fa-spinner').remove();
+                    return;
+                }
+                var formData=$('#editModuleGroupForm').serialize();
+                $.ajax({
+                    url: '__URL__' + '/editModuleGroup',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    timeout: 30000, //超时时间：30秒
+                    data: formData,
+                    error: function () {
+                    	$button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        showNotify(-1,'保存模块分组错误',1,'warning',0);
+                    },
+                    success: function (data) {
+                    	$button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        if(data.code==0)
+                        {
+                            $('.dialog_notify').remove();
+                        	dialog.close();
+                        	$('#content-list').html(data.html);
+                        }
+                        showNotify(data.code,data.msg,1,data.msg_type,0);
+                        
+                    }
+                });
+            }
+        },
+        {
+            label: '取消',
+            action: function(dialog){
+            	dialog.close();
+            }
+        }]
+    });
+}
+
+function removeModuleGroup(module_group_id)
+{
+	BootstrapDialog.confirm('请确认','确定删除模块组及它的子模块模块数据吗?', function(result){
+        if(result) {
+        	$.ajax({
+                url: '__URL__' + '/removeModuleGroup',
+                type: 'POST',
+                dataType: 'JSON',
+                timeout: 30000, //超时时间：30秒
+                data: {
+                    module_group_id: module_group_id
+                },
+                error: function () {
+                  	//出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                    showNotify(-1,'删除错误',1,'warning',0);
+                },
+                success: function (data) {
+                	if(data.code==0)
+                    {
+                        $('.dialog_notify').remove();
+                    	$('#module_group_'+module_group_id).hide();
+                    }
+                    showNotify(data.code,data.msg,1,data.msg_type,0);
+                }
+            });
+        }
+        else
+        {
+        	return false;
+        }
+    });
+}
+
+function addModule(module_group_id)
+{
+	BootstrapDialog.show({
+	    	title:'添加模块',
+	        message: function(dialog) {
+	            var $message = $('<div></div>');
+	            var pageToLoad = dialog.getData('url');
+	            $message.load(pageToLoad);
+	            return $message;
+	        },
+	        closable: true,
+	        draggable: true,
+	        data: {
+	            'url': '__URL__'+'/addModule?module_group_id='+module_group_id
+	        },
+	        buttons: [{
+	            id: 'btn-1',
+	            label: '添加',
+	            cssClass: 'btn-primary',
+	            action: function(dialog) {
+	                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+	                $button.disable();
+	                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
+	                dialog.setClosable(false);
+	                if(!$('#addModuleForm').data('bootstrapValidator').validate().isValid())
+	                {
+	                    $button.enable();
+	                    dialog.setClosable(true);
+	                    $button.find('.fa-spinner').remove();
+	                    return;
+	                }
+	                var formData=$('#addModuleForm').serialize();
+	                $.ajax({
+	                    url: '__URL__' + '/addModule',
+	                    type: 'POST',
+	                    dataType: 'JSON',
+	                    timeout: 30000, //超时时间：30秒
+	                    data: formData,
+	                    error: function () {
+	                    	$button.enable();
+	                        dialog.setClosable(true);
+	                        $button.find('.fa-spinner').remove();
+
+	                        //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                            showNotify(-1,'添加模块分组错误',1,'warning',0);
+	                    },
+	                    success: function (data) {
+	                    	$button.enable();
+	                        dialog.setClosable(true);
+	                        $button.find('.fa-spinner').remove();
+	                        if(data.code==0)
+	                        {
+	                            $('.dialog_notify').remove();
+	                        	dialog.close();
+	                        	$('#content-list').html(data.html);
+	                        }
+	                        showNotify(data.code,data.msg,1,data.msg_type,0);
+	                    }
+	                });
+	            }
+	        },
+	        {
+	            label: '取消',
+	            action: function(dialog){
+	            	dialog.close();
+	            }
+	        }]
+	    });
+}
+
+
+function editModule(module_id)
+{
+	BootstrapDialog.show({
+    	title:'修改模块',
+        message: function(dialog) {
+            var $message = $('<div></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: true,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/editModule?module_id='+module_id
+        },
+        buttons: [{
+            id: 'btn-1',
+            label: '保存',
+            cssClass: 'btn-success',
+            action: function(dialog) {
+                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                $button.disable();
+                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
+                dialog.setClosable(false);
+                if(!$('#editModuleForm').data('bootstrapValidator').validate().isValid())
+                {
+                    $button.enable();
+                    dialog.setClosable(true);
+                    $button.find('.fa-spinner').remove();
+                    return;
+                }
+                var formData=$('#editModuleForm').serialize();
+                $.ajax({
+                    url: '__URL__' + '/editModule',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    timeout: 30000, //超时时间：30秒
+                    data: formData,
+                    error: function () {
+                    	$button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+
+                        //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                        showNotify(-1,'保存模块错误',1,'warning',0);
+                    },
+                    success: function (data) {
+                    	$button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        if(data.code==0)
+                        {
+                            $('.dialog_notify').remove();
+                        	dialog.close();
+                        	$('#content-list').html(data.html);
+                        }
+                        showNotify(data.code,data.msg,1,data.msg_type,0);
+                    }
+                });
+            }
+        },
+        {
+            label: '取消',
+            action: function(dialog){
+            	dialog.close();
+            }
+        }]
+    });
+}
+
+function removeModule(module_id)
+{
+	BootstrapDialog.confirm('请确认','确定删除模块数据吗?', function(result){
+        if(result) {
+        	$.ajax({
+                url: '__URL__' + '/removeModule',
+                type: 'POST',
+                dataType: 'JSON',
+                timeout: 30000, //超时时间：30秒
+                data: {
+                    module_id: module_id
+                },
+                error: function () {
+                  	//出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                    showNotify(-1,'删除模块错误',1,'warning',0);
+                },
+                success: function (data) {
+                	if(data.code==0)
+                    {
+                        $('.dialog_notify').remove();
+                    	$('#module_'+module_id).hide();
+                    }
+                    showNotify(data.code,data.msg,1,data.msg_type,0);
+                }
+            });
+        }
+        else
+        {
+        	return false;
+        }
+    });
+}
+
+function moduleRightList(module_id)
+{
+	BootstrapDialog.show({
+		modalDialogClass:'modal-dialog-lg',
+    	title:'模块权限列表',
+        message: function(dialog) {
+            var $message = $('<div id="module_right_list"></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: true,
+        data: {
+            'url': '__URL__'+'/moduleRightList?module_id='+module_id
+        },
+        buttons: [
+        {
+            label: '关闭',
+            action: function(dialog){
+            	dialog.close();
+            }
+        }]
+    });
+}
+
+</script>
+
+
+
+
+

@@ -1,0 +1,314 @@
+
+<div id="sample_1_wrapper" class="dataTables_wrapper no-footer">
+    <div class="table-scrollable">
+        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="sample_1" role="grid" aria-describedby="sample_1_info">
+            <thead>
+                <tr role="row">
+                    <th class="text-center" rowspan="1" colspan="1" aria-label="" style="width: 25%;">
+                        角色名称
+                    </th>
+                    <th class="text-center" rowspan="1" colspan="1" aria-label="" style="width: 5%;">
+                        排序值
+                    </th>
+                    <th class="text-center" rowspan="1" colspan="1" aria-label="" style="width: 5%;">
+                        父级角色
+                    </th>
+                    <th class="sorting_disabled text-center" rowspan="1" colspan="1" aria-label="" style="width: 208px;">
+                        角色描述
+                    </th>
+                    <th class="sorting_disabled text-center" rowspan="1" colspan="1" aria-label="" style="width: 15%;">
+                        操作
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach name="rolelist" item="onerole" key="rkey" }
+                <tr class="gradeX {php} if($rkey%2==0){ echo 'even';}else{echo 'odd';}{/php}"
+                    role="row" id="role_{$onerole.roleid}_tr">
+                    <td class="text-left" >
+                        {$onerole.rolename}
+                    </td>
+                    <td class="text-center">
+                        {$onerole.rolesort}
+                    </td>
+                    <td class="text-center">
+                        {php}
+                        if($onerole['parentroleid']==0){
+                        echo "-";
+                        }
+                        else{
+                        echo $onerole['parentrolename'];
+                        }
+                        {/php}
+                    </td>
+                    <td class="text-center">
+                        {$onerole.roledescription}
+                    </td>
+                    <td class="text-center">
+                        <a onclick="editrole({$onerole.roleid})" href="javascript:" title="修改角色" class="btn btn-warning btn-xs">
+                            <i class="fa fa-pencil"></i> 修改
+                        </a>
+                        <a onclick="removerole({$onerole.roleid})" href="javascript:" title="删除角色" class="btn btn-danger btn-xs">
+                            <i class="fa fa-trash-o"></i> 删除
+                        </a>
+                    </td>
+                </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+
+var TableManaged = function () {
+
+    var initTable1 = function () {
+
+        var table = $('#sample_1');
+
+        // begin first table
+        table.dataTable({
+            "columns": [{
+                "orderable": true
+            }, {
+                "orderable": true
+            }, {
+                "orderable": false
+            }, {
+                "orderable": false
+            }, {
+                "orderable": false
+            }],
+            "lengthMenu": [
+                [5, 10, 15, 20, 25, 30, 35, 40, -1],
+                [5, 10, 15, 20, 25, 30, 35, 40,"全部"] // change per page values here
+            ],
+            // set the initial value
+            "pageLength": 10,
+            "pagingType": "bootstrap_full_number",
+            "language": {
+                "lengthMenu": "  _MENU_ 条",
+                "paginate": {
+                    "previous":"上一页",
+                    "next": "下一页",
+                    "last": "最后一页",
+                    "first": "第一页"
+                }
+            },
+            "columnDefs": [{  // set default column settings
+                'orderable': false,
+                'targets': [0]
+            }, {
+                "searchable": true,
+                "targets": [0]
+            }],
+            "order": [
+                [1, "asc"]
+            ] // set first column as a default sort by asc
+        });
+
+        var tableWrapper = jQuery('#sample_1_wrapper');
+
+
+        tableWrapper.find('.dataTables_length select').addClass("form-control input-xsmall input-inline"); // modify table per page dropdown
+    }
+
+
+    return {
+
+        //main function to initiate the module
+        init: function () {
+            if (!jQuery().dataTable) {
+                return;
+            }
+
+            initTable1();
+        }
+
+    };
+
+}();
+
+jQuery(document).ready(function() {
+    TableManaged.init();
+});
+
+function addrole(roleid)
+{
+    BootstrapDialog.show({
+        title:'添加角色',
+        modalDialogClass:'modal-dialog-lg',
+        message: function(dialog) {
+            var $message = $('<div></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: false,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/addrole?roleid='+roleid
+        },
+        buttons: [{
+            id: 'btn-1',
+            label: '添加',
+            cssClass: 'btn-primary',
+            action: function(dialog) {
+                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                $button.disable();
+                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
+                dialog.setClosable(false);
+                if(!$('#addroleform').data('bootstrapValidator').validate().isValid())
+                {
+                    $button.enable();
+                    dialog.setClosable(true);
+                    $button.find('.fa-spinner').remove();
+                    return;
+                }
+                var formData=$('#addroleform').serialize();
+                $.ajax({
+                    url: '__URL__' + '/addrole',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    timeout: 30000, //超时时间：30秒
+                    data: formData,
+                    error: function () {
+                        $button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+
+                        //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                        showNotify(-1,'添加角色错误',1,'warning',0);
+                    },
+                    success: function (data) {
+                        $button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        if(data.code==0)
+                        {
+                            $('.dialog_notify').remove();
+                            dialog.close();
+                            $('#content-list').html(data.html);
+                        }
+                        showNotify(data.code,data.msg,1,data.msg_type,0);
+                    }
+                });
+            }
+        },
+        {
+            label: '取消',
+            action: function(dialog){
+                dialog.close();
+            }
+        }]
+    });
+}
+
+function editrole(roleid)
+{
+    BootstrapDialog.show({
+        title:'修改角色',
+        modalDialogClass:'modal-dialog-lg',
+        message: function(dialog) {
+            var $message = $('<div></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: false,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/editrole?roleid='+roleid
+        },
+        buttons: [{
+            id: 'btn-1',
+            label: '保存',
+            cssClass: 'btn-success',
+            action: function(dialog) {
+                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                $button.disable();
+                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
+                dialog.setClosable(false);
+                if(!$('#editroleform').data('bootstrapValidator').validate().isValid())
+                {
+                    $button.enable();
+                    dialog.setClosable(true);
+                    $button.find('.fa-spinner').remove();
+                    return;
+                }
+                var formData=$('#editroleform').serialize();
+                $.ajax({
+                    url: '__URL__' + '/editrole',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    timeout: 30000, //超时时间：30秒
+                    data: formData,
+                    error: function () {
+                        $button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+
+                        //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                        showNotify(-1,'保存角色错误',1,'warning',0);
+                    },
+                    success: function (data) {
+                        $button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        if(data.code==0)
+                        {
+                            $('.dialog_notify').remove();
+                            dialog.close();
+                            $('#content-list').html(data.html);
+                        }
+                        showNotify(data.code,data.msg,1,data.msg_type,0);
+                    }
+                });
+            }
+        },
+        {
+            label: '取消',
+            action: function(dialog){
+                dialog.close();
+            }
+        }]
+    });
+}
+
+function removerole(roleid)
+{
+    BootstrapDialog.confirm('请确认','确定删除角色数据吗?', function(result){
+        if(result) {
+            $.ajax({
+                url: '__URL__' + '/removerole',
+                type: 'POST',
+                dataType: 'JSON',
+                timeout: 30000, //超时时间：30秒
+                data: {
+                    roleid: roleid
+                },
+                error: function () {
+                    //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                    showNotify(-1,'删除角色错误',1,'warning',0);
+                },
+                success: function (data) {
+                    if(data.code==0)
+                    {
+                        $('.dialog_notify').remove();
+                        //$('#role_'+roleid+'_tr').hide();
+                        $('#content-list').html(data.html);
+                    }
+                    showNotify(data.code,data.msg,1,data.msg_type,0);
+                }
+            });
+        }
+        else
+        {
+            return false;
+        }
+    });
+}
+</script>
+

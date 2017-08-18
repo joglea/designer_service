@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>Debug</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/Plugin/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/Plugin/bootstrap-3.3.6/css/dashboard.css" rel="stylesheet">
+
+    <script src="/static/Js/jquery-1.11.2.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/docsdebug/index">Debug</a>
+        </div>
+
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12  col-md-12 ">
+            <h4 class="sub-header"><a href="/docsdebug/index">接口列表</a> >{$methodinfo.desc}</h4>
+            {gt name="userinfo['userid']" value="0"}
+            <h3 class="sub-header">当前昵称:{$userinfo['nickname']}-----用户ID:{$userinfo['userid']}</h3>
+            {else/}
+            <h3 class="sub-header">未登录</h3>
+            {/gt}
+        </div>
+    </div>
+    <div class="table-responsive" style="border:none;margin-bottom: 20px;">
+        <table class="table table-striped" style="margin-bottom:0;width:99%;">
+            <thead>
+            <tr>
+                <th width=10%></th>
+                <th width=40%></th>
+                <th width=10%></th>
+                <th width=40%></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="border:1px solid #ddd">
+                    描述
+                </td>
+                <td style="border:1px solid #ddd;font-weight:bolder;color:#c36464;"><span >{$methodinfo.desc}</span> </td>
+
+                <td style="border:1px solid #ddd">
+                    调用地址
+                </td>
+                <td style="border:1px solid #ddd;font-weight:bolder;color:#c36464;"><span id="methodurl">{$methodinfo.url}</span> </td>
+            </tr>
+
+            <tr>
+                <td style="border:1px solid #ddd">
+                    提交方式
+                </td>
+                <td style="border:1px solid #ddd;font-weight:bolder;color:#c36464;"><span id="method">{$methodinfo.method}</span> </td>
+
+                <td style="border:1px solid #ddd">
+                    创建版本号
+                </td>
+                <td style="border:1px solid #ddd;font-weight:bolder;color:#c36464;"><span >{$methodinfo.version}</span> </td>
+            </tr>
+
+            <tr>
+                <td style="border:1px solid #ddd">
+                    参数列表
+                </td>
+                <td style="border:1px solid #ddd" colspan="4">
+
+                    <form id="debugform" role="form" class="form-horizontal" method="post">
+                        <table class="table table-striped" style="margin-bottom:0;width:99%;">
+                            <thead>
+                            <tr>
+                                <th width=10%>名称</th>
+                                <th width=10%>默认值</th>
+                                <th width=6%>类型</th>
+                                <th width=34%>说明</th>
+                                <th width=6%>是否必须</th>
+                                <th width=34%>测试值</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="methodinfo.params" id="oneparam"}
+                            <tr>
+                                <td style="border:1px solid #ddd;font-weight:bolder;color:#c36464;">
+                                    {$oneparam[0]}
+                                </td>
+                                <td style="border:1px solid #ddd">
+                                    {$oneparam[1]}
+                                </td>
+                                <td style="border:1px solid #ddd">
+                                    {$oneparam[2]}
+                                </td>
+                                <td style="border:1px solid #ddd">
+                                    {$oneparam[3]}
+                                </td>
+                                <td style="border:1px solid #ddd">
+                                    {$oneparam[4]}
+                                </td>
+                                <td style="border:1px solid #ddd">
+                                    <input type="text" name="{$oneparam[0]}" class="form-control" placeholder="{$oneparam[0]}"  autofocus="">
+                                </td>
+                            </tr>
+                            {/volist}
+                            <tr>
+                                <td style="border:1px solid #ddd" >
+                                    返回示例
+                                </td>
+                                <td style="border:1px solid #ddd" colspan="3" >
+                                    <a href="javascript:;" onclick="$('#return_value').toggle();return false;">查看</a>
+                                    <div id="return_value" style="display: none;">
+                                        {$methodinfo.return}
+                                    </div>
+
+                                </td>
+                                <td style="border:1px solid #ddd" >
+                                    操作
+                                </td>
+                                <td style="border:1px solid #ddd">
+                                    <span id="submitbtn" class="btn btn-sm btn-primary" style="width:100px;">提交</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
+                </td>
+            </tr>
+            <tr>
+                <td style="border:1px solid #ddd">
+                    返回值
+                </td>
+                <td style="border:1px solid #ddd" colspan="4">
+                    <textarea id="returninfo" style="width:100%;height:300px;background-color:#f5eeee;"></textarea>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+<script>
+
+
+/*
+ * StringBuffer class
+ */
+function StringBuffer() {
+    this.buffer = [];
+}
+StringBuffer.prototype.append = function append (string) {
+    this.buffer.push(string);
+    return this;
+};
+StringBuffer.prototype.toString = function toString () {
+    return this.buffer.join("");
+};
+/*
+ * Strip html tags
+ */
+function stripTags (str) {
+    return str.replace(/<[^>].*?>/g,"");
+}
+/*
+ * Display json with better look
+ */
+function formatJson (str) {
+    var tab = 0;
+    var buf = new StringBuffer();
+    for (var i = 0; i < str.length; i++) {
+        var char = str.charAt(i);
+        if (char == '{' || char == '[') {
+            tab++;
+            char = char + "\n";
+            for (var j = 0; j < tab; j++) char = char + "\t";
+        }
+        if (char == '}' || char == ']') {
+            tab--;
+            for (var j = 0; j < tab; j++) char = "\t" + char;
+            char = "\n" + char;
+        }
+        if (char == ',') {
+            char = char + "\n";
+            for (var j = 0; j < tab; j++) char = char + "\t";
+        }
+
+        buf.append(char);
+    }
+    return buf.toString();
+}
+
+$('#submitbtn').click(function(){
+    var methodurl=$('#methodurl').html();
+    var method=$('#method').html();
+    var formdata=$('#debugform').serialize();
+    var dstoken='{$dstoken}';
+    var dsversion='{$dsversion}';
+    var dsverify='{$dsverify}';
+    formdata=formdata+'';
+    $.ajax({
+        url: 'http://{$serverhost}'+methodurl,
+        beforeSend: function(request) {
+            request.setRequestHeader("ds-token", dstoken);
+            request.setRequestHeader("ds-version", dsversion);
+            request.setRequestHeader("ds-verify", dsverify);
+        },
+        type: 'POST',
+        dataType: 'JSON',
+        timeout: 30000, //超时时间：30秒
+        data: formdata,
+        error: function (data) {
+           $('#returninfo').html('请求出错:'+formatJson(JSON.stringify(data)));
+        },
+        success: function (data) {
+
+            $('#returninfo').html(formatJson(JSON.stringify(data)) );
+        }
+    });
+
+});
+/**
+function  changect(){
+    var t= Math.round(new Date().getTime()/1000);
+    $("input[name='ct']").val(t);
+    setTimeout('changect()', 1000);
+}
+changect();
+*/
+$("input[name='ct']").val('{$ct}');
+$("input[name='sid']").val('{$sid}');
+
+
+
+</script>
+<script src="/static/Plugin/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+</body>
+</html>

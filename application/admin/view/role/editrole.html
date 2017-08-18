@@ -1,0 +1,173 @@
+<div class="dialog_notify"></div>
+<form id="editroleform" role="form" class="form-horizontal" method="post">
+    <input type="hidden" name="roleid" value="{$roleinfo.roleid}" />
+    <div class="form-body">
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="rolename">角色名称</label>
+            <div class="col-md-9">
+                <input type="type" autofocus="" required="" placeholder="角色名称" 
+                value="{$roleinfo.rolename}"
+                name="rolename" id="rolename" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="isadmin">角色类型</label>
+            <div class="col-md-9">
+                <label class="control-label" for="isadmin">
+                    {if $roleinfo.isadmin eq 2}
+                    超级管理员角色
+                    {else}
+                    {if $roleinfo.isadmin eq 1}
+                    管理员角色
+                    {else}
+                    普通角色
+                    {/if}
+                    {/if}<span style="color:red">(<--角色类型目前不允许修改)</span>
+                </label>
+                <input type="hidden" name="isadmin" id="isadmin" value="{$roleinfo.isadmin}"/>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="roledescription">描述</label>
+            <div class="col-md-9">
+                <textarea name="roledescription" id="roledescription" class="form-control" rows="3">{$roleinfo.roledescription}</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="rolesort">排序值</label>
+            <div class="col-md-9">
+                <input type="type" autofocus="" required="" placeholder="排序值" 
+                value="{$roleinfo.rolesort}"
+                name="rolesort" id="rolesort" class="form-control" value="{$defaultsort}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label">
+                <input type="checkbox"  onclick="selectallmodulegroup(this,'0')"  />角色权限
+            </label>
+
+            <div class="col-md-9">
+                <div class="module_group_in_0">
+                    <div style=" border:1px solid #e3e3e3; border-radius:4px; border-bottom:0;">
+                        {foreach name="modulegrouptree" item="onemodulegroup" key="mgkey" }
+                        <h4 class="panel-title" style="padding:10px 0 10px 10px; background:#f9f9f9; border-bottom:1px solid #ddd;">
+                            <input type="checkbox"
+                                   onclick="selectallmodule(this,'{$onemodulegroup.modulegroupid}')" />
+                            {$onemodulegroup.modulegroupname}
+                        </h4>
+                        <ul class="list-group module_in_{$onemodulegroup.modulegroupid}" style="padding:0; margin:0; margin-top:-1px; border-radius:0;">
+                            {foreach name="onemodulegroup.modulelist" item="onemodule" key="mkey" }
+                            <li class="list-group-item" style="padding-left:20px; border-left:none; border-right:none; overflow:hidden;">
+                                <span class="mName" style="width:130px; float:left;">
+                                    <input type="checkbox" id="chk_{$onemodule.moduleid}"
+                                           onclick="selectallmoduleright(this,'{$onemodule.moduleid}')" />
+                                    <label for="chk_{$onemodule.moduleid}" class="orange" style=" margin-bottom:0;">{$onemodule.modulename}：</label>
+                                </span>
+                                <div style=" float:left; width:600px;">
+                                    {foreach name="onemodule.modulerightlist" item="oneright" key="mrkey" }
+                                    <div class="btn-group module_right_in_{$onemodule.moduleid}" style=" margin-left:10px; width:135px;" >
+                                        <input type="checkbox" name="module_right_{$onemodule.moduleid}[]"
+                                               id="chk_{$onemodule.moduleid}_{$oneright.modulerightid}"
+                                                {php}
+                                                if($oneright['has_right']==1){ echo 'checked="checked"';}
+                                                if($oneright['has_edit_right']==0){ echo 'disabled';}
+                                                {/php}
+
+                                               value="{$oneright.rightvalue}" />
+                                        <label for="chk_{$onemodule.moduleid}_{$oneright.modulerightid}"  style="font-weight:normal;">
+                                            {$oneright.rightname}
+                                        </label>
+
+                                    </div>
+                                    {/foreach}
+                                </div>
+                                <br/>
+                            </li>
+                            {/foreach}
+                        </ul>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+function selectallmodulegroup(thisObj,module_group_id)
+{
+    $('input[type=checkbox]',$('.module_group_in_'+module_group_id)).each(function(){
+        $(this).prop('checked',$(thisObj).prop('checked'));
+    });
+}
+
+function selectAllSecondModuleGroup(thisObj,module_group_id)
+{
+    $('input[type=checkbox]',$('.second_module_group_in_'+module_group_id)).each(function(){
+        $(this).prop('checked',$(thisObj).prop('checked'));
+    });
+}
+
+function selectallmodule(thisObj,second_module_group_id)
+{
+    $('input[type=checkbox]',$('.module_in_'+second_module_group_id)).each(function(){
+        $(this).prop('checked',$(thisObj).prop('checked'));
+    });
+}
+
+function selectallmoduleright(thisObj,module_id)
+{
+    $('input[type=checkbox]',$('.module_right_in_'+module_id)).each(function(){
+        $(this).prop('checked',$(thisObj).prop('checked'));
+    });
+}
+$('input[type=checkbox]').each(function(){
+    if($(this).prop('disabled')==true)
+    {
+        $(this).parent().remove();
+    }
+});
+$('#editroleform').bootstrapValidator({
+    feedbackIcons: {
+        valid: 'fa fa-check',
+        invalid: 'fa fa-times',
+        validating: 'fa fa-refresh'
+    },
+    //container:'custom',
+    fields: {
+        'role_name': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">角色名称不能为空</div>'
+                },
+                stringLength: {
+                    max: 20,
+                    message: '<div class="arrow"></div><div class="popover-content">角色名称长度不能大于20个</div>'
+                }
+            }
+        },
+        'sort': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">角色排序不能为空</div>'
+                },
+                integer:{
+                    message: '<div class="arrow"></div><div class="popover-content">角色排序必须为整数</div>'
+                },
+                greaterThan:{
+                    message:'<div class="arrow"></div><div class="popover-content">角色排序不合法</div>',
+                    value:0,
+                    inclusive: 'inclusive'
+                }
+            }
+        }
+    }
+})
+.on('success.form.bv', function(e) {
+
+});
+
+
+</script>

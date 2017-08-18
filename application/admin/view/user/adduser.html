@@ -1,0 +1,286 @@
+
+<div class="dialog_notify"></div>
+<form id="adduserform" role="form" class="form-horizontal" method="post">
+    <div class="form-body">
+        <div class="box-content bordered">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="username">账号</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                                name="username" id="username" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="realname">真名</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                            name="realname" id="realname" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="passwd">密码</label>
+                        <div class="col-md-8">
+                            <input type="password" autofocus="" placeholder=""
+                            name="passwd" id="passwd" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="confirmpasswd">确认密码</label>
+                        <div class="col-md-8">
+                            <input type="password" autofocus="" placeholder=""
+                            name="confirmpasswd" id="confirmpasswd" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="nickname">昵称</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                                   name="nickname" id="nickname" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="email">邮箱</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                                   name="email" id="email" class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="role_id">所属角色</label>
+                        <div class="col-md-8">
+                            <select name="role_id" id="role_id" class="form-control">
+
+                                {foreach name="rolelist" item="onerole" key="rkey" }
+                                <option value="{$onerole.roleid}">{$onerole.rolename}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" >性别</label>
+                        <div class="col-md-8 control-label" style="text-align: left;">
+                            <span >
+                            <input type="radio" autofocus="" placeholder="男"
+                                   name="gender" id="f" class="" value="1" checked="checked">男
+                            </span>
+                            <span>
+                            <input type="radio" autofocus="" placeholder="女"
+                                   name="gender" id="m" class="" value="2">女
+                            </span>
+                            <span>
+                            <input type="radio" autofocus="" placeholder="保密"
+                                   name="gender" id="s" class="" value="0">保密
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="birthday">生日</label>
+                        <div class="col-md-8">
+                            <div id="birthdaypicker" class="input-append date input-group">
+                                <input class="form-control" name="birthday" id="birthday"
+                                       value="1990-01-01" data-format="yyyy-MM-dd" type="text" readonly />
+                                    <span class="add-on input-group-addon">
+                                      <i class="fa fa-calendar fa-6" data-time-icon="fa fa-clock-o" data-date-icon="fa fa-calendar">
+                                      </i>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="status">状态</label>
+                        <div class="col-md-8">
+                            <select name="status" id="status" class="form-control">
+                                <option value="0">正常</option>
+                                <option value="1">禁用</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="cell_phone">手机号</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                                   name="cell_phone" id="cell_phone" class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="phone">固定电话</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                                   name="phone" id="phone" class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="qq">QQ</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                                   name="qq" id="qq" class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="sort">排序值</label>
+                        <div class="col-md-8">
+                            <input type="type" autofocus="" placeholder=""
+                                   name="sort" id="sort" class="form-control" value="{$defaultsort}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+</form>
+
+
+<script>
+$(function(){
+	$('#birthdaypicker').datetimepicker({
+	    language: 'en',
+	    format : 'yyyy-MM-dd',
+	    pickTime: false
+	});
+});
+
+
+$('#adduserform').bootstrapValidator({
+    feedbackIcons: {
+        valid: 'fa fa-check',
+        invalid: 'fa fa-times',
+        validating: 'fa fa-refresh'
+    },
+    //container:'custom',
+    fields: {
+        'username': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">工号不能为空</div>'
+                },
+                stringLength: {
+                    min: 3,
+                    max: 20,
+                    message: '<div class="arrow"></div><div class="popover-content">工号字符长度不能小于3个且不能大于20个</div>'
+                },
+                remote:{
+                    url:'__URL__'+'/checkuserbyusername',
+                    type:'POST',
+                    data:{username:$('#username').val()}
+
+                }
+            }
+        },
+        'realname': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">账号不能为空</div>'
+                },
+                stringLength: {
+                    max: 20,
+                    message: '<div class="arrow"></div><div class="popover-content">账号长度不得大于20个字符</div>'
+                }
+            }
+        },
+        'passwd': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">密码不能为空</div>'
+                },
+                stringLength: {
+                    min: 6,
+                    max: 32,
+                    message: '<div class="arrow"></div><div class="popover-content">密码字符长度字符长度不能小于6个且不能大于32个</div>'
+                }
+            }
+        },
+        'confirmpasswd': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">密码不能为空</div>'
+                },
+                identical: {
+                    message: '<div class="arrow"></div><div class="popover-content">密码不一致</div>',
+                    field:'passwd'
+                },
+                stringLength: {
+                    min: 6,
+                    max: 32,
+                    message: '<div class="arrow"></div><div class="popover-content">密码字符长度字符长度不能小于6个且不能大于32个</div>'
+                }
+            }
+        },
+        'nickname': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">昵称不能为空</div>'
+                },
+                stringLength: {
+                    max: 20,
+                    message: '<div class="arrow"></div><div class="popover-content">昵称长度不得大于20个字符</div>'
+                }
+            }
+        },
+        'email': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">邮箱地址不能为空</div>'
+                },
+                emailAddress: {
+                    message: '<div class="arrow"></div><div class="popover-content">邮箱地址格式不合法</div>'
+                }
+            }
+        }
+    }
+})
+.on('success.form.bv', function(e) {
+
+});
+
+
+</script>

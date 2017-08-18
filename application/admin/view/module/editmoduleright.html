@@ -1,0 +1,134 @@
+<div class="in_dialog_notify"></div>
+
+<form id="editmodulerightform" role="form" class="form-horizontal" method="post">
+    <div class="form-body">
+        <input type="hidden" value="{$modulerightinfo.module_id}" name="moduleid" id="moduleid"/>
+        <input type="hidden" value="{$modulerightinfo.modulerightid}" name="modulerightid" id="modulerightid"/>
+        <div class="form-group">    
+            <label class="col-md-3 control-label">所属模块</label>
+            <div class="col-md-8">
+                <label class="control-label" >{$modulerightinfo.modulename}</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="rightname">权限名</label>
+            <div class="col-md-8">
+                <input type="type" autofocus="" required="" placeholder="权限名" 
+                value="{$modulerightinfo.rightname}"
+                name="rightname" id="rightname" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="rightename">权限英文名</label>
+            <div class="col-md-8">
+                <input type="type" autofocus="" required="" placeholder="权限英文名" 
+                value="{$modulerightinfo.rightename}"
+                name="rightename" id="rightename" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="rightvalue">权限值</label>
+            <div class="col-md-8">
+                <input type="type" autofocus="" required="" placeholder="权限值" 
+                value="{$modulerightinfo.rightvalue}"
+                name="rightvalue" id="rightvalue" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="rightsort">权限排序值</label>
+            <div class="col-md-8">
+                <input type="type" autofocus="" required="" placeholder="权限排序值" 
+                value="{$modulerightinfo.rightsort}"
+                name="rightsort" id="rightsort" class="form-control">
+            </div>
+        </div>
+       
+    </div>
+
+</form>
+
+<script>
+
+
+    $('#editmodulerightform').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'fa fa-check',
+            invalid: 'fa fa-times',
+            validating: 'fa fa-refresh'
+        },
+        //container:'custom',
+        fields: {
+            'rightname': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块权限不能为空</div>'
+                    },
+                    stringLength: {
+                        max: 20,
+                        message: '<div class="arrow"></div><div class="popover-content">权限名称长度不能大于20个</div>'
+                    }
+                }
+            },
+            'rightename': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块权限名称不能为空</div>'
+                    },
+                    regexp:{
+                        message:'<div class="arrow"></div><div class="popover-content">权限名称只能是“字母，数字，下划线”</div>',
+                        regexp:'^[a-zA-Z0-9_]+$'
+                    },
+                    stringLength: {
+                        max: 100,
+                        message: '<div class="arrow"></div><div class="popover-content">权限名称长度不能大于100个</div>'
+                    }
+                }
+            },
+            'rightvalue': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块权限值不能为空</div>'
+                    },
+                    remote:{
+                        message: '<div class="arrow"></div><div class="popover-content">模块权限值已经存在</div>',
+                        url:'__URL__'+'/checkmodulerightvalue',
+                        type:'POST',
+                        data:{rightvalue:$('#rightvalue').val(),moduleid:$('#moduleid').val(),modulerightid:$('#modulerightid').val()}
+                    },
+                    callback:{
+                        message:'<div class="arrow"></div><div class="popover-content">权限值需要是2的n次方  n为非负整数</div>',
+                        callback:function(fieldValue, validator, $field) {
+                            if(fieldValue&(fieldValue-1))
+                            {
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            },
+            'rightsort': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块权限排序不能为空</div>'
+                    },
+                    integer:{
+                        message: '<div class="arrow"></div><div class="popover-content">模块权限排序必须为整数</div>'
+                    },
+                    greaterThan:{
+                        message:'<div class="arrow"></div><div class="popover-content">模块权限排序不合法</div>',
+                        value:0,
+                        inclusive: 'inclusive'
+                    }
+                }
+            }
+        }
+    }) 
+    .on('success.form.bv', function(e) {
+
+    });  
+
+</script>

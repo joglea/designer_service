@@ -1,0 +1,60 @@
+
+<!-- BEGIN SIDEBAR -->
+<div class="page-sidebar-wrapper">
+<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+    <div class="page-sidebar navbar-collapse collapse">
+    <!-- BEGIN SIDEBAR MENU -->
+        <ul class="page-sidebar-menu " data-auto-scroll="true" data-slide-speed="200">
+        <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
+            <li class="sidebar-toggler-wrapper">
+                <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                <div class="sidebar-toggler">
+                </div>
+                <!-- END SIDEBAR TOGGLER BUTTON -->
+            </li>
+            <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+            <li class="sidebar-search-wrapper" style="height:10px;">
+
+            </li>
+            {volist name="menumodulegrouplist" id="onemodulegroup" key="mgkey"}
+            <li
+                {eq name="mgkey" value="$curmodulegroupid"}class="active open"{/eq}
+                >
+                <a
+                    {gt name="onemodulegroup.modulecount" value="1"}
+                    href="javascript:;"
+                    {else/}
+                    href="{$onemodulegroup.url}"
+                    {/gt}
+                        >
+                    <i class="{$onemodulegroup.modulegroupicon}"></i>
+                    <span class="title">{$onemodulegroup.modulegroupname}</span>
+
+                    {gt name="onemodulegroup.modulecount" value="1"}
+                    <span class='arrow {eq name="mgkey" value="$curmodulegroupid"}open{/eq}'></span>
+                    {/gt}
+
+                </a>
+                {gt name="onemodulegroup.modulecount" value="1"}
+                <ul class="sub-menu">
+                    {foreach name="onemodulegroup.modulelist" item="onemodule" key="mkey"}
+
+                    <li {eq name="mkey" value="$curmoduleid"}class="active"{/eq}
+                       >
+                        <a href="{$onemodule.url}">
+                            <i class="{$onemodule.moduleicon}"></i>
+                            {$onemodule.modulename}</a>
+                    </li>
+                    {/foreach}
+                </ul>
+                {/gt}
+            </li>
+
+            {/volist}
+
+        </ul>
+    <!-- END SIDEBAR MENU -->
+    </div>
+</div>
+<!-- END SIDEBAR -->

@@ -1,0 +1,167 @@
+
+<div class="dialog_notify"></div>
+<form id="editmoduleform" role="form" class="form-horizontal" method="post">
+	<div class="form-body">
+		<input type="hidden" value="{$moduleid}" name="moduleid" />
+		<div class="form-group">	
+			<label class="col-md-3 control-label" >模块所属分组</label>
+			<div class="col-md-8">
+				<label class="control-label" >{$moduleinfo.modulegroupname}</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label" for="modulename">模块名</label>
+			<div class="col-md-8">
+				<input type="type" autofocus="" required="" placeholder="模块名" 
+				value="{$moduleinfo.modulename}"
+				name="modulename" id="modulename" class="form-control">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label" for="identityname">模块唯一标识</label>
+			<div class="col-md-8">
+				<input type="type" autofocus="" required="" placeholder="模块唯一标识" 
+				value="{$moduleinfo.identityname}"
+				name="identityname" id="identityname" class="form-control">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label" for=url>模块访问路径</label>
+			<div class="col-md-8">
+				<input type="type" autofocus="" required="" placeholder="模块访问路径" 
+				value="{$moduleinfo.url}"
+				name="url" id="url" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-md-3 control-label" for="modulesort">排序</label>
+			<div class="col-md-8">
+				<input type="type" autofocus="" placeholder="排序" 
+				value="{$moduleinfo.modulesort}"
+				name="modulesort" id="modulesort" class="form-control">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label" for="modulestate">模块状态</label>
+			<div class="col-md-8">
+				<select id="modulestate" name="modulestate" class="form-control">
+					<option
+
+                    {php}
+                    if($moduleinfo['modulestate']==1){
+                        echo 'selected="selected"';
+                    }
+                    {/php}
+					value="1" >正常</option>
+					<option
+                    {php}
+                    if($moduleinfo['modulestate']==0){
+                        echo 'selected="selected"';
+                    }
+                    {/php}
+					value="0" >禁用</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label" for="description">模块描述</label>
+			<div class="col-md-8">
+				<textarea name="description" id="description" class="form-control" rows="3">{$moduleinfo.description}</textarea>
+			</div>
+		</div>
+	</div>
+
+</form>
+
+<script>
+
+    $('#editmoduleform').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'fa fa-check',
+            invalid: 'fa fa-times',
+            validating: 'fa fa-refresh'
+        },
+        //container:'custom',
+        fields: {
+            'modulename': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块分组名称不能为空</div>'
+                    },
+                    stringLength: {
+                        min: 2,
+                        max: 20,
+                        message: '<div class="arrow"></div><div class="popover-content">名称长度不能小于2个且不能大于20个</div>'
+                    }
+                }
+            },
+            'identityname': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块分组名称不能为空</div>'
+                    },
+                    regexp:{
+                        message:'',
+                        regexp:'^[a-zA-Z0-9_]+$'
+                    },
+                    stringLength: {
+                        min: 2,
+                        max: 100,
+                        message: '<div class="arrow"></div><div class="popover-content">名称长度不能小于2个且不能大于100个</div>'
+                    }
+                }
+            },
+            'url': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块url不能为空</div>'
+                    },
+                    regexp:{
+                        message:'',
+                        regexp:'^[a-zA-Z0-9_+-:/|?&=\.]+$'
+                    },
+                    stringLength: {
+                        max: 255,
+                        message: '<div class="arrow"></div><div class="popover-content">名称长度不能小于2个且不能大于255个</div>'
+                    }
+                }
+            },
+            'modulesort': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">模块分组名称不能为空</div>'
+                    },
+                    integer:{
+                        message: '<div class="arrow"></div><div class="popover-content">模块排序必须为整数</div>'
+                    },
+                    greaterThan:{
+                        message:'<div class="arrow"></div><div class="popover-content">模块排序不合法</div>',
+                        value:0,
+                        inclusive: 'inclusive'
+                    }
+                }
+            },
+            'modulestate': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">请选择模块状态</div>'
+                    },
+                    lessThan:{
+                        message:'<div class="arrow"></div><div class="popover-content">模块状态不合法</div>',
+                        value:1
+                    },
+                    greaterThan:{
+                        message:'<div class="arrow"></div><div class="popover-content">模块状态不合法</div>',
+                        value:0
+                    }
+                    
+                }
+            }
+        }
+    }) 
+    .on('success.form.bv', function(e) {
+
+    });  
+
+</script>
