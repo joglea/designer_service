@@ -5,7 +5,7 @@ use app\common\controller\Front;
 /**
  * Class Workexp
  *
- * @classdesc g接口类
+ * @classdesc 工作经验接口类
  * @package app\index\controller
  */
 class Workexp extends Front
@@ -13,7 +13,7 @@ class Workexp extends Front
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    任务列表接口
+     * @desc    工作经验列表接口
      * @url     /Workexp/WorkexpList
      * @method  GET
      * @version 1000
@@ -102,11 +102,11 @@ class Workexp extends Front
     
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    查看任务详情
+     * @desc    查看工作经验详情
      * @url     /Workexp/WorkexpView
      * @method  GET
      * @version 1000
-     * @params  Workexpid 1 INT 任务id YES
+     * @params  Workexpid 1 INT 工作经验id YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      * @return

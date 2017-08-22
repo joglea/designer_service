@@ -1,0 +1,79 @@
+
+<link href="/statics/Plugin/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript" src="/statics/Plugin/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="/statics/Plugin/bootstrap-fileinput/js/locales/zh.js"></script>
+
+<div class="dialog_notify"></div>
+<form id="addtaskimgform"  role="form" class="form-horizontal" method="post">
+    <div class="form-body">
+        <div class="box-content bordered">
+
+
+            <input type="hidden" autofocus="" placeholder="" value=""
+                   name="taskid" id="taskid" class="form-control">
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="task_pic">商品图片</label>
+                        <div class="col-md-10">
+                            <input id="task_pic" name="task_pic[]" type="file"  class="file-loading">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</form>
+
+
+
+<script>
+
+$("#task_pic").fileinput(
+    {
+language: 'zh',
+        uploadUrl: "addtaskimg",
+        uploadExtraData:{
+            task_id: {$taskid}
+        },
+        overwriteInitial: true,
+        initialPreviewAsData: true,
+        initialPreview:{$initialpreview},
+        initialPreviewConfig:{$initialpreviewconfig},
+        allowedFileExtensions : ['jpg', 'png','gif'],
+
+
+	}
+);
+
+
+$('#addtaskimgform').bootstrapValidator({
+    feedbackIcons: {
+        valid: 'fa fa-check',
+        invalid: 'fa fa-times',
+        validating: 'fa fa-refresh'
+    },
+    //container:'custom',
+    fields: {
+        'img_sort': {
+            validators: {
+                notEmpty: {
+                    message: '<div class="arrow"></div><div class="popover-content">不能为空</div>'
+                },
+                integer:{
+                    message: '<div class="arrow"></div><div class="popover-content">不能为非整形数字</div>'
+                }
+            }
+        }
+    }
+})
+.on('success.form.bv', function(e) {
+
+});
+
+
+</script>

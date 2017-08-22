@@ -23,6 +23,7 @@ class Admin extends Base {
     public $parentRoleId = 0;
     public $staticUrl = '';
     public $curDate = '';
+    public $curDate1 = '';
     public $curDateTime1 = '';
     public $curDateTime2 = '';
 
@@ -69,14 +70,20 @@ class Admin extends Base {
         //var_dump($this->currolename);exit;
         //静态文件Url的host
         $this->staticUrl='//'.config('STATIC_HOST').'/';
-
+        $this->assign(['staticUrl'=>$this->staticUrl]);
         $this->curTime = time();
+        $this->assign(['curTime'=>$this->curTime]);
         //当前日期 年/月/日
         $this->curDate=date('Y/m/d',$this->curTime);
+        $this->assign(['curDate'=>$this->curDate]);
+        $this->curDate1=date('Y-m-d',$this->curTime);
+        $this->assign(['curDate1'=>$this->curDate1]);
         //当前时间 年/月/日 时:分:秒
         $this->curDateTime1=date('Y/m/d H:i:s',$this->curTime);
+        $this->assign(['curDateTime1'=>$this->curDateTime1]);
         //当前时间 年-月-日 时:分:秒
         $this->curDateTime2=date('Y-m-d H:i:s',$this->curTime);
+        $this->assign(['curDateTime2'=>$this->curDateTime2]);
 
 
 	}

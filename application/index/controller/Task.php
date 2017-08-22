@@ -73,9 +73,6 @@ class Task extends Front
                 $taskWhere['limittime']=['gt',time()];
                 $order = 'taskid desc';
 
-
-
-
             $taskList = model('task')->where($taskWhere)->order($order)
                 ->limit((($page-1)*$pageSize).','.$pageSize)->select();
 
@@ -244,7 +241,6 @@ class Task extends Front
             $this->returndata(11000, 'server error', $this->curTime, $data);
         }
     }
-
 
 
 
