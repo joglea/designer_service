@@ -268,4 +268,49 @@ class Workexp extends Front
         }
     }
 
+
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    删除自己的经验
+     * @url     /Workexp/WorkexpDel
+     * @method  POST
+     * @version 1000
+     * @params  expid 1 INT 经历id YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function WorkexpDel(){
+
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $expId = input('expid',0);
+
+        if($expId<0){
+            $this->returndata(14001, 'params error', $this->curTime, $data);
+        }
+
+        try{
+
+            $workexp = model('workexp')
+                ->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expId,'delflag'=>0])
+                ->find();
+            if(!$workexp){
+                $this->returndata( 14002, 'exp not exist', $this->curTime, $data);
+            }
+            model('workexp')
+                ->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expId,'delflag'=>0])
+                ->update(['delflag'=>1,'updatetime'=>$this->curTime]);
+
+
+            $this->returndata(10000, 'do success', $this->curTime, $data);
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+    }
+
+
 }

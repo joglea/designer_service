@@ -20,32 +20,6 @@ class Task extends Front
      * @params  page 1 INT 当前请求的是第几页数据 YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
-     * @return
-        {
-            "code":10000,
-            "message":"获取成功",
-            "time":1492413087,
-            "data":{
-                "taskList":[
-                {
-                    "taskid":2,
-                    "userid":1000000005,
-                    "nickname":"dd都是",
-                    "invited_userid":1000000006,
-                    "invited_avatar":"http://omsnjcbau.bkt.clouddn.com/avatar/default01",
-                    "invited_nickname":"花满楼",
-                    "invited_tasktypename":"",
-                    "invited_exp":0,
-                    "title":"1111",
-                    "content":"1111",
-                    "reward":"11.00",
-                    "state":0,
-                    "image":"http://omsnjcbau.bkt.clouddn.com/a.jpg",
-                    "support_counter":0
-                }
-                ]
-            }
-        }
      *
      */
     public function taskList(){
@@ -129,6 +103,94 @@ class Task extends Front
 
     }
 
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    我发布的任务列表接口
+     * @url     /task/myTaskList
+     * @method  GET
+     * @version 1000
+     * @params  page 1 INT 当前请求的是第几页数据 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function myTaskList(){
+
+
+        //返回结果
+        $data = [];
+
+        $pageSize = config('page_size');
+        //获取接口参数
+
+        $page = input('request.page',1,'intval');
+
+        //验证参数是否为空
+        if($page<1){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+
+        try{
+
+            //新建可以报名的任务列表
+            $taskWhere = [
+                'userid'=>$this->curUserInfo['userid'],'delflag'=>0];
+
+            //$taskWhere['limittime']=['gt',time()];
+            $order = 'taskid desc';
+
+            $taskList = model('task')->where($taskWhere)->order($order)
+                ->limit((($page-1)*$pageSize).','.$pageSize)->select();
+
+
+            $taskIds = [];
+            foreach($taskList as $oneTask){
+                $taskIds[]=$oneTask['taskid'];
+            }
+
+            if(!$taskIds){
+                $this->returndata( 14003, 'task list is empty', $this->curTime, $data);
+            }
+
+            $taskDataList = model('taskdata')->where(['taskid'=>['in',$taskIds]])->select();
+
+            $newTaskDataList = [];
+            foreach($taskDataList as $oneTaskData){
+                $newTaskDataList[$oneTaskData['taskid']] = [
+                    'read_counter'=>$oneTaskData['read_counter'],
+                    'signup_counter'=>$oneTaskData['signup_counter'],
+                ];
+            }
+
+            $this->getAllControl();
+            $newTaskList = [];
+            foreach($taskList as $oneTask){
+                $newTaskList[]=[
+                    'taskid'=>$oneTask['taskid'],
+                    'title'=>$oneTask['title'],
+                    'desc'=>$oneTask['desc'],
+                    'limittime'=>$oneTask['limittime'],
+                    'price'=>$oneTask['price'],
+                    'check_state'=>$oneTask['check_state'],
+                    'state'=>$oneTask['state'],
+                    'task_pic' =>$this->checkPictureUrl($this->allControl['task_image_url'],$oneTask['task_pic']),
+                    //'content'=>$oneTask['content'],
+                    'read_counter'=>isset($newTaskDataList[$oneTask['taskid']])?
+                        $newTaskDataList[$oneTask['taskid']]['read_counter']:0,
+                    'signup_counter'=>isset($newTaskDataList[$oneTask['taskid']])?
+                        $newTaskDataList[$oneTask['taskid']]['signup_counter']:0,
+                ];
+            }
+
+            $data['taskList'] = $newTaskList;
+            $this->returndata(10000, '获取成功', $this->curTime, $data);
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+
+    }
     
     /**
      * ---------------------------------------------------------------------------------------------
@@ -243,402 +305,305 @@ class Task extends Front
     }
 
 
-
-
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    任务首页三类推荐列表
-     * @url     /task/taskRecommendList
+     * @desc    任务报名人员列表接口
+     * @url     /task/taskSignupList
      * @method  GET
      * @version 1000
+     * @params  taskid 1 INT 任务id YES
+     * @params  page 1 INT 当前请求的是第几页数据 YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
-     * @return
-        {
-            "code":10000,
-            "message":"do success",
-            "time":1492399870,
-            "data":{
-                "recommendlist":[
-                {
-                    "type":2,//推荐类型 1外部url2用户3服务4任务
-                    "object":"1000000006",//推荐对象id或外部url
-                    "title":"dfgdfg",//标题
-                    "desc":"对方过后为",//描述
-                    "button_word":"的"//按钮文字
-                }
-                ]
-            }
-        }
+     *
      */
-    public function taskRecommendList(){
+    public function taskSignupList(){
+
 
         //返回结果
         $data = [];
 
+        $pageSize = config('page_size');
+        //获取接口参数
+
+        $taskid = input('request.taskid',0,'intval');
+        $page = input('request.page',1,'intval');
+
+        //验证参数是否为空
+        if($page<1||$taskid<=0){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+
         try{
 
-            //推荐活动列表 默认3个
-            $taskRecommendWhere = ['delflag'=>0];
-            $taskRecommendList = model('taskrecommend')->where($taskRecommendWhere)->order('sort desc')->limit(0,3)->select();
-            $newTaskRecommendList = [];
-            foreach($taskRecommendList as $oneTaskRecommend){
-                $newTaskRecommendList[]=[
-                    'type'=>$oneTaskRecommend['type'],
-                    'object'=>$oneTaskRecommend['object'],
-                    'title'=>$oneTaskRecommend['title'],
-                    'desc'=>$oneTaskRecommend['desc'],
-                    'button_word'=>$oneTaskRecommend['button_word'],
+            //新建可以报名的任务列表
+            $taskSignupWhere = ['taskid'=>$taskid,'delflag'=>0];
+
+            $order = ' signupid desc';
+
+            $signupList = model('tasksignup')->where($taskSignupWhere)->order($order)
+                ->limit((($page-1)*$pageSize).','.$pageSize)->select();
+
+
+            $userIds = [];
+            foreach($signupList as $oneSignup){
+                $userIds[]=$oneSignup['userid'];
+            }
+
+            if(!$userIds){
+                $this->returndata( 14003, 'user list is empty', $this->curTime, $data);
+            }
+
+            $userinfoList = model('userinfo')->where(['userid'=>['in',$userIds]])->select();
+
+            $newUserinfoList = [];
+            $allControls = $this->getAllControl();
+            foreach($userinfoList as $oneUserinfo){
+                $newUserinfoList[$oneUserinfo['userid']] = [
+                    'userid'=>$oneUserinfo['userid'],
+                    'avatar'=>$this->checkPictureUrl($allControls['avatar_url'],$oneUserinfo['avatar']),
+                    'nickname'=>$oneUserinfo['nickname'],
                 ];
             }
-            $data['recommendlist'] = $newTaskRecommendList;
 
+
+            $newSignupList = [];
+            foreach($signupList as $oneSignup){
+                $pics = json_decode($oneSignup['pics']);
+                $newPics = $this->checkPictureUrl($allControls['task_image_url'],$pics);
+                $newSignupList[]=[
+                    'signupid'=>$oneSignup['signupid'],
+                    'userid'=>$oneSignup['userid'],
+                    'avatar'=>$newUserinfoList[$oneSignup['userid']]['avatar'],
+                    'nickname'=>$newUserinfoList[$oneSignup['userid']]['nickname'],
+                    'createtime'=>date('Y-m-d H:i',$oneSignup['createtime']),
+
+                    'desc'=>$oneSignup['desc'],
+                    'pics'=>$newPics,
+                ];
+            }
+
+            $data['signupList'] = $newSignupList;
+            $this->returndata(10000, '获取成功', $this->curTime, $data);
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    添加报名任务接口
+     * @url     /task/taskSignupAdd
+     * @method  POST
+     * @version 1000
+     * @params  taskid 1 INT 任务id YES
+     * @params  desc 啊 STRING 描述 YES
+     * @params  pics ["aa.jpg"] STRING 图片列表 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function taskSignupAdd(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $taskid = input('request.taskid','');
+        $desc = input('request.desc','');
+        $pics = input('request.pics','');
+        $newPics = json_decode($pics,true);
+
+
+        //验证参数是否为空
+        if($taskid<=0 || $desc==''||!$newPics){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+        try{
+            $task = model('task')->where(['taskid'=>$taskid,'delflag'=>0])->find();
+            if(!$task||!($task['check_state']==2&&$task['state']==1)){
+                $this->returndata( 14002, 'task can not signup ', $this->curTime, $data);
+            }
+
+            $signup = model('tasksignup')->where([
+                'taskid'=>$taskid,
+                'userid'=>$this->curUserInfo['userid'],'delflag'=>0])->find();
+            if($signup){
+                $this->returndata( 14002, 'signup exist', $this->curTime, $data);
+            }
+
+            $newtaskSignup = [
+                'taskid'=>$taskid,
+                'userid'=>$this->curUserInfo['userid'],
+                'desc'=>$desc,
+                'pics'=>json_encode($newPics),
+                'suit_state'=>1,//被商家选中的适合报名状态 1初稿未选中 2初稿被选中 3最终选中 4最终未选中
+                'createtime'=>$this->curTime,
+                'updatetime'=>$this->curTime,
+                'delflag'=>0,
+            ];
+            $signupid = model('tasksignup')->insertGetId($newtaskSignup);
+
+            if(!$signupid){
+                $this->returndata( 14002, 'signup  fail', $this->curTime, $data);
+            }
+
+            $data['signupid']=$signupid;
+            $this->returndata(10000, 'do success', $this->curTime, $data);
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, []);
+        }
+    }
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    添加工作经历接口
+     * @url     /task/taskAdd
+     * @method  POST
+     * @version 1000
+     * @params  desc 啊 STRING 描述 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function taskAdd(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $desc = input('request.desc','');
+
+
+        //验证参数是否为空
+        if($desc==''){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+        try{
+            $newtask = [
+                'userid'=>$this->curUserInfo['userid'],
+                'desc'=>$desc,
+                'check_state'=>1,
+                'state'=>1,
+                'createtime'=>$this->curTime,
+                'updatetime'=>$this->curTime,
+                'delflag'=>0,
+            ];
+            $taskid = model('task')->insertGetId($newtask);
+
+            if(!$taskid){
+                $this->returndata( 14002, 'task add fail', $this->curTime, $data);
+            }
+
+            $data['taskid']=$taskid;
+            $this->returndata(10000, 'do success', $this->curTime, $data);
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, []);
+        }
+    }
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    修改工作经历接口
+     * @url     /task/taskEdit
+     * @method  POST
+     * @version 1000
+     * @params  taskid 1 INT 经历id YES
+     * @params  desc 啊 STRING 描述 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function taskEdit(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $taskid = input('request.taskid','');
+        $desc = input('request.desc','');
+
+
+        //验证参数是否为空
+        if($taskid<=0||$desc==''){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+        try{
+            $task = model('task')->where([
+                'userid'=>$this->curUserInfo['userid'],
+                'taskid'=>$taskid,'delflag'=>0])->find();
+            if($task&&$task['check_state']==1){
+                $newtask = [
+                    'desc'=>$desc,
+                    'updatetime'=>$this->curTime
+                ];
+                $ret = model('task')->where(['taskid'=>$taskid])->update($newtask);
+
+                if(!$ret){
+                    $this->returndata( 14002, 'task edit fail', $this->curTime, $data);
+                }
+
+                $this->returndata(10000, 'do success', $this->curTime, $data);
+
+            }
+            else{
+                $this->returndata(14003, 'check_state error', $this->curTime, []);
+            }
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, []);
+        }
+    }
+
+
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    删除自己的经验
+     * @url     /task/taskDel
+     * @method  POST
+     * @version 1000
+     * @params  taskid 1 INT 经历id YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function taskDel(){
+
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $taskId = input('taskid',0);
+
+        if($taskId<0){
+            $this->returndata(14001, 'params error', $this->curTime, $data);
+        }
+
+        try{
+
+            $task = model('task')
+                ->where(['userid'=>$this->curUserInfo['userid'],
+                         'taskid'=>$taskId,'delflag'=>0])
+                ->find();
+            if(!$task){
+                $this->returndata( 14002, 'task not exist', $this->curTime, $data);
+            }
+            model('task')
+                ->where(['userid'=>$this->curUserInfo['userid'],
+                         'taskid'=>$taskId,'delflag'=>0])
+                ->update(['delflag'=>1,'updatetime'=>$this->curTime]);
             $this->returndata(10000, 'do success', $this->curTime, $data);
         }catch (Exception $e){
             $this->returndata(11000, 'server error', $this->curTime, $data);
         }
     }
-
-    /**
-     * ---------------------------------------------------------------------------------------------
-     * @desc    修改我发起的任务状态接口
-     * @url     /task/changeMySendTask
-     * @method  POST
-     * @version 1000
-     * @params  taskid 2 INT 任务id YES
-     * @params  type 1 INT 要修改成任务状态类型1取消2接收成果3拒收成果 YES
-     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
-     * @params  ct '' STRING 当前时间戳 YES
-     *
-     */
-    public function changeMySendTask(){
-        //返回结果
-        $data = [];
-
-        //获取接口参数
-        $taskId = input('request.taskid',0);
-        $type = input('request.type',1);
-
-
-        //验证参数是否为空
-        if($taskId<=0||!in_array($type,[1,2,3])){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
-        }
-
-        try{
-            //非取消状态下是否存在同标题的任务
-            $taskWhere = [
-                'userid'=>$this->curUserInfo['userid'],
-                'taskid'=>$taskId,
-                'delflag'=>0
-            ];
-            $task = model('task')->where($taskWhere)->find();
-
-            if(!$task){
-                $this->returndata( 14004, 'task not exist', $this->curTime, $data);
-            }
-
-            switch ($type){
-                case 1:
-                    if(in_array($task['state'],[0,1])){
-                        $updateData=[
-                            'state'=>2,
-                            'updatetime'=>$this->curTime
-                        ];
-                        $taskDetailDesc = '取消任务';
-                    }
-                    else{
-                        $this->returndata( 14004, 'task state error', $this->curTime, $data);
-                    }
-                    break;
-                case 2:
-                    if(in_array($task['state'],[5])){
-                        $updateData=[
-                            'state'=>6,
-                            'updatetime'=>$this->curTime
-                        ];
-                        $taskDetailDesc = '任务成功';
-                    }
-                    else{
-                        $this->returndata( 14004, 'task state error', $this->curTime, $data);
-                    }
-                    break;
-                case 3:
-                    if(in_array($task['state'],[5])){
-                        $updateData=[
-                            'state'=>7,
-                            'updatetime'=>$this->curTime
-                        ];
-                        $taskDetailDesc = '任务失败';
-                    }
-                    else{
-                        $this->returndata( 14004, 'task state error', $this->curTime, $data);
-                    }
-                    break;
-            }
-
-            model('task')->where($taskWhere)->update($updateData);
-
-            //创建任务统计信息
-            $newTaskDetail = [
-                'taskid'        => $taskId,
-                'deal_userid'   => $this->curUserInfo['userid'],
-                'desc'          => $taskDetailDesc,
-                'createtime'    => $this->curTime
-            ];
-            model('taskdetail')->insertGetId($newTaskDetail);
-
-            $this->returndata(10000, 'do success', $this->curTime, $data);
-
-        }catch (Exception $e){
-            $this->returndata(11000, 'server error', $this->curTime, []);
-        }
-    }
-
-    /**
-     * ---------------------------------------------------------------------------------------------
-     * @desc    修改我收到的任务状态接口
-     * @url     /task/changeMyReceiveTask
-     * @method  POST
-     * @version 1000
-     * @params  taskid 2 INT 任务id YES
-     * @params  type 1 INT 要修改成任务状态类型1接受2拒绝 YES
-     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
-     * @params  ct '' STRING 当前时间戳 YES
-     *
-     */
-    public function changeMyReceiveTask(){
-        //返回结果
-        $data = [];
-
-        //获取接口参数
-        $taskId = input('request.taskid',0);
-        $type = input('request.type',1);
-
-
-        //验证参数是否为空
-        if($taskId<=0||!in_array($type,[1,2])){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
-        }
-
-        try{
-            //非取消状态下是否存在同标题的任务
-            $taskWhere = [
-                'invited_userid'=>$this->curUserInfo['userid'],
-                'taskid'=>$taskId,
-                'delflag'=>0
-            ];
-            $task = model('task')->where($taskWhere)->find();
-
-            if(!$task){
-                $this->returndata( 14004, 'task not exist', $this->curTime, $data);
-            }
-
-            switch ($type){
-                case 1:
-                    if(in_array($task['state'],[1])){
-                        $updateData=[
-                            'state'=>3,
-                            'updatetime'=>$this->curTime
-                        ];
-                        $taskDetailDesc = '接受任务';
-                    }
-                    else{
-                        $this->returndata( 14004, 'task state error', $this->curTime, $data);
-                    }
-
-                    break;
-                case 2:
-                    if(in_array($task['state'],[1])){
-                        $updateData=[
-                            'state'=>4,
-                            'updatetime'=>$this->curTime
-                        ];
-                        $taskDetailDesc = '拒绝任务';
-                    }
-                    else{
-                        $this->returndata( 14004, 'task state error', $this->curTime, $data);
-                    }
-                    break;
-            }
-
-            model('task')->where($taskWhere)->update($updateData);
-
-            //创建任务统计信息
-            $newTaskDetail = [
-                'taskid'        => $taskId,
-                'deal_userid'   => $this->curUserInfo['userid'],
-                'desc'          => $taskDetailDesc,
-                'createtime'    => $this->curTime
-            ];
-            model('taskdetail')->insertGetId($newTaskDetail);
-
-            $this->returndata(10000, 'do success', $this->curTime, $data);
-
-        }catch (Exception $e){
-            $this->returndata(11000, 'server error', $this->curTime, []);
-        }
-    }
-
-    /**
-     * ---------------------------------------------------------------------------------------------
-     * @desc    交付任务成果接口
-     * @url     /task/changeMyReceiveTask
-     * @method  POST
-     * @version 1000
-     * @params  taskid 2 INT 任务id YES
-     * @params  content '内容' STRING 任务内容描述 YES
-     * @params  type 1 INT 任务媒体文件类型1图2文3音4视 YES
-     * @params  urls '["a.jpg","b.jpg"]' STRING 图音视文件地址的json串 YES
-     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
-     * @params  ct '' STRING 当前时间戳 YES
-     *
-     */
-    public function taskCreateResult(){
-//返回结果
-        $data = [];
-
-        //获取接口参数
-        $taskId = input('request.taskid',0);
-        $content = input('request.content','');
-        $type = input('request.type',1);
-        $urls = input('request.urls','');
-
-
-        //验证参数是否为空
-        if($taskId<=0||!in_array($type,[1,2,3,4])||$content==''){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
-        }
-
-        try{
-            //非取消状态下是否存在同标题的任务
-            $taskWhere = [
-                'invited_userid'=>$this->curUserInfo['userid'],
-                'taskid'=>$taskId,
-                'delflag'=>0
-            ];
-            $task = model('task')->where($taskWhere)->find();
-
-            if(!$task){
-                $this->returndata( 14004, 'task not exist', $this->curTime, $data);
-            }
-
-            $newTaskResult = [
-                'userid'=>$this->curUserInfo['userid'],
-                'taskid'=>$taskId,
-                'content'=>$content,
-                'type'=>$type,
-                'urls'=>$urls,
-                'createtime'=>$this->curTime,
-                'delflag'=>0
-            ];
-            model('taskresult')->insertGetId($newTaskResult);
-
-            //创建任务统计信息
-            $newTaskDetail = [
-                'taskid'        => $taskId,
-                'deal_userid'   => $this->curUserInfo['userid'],
-                'desc'          => '交付成功',
-                'createtime'    => $this->curTime
-            ];
-            model('taskdetail')->insertGetId($newTaskDetail);
-
-            $this->returndata(10000, 'do success', $this->curTime, $data);
-
-        }catch (Exception $e){
-            $this->returndata(11000, 'server error', $this->curTime, []);
-        }
-    }
-
-    /**
-     * ---------------------------------------------------------------------------------------------
-     * @desc    支持或偷看任务成果接口
-     * @url     /task/taskCreateSupport
-     * @method  POST
-     * @version 1000
-     * @params  taskid 2 INT 任务id YES
-     * @params  type 2 INT 类型1支持2偷看(暂时没有支持功能) YES
-     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
-     * @params  ct '' STRING 当前时间戳 YES
-     *
-     */
-    public function taskCreateSupport(){
-        //返回结果
-        $data = [];
-
-        //获取接口参数
-        $taskId = input('request.taskid',0);
-        $type = input('request.type',1);
-
-
-        //验证参数是否为空
-        if($taskId<=0||!in_array($type,[2])){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
-        }
-
-        try{
-            //非取消状态下是否存在同标题的任务
-            $taskWhere = [
-                'taskid'=>$taskId,
-                'delflag'=>0
-            ];
-            $task = model('task')->where($taskWhere)->find();
-
-            if(!$task){
-                $this->returndata( 14002, 'task not exist', $this->curTime, $data);
-            }
-
-            //支持暂不处理
-            if($type==1){
-                $this->returndata( 14003,  'params error', $this->curTime, $data);
-            }
-            elseif($type==2){
-                if($task['state']==5){
-                    if(in_array($this->curUserInfo['userid'],[$task['userid'],$task['invited_userid']])){
-                        $this->returndata( 14004,  'not need support', $this->curTime, $data);
-                    }
-                    else{
-                        $newTaskSupport = [
-                            'userid'=>$this->curUserInfo['userid'],
-                            'taskid'=>$taskId,
-                            'type'=>$type,
-                            'createtime'=>$this->curTime,
-                            'delflag'=>0
-                        ];
-                        model('tasksupport')->insertGetId($newTaskSupport);
-
-                        //更新任务被支持数
-                        $saveTaskData = [
-                            'support_counter'=>['exp','support_counter+1'],
-                            'updatetime'=>$this->curTime
-                        ];
-                        model('taskdata')->where(['taskid'=>$taskId])
-                            ->update($saveTaskData);
-                        //更新个人支持的任务数
-                        $saveUserData = [
-                            'support_counter'=>['exp','support_counter+1'],
-                            'updatetime'=>$this->curTime
-                        ];
-                        model('userdata')->where(['userid'=>$this->curUserInfo['userid']])
-                            ->update($saveUserData);
-                    }
-                }
-                else{
-                    $this->returndata( 14005,  'task state error', $this->curTime, $data);
-                }
-
-            }
-            else{
-                $this->returndata( 14006,  'params error', $this->curTime, $data);
-            }
-
-            $this->returndata(10000, 'do success', $this->curTime, $data);
-
-        }catch (Exception $e){
-            $this->returndata(11000, 'server error', $this->curTime, []);
-        }
-    }
-
 
 
 }
