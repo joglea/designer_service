@@ -606,4 +606,227 @@ class Task extends Front
     }
 
 
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    支付定金
+     * @url     /task/taskSignupDeposit
+     * @method  POST
+     * @version 1000
+     * @params  taskid 1 INT 任务id YES
+     * @params  signupids 1,2 STRING 报名id串,多个id逗号隔开 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function taskSignupDeposit(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $taskId = input('taskid',0);
+        $signupIds = input('signupids','');
+        $signupIdsArr = explode(',',$signupIds);
+        if($taskId<0||!$signupIdsArr){
+            $this->returndata(14001, 'params error', $this->curTime, $data);
+        }
+
+        Db::startTrans();
+        try{
+
+            $task = model('task')
+                ->where(['userid'=>$this->curUserInfo['userid'],
+                         'taskid'=>$taskId,'delflag'=>0])
+                ->find();
+            if(!$task){
+                $this->returndata( 14002, 'task not exist', $this->curTime, $data);
+            }
+            $signupList = model('tasksignup')->where(
+                ['signupid'=>['in',$signupIdsArr],'suit_state'=>1,'delflag'=>0]);
+            if(!$signupList){
+                $this->returndata( 14003, 'signup not exist or state error', $this->curTime, $data);
+            }
+            $wallet = model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->find();
+            if(!$wallet){
+                $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
+            }
+            $price = bcmul($task['price'],config('desposit_rate'),2);
+            $balance = $wallet['now_money']-$price;
+            if($balance<0){
+                $this->returndata( 14003, 'wallet balance insufficient ', $this->curTime, $data);
+            }
+
+
+            $order = [
+                'userid'=>$this->curUserInfo['userid'],
+                'taskid'=>$taskId,
+                'total_price'=>$task['price'],
+                'pay_rate'=>config('desposit_rate'),
+                'state'=>2,
+                'createtime'=>$this->curTime,
+                'updatetime'=>$this->curTime,
+                'delflag'=>0,
+            ];
+            //创建订单
+            $orderid = model('order')->insertGetId($order);
+
+            foreach($signupList as $oneSignup){
+                //订单详情
+                $detailid = model('orderdetail')->insertGetId(
+                    [
+                        'orderid'=>$orderid,
+                        'signupid'=>$oneSignup['signupid'],
+                        'createtime'=>$this->curTime,
+                        'updatetime'=>$this->curTime,
+                        'delflag'=>0,
+                    ]
+                );
+                //更新报名状态
+                model('tasksignup')
+                    ->where(
+                        ['signupid'=>$oneSignup['signupid']]
+                    )
+                    ->update(['suit_state'=>2,'updatetime'=>$this->curTime]);
+            }
+
+            $date = [
+                'now_money'=>$balance,
+                'updatetime'=>$this->curTime,
+            ];
+            //更新余额
+            $walletUpdate = model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->update($date);
+            //余额变更记录
+            model('walletrecord')->insertGetId(
+                [
+                    'objectid'=>$orderid,
+                    'objecttype'=>1,//对象类型1支出2收入3充值
+                    'price'=>$price,
+                    'desc'=>'任务：'.$taskId.'的支付定金',
+                    'createtime'=>$this->curTime,
+                    'updatetime'=>$this->curTime,
+                    'delflag'=>0,
+
+                ]
+            );
+            Db::commit();
+            $this->returndata(10000, 'do success', $this->curTime, $data);
+        }catch (Exception $e){
+            // 回滚事务
+            Db::rollback();
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    支付尾款
+     * @url     /task/taskSignupTail
+     * @method  POST
+     * @version 1000
+     * @params  taskid 1 INT 任务id YES
+     * @params  signupid 1 STRING 报名id YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function taskSignupTail(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $taskId = input('taskid',0);
+        $signupId = input('signupid',0);
+        if($taskId<0||$signupId<=0){
+            $this->returndata(14001, 'params error', $this->curTime, $data);
+        }
+
+        Db::startTrans();
+        try{
+
+            $task = model('task')
+                ->where(['userid'=>$this->curUserInfo['userid'],
+                         'taskid'=>$taskId,'delflag'=>0])
+                ->find();
+            if(!$task){
+                $this->returndata( 14002, 'task not exist', $this->curTime, $data);
+            }
+            $signupList = model('tasksignup')->where(
+                ['signupid'=>$signupId,'suit_state'=>2,'delflag'=>0]);
+            if(!$signupList){
+                $this->returndata( 14003, 'signup not exist or state error', $this->curTime, $data);
+            }
+            $wallet = model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->find();
+            if(!$wallet){
+                $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
+            }
+            $price = bcmul($task['price'],config('tail_rate'),2);
+            $balance = $wallet['now_money']-$price;
+            if($balance<0){
+                $this->returndata( 14003, 'wallet balance insufficient ', $this->curTime, $data);
+            }
+
+            $order = [
+                'userid'=>$this->curUserInfo['userid'],
+                'taskid'=>$taskId,
+                'total_price'=>$task['price'],
+                'pay_rate'=>config('tail_rate'),
+                'state'=>2,
+                'createtime'=>$this->curTime,
+                'updatetime'=>$this->curTime,
+                'delflag'=>0,
+            ];
+            //创建订单
+            $orderid = model('order')->insertGetId($order);
+
+            foreach($signupList as $oneSignup){
+                //订单详情
+                $detailid = model('orderdetail')->insertGetId(
+                    [
+                        'orderid'=>$orderid,
+                        'signupid'=>$oneSignup['signupid'],
+                        'createtime'=>$this->curTime,
+                        'updatetime'=>$this->curTime,
+                        'delflag'=>0,
+                    ]
+                );
+                //更新报名状态
+                model('tasksignup')
+                    ->where(
+                        ['signupid'=>$oneSignup['signupid']]
+                    )
+                    ->update(['suit_state'=>3,'updatetime'=>$this->curTime]);
+            }
+
+            $date = [
+                'now_money'=>$balance,
+                'updatetime'=>$this->curTime,
+            ];
+            //更新余额
+            $walletUpdate = model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->update($date);
+            //余额变更记录
+            model('walletrecord')->insertGetId(
+                [
+                    'objectid'=>$orderid,
+                    'objecttype'=>1,//对象类型1支出2收入3充值
+                    'price'=>$price,
+                    'desc'=>'任务：'.$taskId.'的支付尾款',
+                    'createtime'=>$this->curTime,
+                    'updatetime'=>$this->curTime,
+                    'delflag'=>0,
+
+                ]
+            );
+            Db::commit();
+            $this->returndata(10000, 'do success', $this->curTime, $data);
+        }catch (Exception $e){
+            // 回滚事务
+            Db::rollback();
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+    }
+
 }
