@@ -106,7 +106,7 @@ class Task extends Front
     /**
      * ---------------------------------------------------------------------------------------------
      * @desc    我发布的任务列表接口
-     * @url     /task/myTaskList
+     * @url     /task/myCreateTaskList
      * @method  GET
      * @version 1000
      * @params  page 1 INT 当前请求的是第几页数据 YES
@@ -114,7 +114,7 @@ class Task extends Front
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function myTaskList(){
+    public function myCreateTaskList(){
 
 
         //返回结果
@@ -304,6 +304,104 @@ class Task extends Front
         }
     }
 
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    我接的任务列表接口
+     * @url     /task/myAcceptTaskList
+     * @method  GET
+     * @version 1000
+     * @params  page 1 INT 当前请求的是第几页数据 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function myAcceptTaskList(){
+
+
+        //返回结果
+        $data = [];
+
+        $pageSize = config('page_size');
+        //获取接口参数
+
+        $page = input('request.page',1,'intval');
+
+        //验证参数是否为空
+        if($page<1){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+
+        try{
+
+            //新建可以报名的任务列表
+            $taskSignupWhere = [
+                'userid'=>$this->curUserInfo['userid'],'delflag'=>0];
+
+            //$taskWhere['limittime']=['gt',time()];
+            $order = 'signupid desc';
+
+            $signupList = model('tasksignup')->where($taskSignupWhere)->order($order)
+                ->limit((($page-1)*$pageSize).','.$pageSize)->select();
+
+
+            $taskIds = [];
+            foreach($signupList as $oneSignup){
+                $taskIds[]=$oneSignup['taskid'];
+            }
+
+            if(!$taskIds){
+                $this->returndata( 14003, 'task list is empty', $this->curTime, $data);
+            }
+
+
+            $taskList = model('task')->where(['taskid'=>['in',$taskIds],'delflag'=>0])
+                ->select();
+            $newTaskList = [];
+            foreach($taskList as $oneTask){
+                $newTaskList[$oneTask['taskid']]=$oneTask;
+            }
+
+
+            $taskDataList = model('taskdata')->where(['taskid'=>['in',$taskIds]])->select();
+
+            $newTaskDataList = [];
+            foreach($taskDataList as $oneTaskData){
+                $newTaskDataList[$oneTaskData['taskid']] = [
+                    'read_counter'=>$oneTaskData['read_counter'],
+                    'signup_counter'=>$oneTaskData['signup_counter'],
+                ];
+            }
+
+            $this->getAllControl();
+            $acceptList = [];
+            foreach($signupList as $oneSignup){
+                $acceptList[]=[
+                    'taskid'=>$oneSignup['taskid'],
+                    'title'=>$newTaskList[$oneSignup['taskid']]['title'],
+                    'desc'=>$newTaskList[$oneSignup['taskid']]['desc'],
+                    'limittime'=>$newTaskList[$oneSignup['taskid']]['limittime'],
+                    'price'=>$newTaskList[$oneSignup['taskid']]['price'],
+                    'check_state'=>$newTaskList[$oneSignup['taskid']]['check_state'],
+                    'state'=>$newTaskList[$oneSignup['taskid']]['state'],
+                    'task_pic' =>$this->checkPictureUrl($this->allControl['task_image_url'],$newTaskList[$oneSignup['taskid']]['task_pic']),
+                    //'content'=>$oneTask['content'],
+                    'read_counter'=>isset($newTaskDataList[$oneSignup['taskid']])?
+                        $newTaskDataList[$oneSignup['taskid']]['read_counter']:0,
+                    'signup_counter'=>isset($newTaskDataList[$oneSignup['taskid']])?
+                        $newTaskDataList[$oneSignup['taskid']]['signup_counter']:0,
+                ];
+            }
+
+            $data['acceptTaskList'] = $acceptList;
+            $this->returndata(10000, '获取成功', $this->curTime, $data);
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+
+    }
 
     /**
      * ---------------------------------------------------------------------------------------------
@@ -699,6 +797,7 @@ class Task extends Front
             //余额变更记录
             model('walletrecord')->insertGetId(
                 [
+                    'userid'=>$this->curUserInfo['userid'],
                     'objectid'=>$orderid,
                     'objecttype'=>1,//对象类型1支出2收入3充值
                     'price'=>$price,
@@ -810,6 +909,7 @@ class Task extends Front
             //余额变更记录
             model('walletrecord')->insertGetId(
                 [
+                    'userid'=>$this->curUserInfo['userid'],
                     'objectid'=>$orderid,
                     'objecttype'=>1,//对象类型1支出2收入3充值
                     'price'=>$price,

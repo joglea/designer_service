@@ -217,6 +217,7 @@ class Front extends Base {
             "token"             => $lastLoginToken,
             "nickname"          => $userInfo['nickname'],
             "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$userInfo['avatar']),
+            //""               => $userInfo['sex'],
             "sex"               => $userInfo['sex'],
             "birthday"          => $userInfo['birthday'],
             "city"              => $city,

@@ -30,8 +30,8 @@ class Index extends Front
             //返回结果
             $data = array();
             $data['controls'] = [
-                'open_app_image_url'=>$controls['open_app_image_url'],
-                'service_recommend_name'=>$controls['service_recommend_name'],
+                'avatar_url'=>$controls['avatar_url'],
+                'task_image_url'=>$controls['task_image_url'],
             ];
 
             $this->returndata(10000, 'get success', $this->curTime, $data);
