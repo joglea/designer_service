@@ -302,18 +302,15 @@ class Admin extends Base {
 
 
 
-    /**
-     * 记录系统操作日志
-     */
     public function sysLog($res){
         $loginfo = [
-            'creatorid'=>$this->curUserId,
-            'version'=>1,
-            'description'=>json_encode($_GET).json_encode($_POST),
+            'userid'=>$this->curUserInfo?$this->curUserInfo['userid']:0,
+            'version'=>$this->dsVersion,
+            'param'=>json_encode($_GET).json_encode($_POST),
             'return'=>json_encode($res),
             'ip'=>get_client_ip(),
-            'moduleidentity'=>CONTROLLER_NAME,
-            'rightname'=>ACTION_NAME,
+            'controllername'=>CONTROLLER_NAME,
+            'actionname'=>ACTION_NAME,
             'createtime'=>time(),
 
         ];
