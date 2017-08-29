@@ -305,7 +305,7 @@ class Admin extends Base {
     public function sysLog($res){
         $loginfo = [
             'userid'=>$this->curUserInfo?$this->curUserInfo['userid']:0,
-            'version'=>$this->dsVersion,
+            'version'=>1,
             'param'=>json_encode($_GET).json_encode($_POST),
             'return'=>json_encode($res),
             'ip'=>get_client_ip(),
