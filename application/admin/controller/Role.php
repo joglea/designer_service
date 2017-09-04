@@ -376,14 +376,14 @@ class Role extends Admin{
                             foreach($moduleright[$v2['moduleid']] as $k3=>$v3){
                                 if($v3['module_id']==$v2['moduleid']){
                                     //是否有权限
-                                    if(intval($v3['rightvalue'])&intval($rolemodule[$v3['module_id']]['rightvalue'])){
+                                    if(isset($rolemodule[$v3['module_id']])&& intval($v3['rightvalue'])&intval($rolemodule[$v3['module_id']]['rightvalue'])){
                                         $moduleright[$v2['moduleid']][$k3]['has_right']=1;
                                     }
                                     else{
                                         $moduleright[$v2['moduleid']][$k3]['has_right']=0;
                                     }//var_dump($v3['rightvalue'],$currolemodule[$v3['module_id']]['rightvalue']);
                                     //是否有修改的权限
-                                    if(intval($v3['rightvalue'])&intval($currolemodule[$v3['module_id']]['rightvalue'])){
+                                    if(isset($currolemodule[$v3['module_id']])&&intval($v3['rightvalue'])&intval($currolemodule[$v3['module_id']]['rightvalue'])){
                                         $moduleright[$v2['moduleid']][$k3]['has_edit_right']=1;
                                     }
                                     else{

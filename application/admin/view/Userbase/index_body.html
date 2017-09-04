@@ -33,31 +33,25 @@
                                 <input type="checkbox" class="group-checkable">
                             </th>-->
                             <th class="sorting_disabled" width="8%">
-                                ID
+                                用户ID
                             </th>
                             <th width="8%">
-                                图片
+                                手机号
+                            </th>
+                            <th width="10%">
+                                头像
                             </th>
                             <th width="25%">
-                                标题
+                                昵称
                             </th>
                             <th width="10%">
-                                价格
-                            </th>
-                            <th width="10%">
-                                截止时间
+                                性别
                             </th>
                             <th width="8%">
-                                描述
+                                认证状态
                             </th>
                             <th width="8%">
-                                报名支付状态
-                            </th>
-                            <th width="8%">
-                                审核状态
-                            </th>
-                            <th width="8%">
-                                审核描述
+                                用户状态
                             </th>
                             <th class="sorting_disabled" width="13%">
                                 创建时间
@@ -68,59 +62,39 @@
                         </tr>
                         <tr role="row" class="filter">
                             <td>
+                                <input type="text" class="form-control form-filter input-sm" name="userid">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="mobile">
                             </td>
                             <td>
                                 -
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="title">
+                                <input type="text" class="form-control form-filter input-sm" name="nickname">
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="price">
-                            </td>
-                            <td>
-                                <div id="limitstarttimepicker" class="input-group date date-picker">
-                                    <input class="form-control form-filter " name="limitstarttime" id="limitstarttime"
-                                           value="" data-format="yyyy-MM-dd hh:mm:ss" type="text" readonly  placeholder="开始日期"/>
-                                    <span class="add-on input-group-addon">
-                                      <i class="fa fa-calendar fa-6" data-time-icon="fa fa-clock-o" data-date-icon="fa fa-calendar">
-                                      </i>
-                                    </span>
-                                </div>
-                                <div id="limitendtimepicker" class="input-group date date-picker">
-                                    <input class="form-control form-filter " name="limitendtime" id="limitendtime"
-                                           value="" data-format="yyyy-MM-dd hh:mm:ss" type="text" readonly placeholder="结束日期"/>
-                                    <span class="add-on input-group-addon">
-                                      <i class="fa fa-calendar fa-6" data-time-icon="fa fa-clock-o" data-date-icon="fa fa-calendar">
-                                      </i>
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="desc">
-                            </td>
-
-                            <td>
-                                <select name="state" id="state" class="form-control form-filter input-sm" >
+                                <select name="sex" id="sex" class="form-control form-filter input-sm" >
                                     <option value="-1">全部</option>
-                                    <option value="1">新建接受报名</option>
-                                    <option value="2">停止报名</option>
-                                    <option value="3">订金预付</option>
-                                    <option value="4">尾款支付</option>
-                                    <option value="5">关闭</option>
-
+                                    <option value="0">未知</option>
+                                    <option value="1">男</option>
+                                    <option value="2">女</option>
                                 </select>
                             </td>
                             <td>
-                                <select name="check_state" id="check_state" class="form-control form-filter input-sm" >
+                                <select name="verify_state" id="verify_state" class="form-control form-filter input-sm" >
                                     <option value="-1">全部</option>
-                                    <option value="1">未审核</option>
-                                    <option value="2">审核通过</option>
-                                    <option value="3">审核不通过</option>
+                                    <option value="0">未认证</option>
+                                    <option value="1">设计师</option>
+                                    <option value="2">商家</option>
                                 </select>
                             </td>
                             <td>
-                                -
+                                <select name="status" id="status" class="form-control form-filter input-sm" >
+                                    <option value="-1">全部</option>
+                                    <option value="1">正常</option>
+                                    <option value="2">禁用</option>
+                                </select>
                             </td>
                             <td>
                                 <div id="createstarttimepicker" class="input-group date date-picker">
@@ -226,7 +200,7 @@ var Datatable = function() {
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [1,2,5,8,10]
+                        'targets': [2,8]
                     }],
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
@@ -514,7 +488,7 @@ var DataList = function () {
                 ],
                 "pageLength": 10, // default record count per page
                 "ajax": {
-                    "url": "{url('Task/index')}" // ajax source
+                    "url": "{url('user/index')}" // ajax source
                 },
                 "order": [
                     [0, "desc"]
@@ -596,164 +570,55 @@ jQuery(document).ready(function() {
 });
 
 
-function addtask()
+
+
+//修改用户状态
+function changestatus(userid,status)
 {
+    $.ajax({
+        url: 'changestatus',
+        type: 'POST',
+        dataType: 'JSON',
+        timeout: 30000, //超时时间：30秒
+        data: {userid:userid,status:status},
+        error: function () {
 
+            dialog.setClosable(true);
 
-    BootstrapDialog.show({
-        title:'添加任务',
-        modalDialogClass:'modal-dialog-lg',
-        message: function(dialog) {
-            var $message = $('<div></div>');
-            var taskToLoad = dialog.getData('url');
-            $message.load(taskToLoad);
-            return $message;
+            //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+            showNotify(-1,'修改用户错误',1,'warning',0);
         },
-        closable: false,
-        draggable: true,
-        data: {
-            'url': ''+'addtask'
-        },
-        buttons: [{
-            id: 'btn-1',
-            label: '添加',
-            cssClass: 'btn-primary',
-            action: function(dialog) {
-                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
-                $button.disable();
-                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
-                dialog.setClosable(false);
-                if(!$('#addtaskform').data('bootstrapValidator').validate().isValid())
-                {
-                    $button.enable();
-                    dialog.setClosable(true);
-                    $button.find('.fa-spinner').remove();
-                    return;
-                }
-                var formData=$('#addtaskform').serialize();
-                $.ajax({
-                    url: 'addtask',
-                    type: 'POST',
-                    dataType: 'JSON',
-                    timeout: 30000, //超时时间：30秒
-                    data: formData,
-                    error: function () {
-                        $button.enable();
-                        dialog.setClosable(true);
-                        $button.find('.fa-spinner').remove();
-
-                        //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
-                        showNotify(-1,'添加任务错误',1,'warning',0);
-                    },
-                    success: function (data) {
-                        $button.enable();
-                        dialog.setClosable(true);
-                        $button.find('.fa-spinner').remove();
-                        if(data.code==0)
-                        {
-
-                            $('.dialog_notify').remove();
-                            dialog.close();
-                            $('.filter-submit').click();
-                            //$('#content-list').html(data.html);
-                        }
-                        showNotify(data.code,data.msg,1,data.msg_type,0);
-                    }
-                });
+        success: function (data) {
+            //$button.enable();
+            //dialog.setClosable(true);
+            //$button.find('.fa-spinner').remove();
+            if(data.code==0)
+            {
+                $('.dialog_notify').remove();
+                //dialog.close();
+                $('.filter-submit').click();
             }
-        },
-        {
-            label: '取消',
-            action: function(dialog){
-                dialog.close();
-            }
-        }]
+            showNotify(data.code,data.msg,1,data.msg_type,0);
+        }
     });
+
 }
 
 
-//修改任务
-function edittask(taskid)
+//删除用户
+function removeuser(userid)
 {
-
-    BootstrapDialog.show({
-        title:'修改任务',
-        modalDialogClass:'modal-dialog-lg',
-        message: function(dialog) {
-            var $message = $('<div></div>');
-            var taskToLoad = dialog.getData('url');
-            $message.load(taskToLoad);
-            return $message;
-        },
-        closable: false,
-        draggable: true,
-        data: {
-            'url': ''+'edittask?taskid='+taskid
-        },
-        buttons: [{
-            id: 'btn-1',
-            label: '修改',
-            cssClass: 'btn-primary',
-            action: function(dialog) {
-                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
-                $button.disable();
-                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
-                dialog.setClosable(false);
-
-                var formData=$('#edittaskform').serialize();
-                $.ajax({
-                    url: 'edittask',
-                    type: 'POST',
-                    dataType: 'JSON',
-                    timeout: 30000, //超时时间：30秒
-                    data: formData,
-                    error: function () {
-                        $button.enable();
-                        dialog.setClosable(true);
-                        $button.find('.fa-spinner').remove();
-
-                        //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
-                        showNotify(-1,'修改任务错误',1,'warning',0);
-                    },
-                    success: function (data) {
-                        $button.enable();
-                        dialog.setClosable(true);
-                        $button.find('.fa-spinner').remove();
-                        if(data.code==0)
-                        {
-                            $('.dialog_notify').remove();
-                            dialog.close();
-                            $('.filter-submit').click();
-                        }
-                        showNotify(data.code,data.msg,1,data.msg_type,0);
-                    }
-                });
-            }
-        },
-        {
-            label: '取消',
-            action: function(dialog){
-                dialog.close();
-            }
-        }]
-    });
-}
-
-
-//删除任务
-function removetask(taskid)
-{
-    BootstrapDialog.confirm('请确认','确定删除此任务?', function(result){
+    BootstrapDialog.confirm('请确认','确定删除此用户?', function(result){
         if(result) {
             $.ajax({
-                url: 'removetask',
+                url: 'removeuser',
                 type: 'POST',
                 dataType: 'JSON',
                 timeout: 30000, //超时时间：30秒
-                data: {taskid:taskid},
+                data: {userid:userid},
                 error: function () {
                     //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
-                    showNotify(-1,'删除任务错误',1,'warning',0);
+                    showNotify(-1,'删除用户错误',1,'warning',0);
                 },
                 success: function (data) {
                     if(data.code==0)
@@ -773,53 +638,22 @@ function removetask(taskid)
 
 }
 
-function addtaskimg(taskid)
-{
-    BootstrapDialog.show({
-        title:'添加图片',
-        modalDialogClass:'modal-dialog-lg',
-        message: function(dialog) {
-            var $message = $('<div></div>');
-            var taskToLoad = dialog.getData('url');
-            $message.load(taskToLoad);
-            return $message;
-        },
-        closable: false,
-        draggable: true,
-        data: {
-            'url': 'addtaskimg?taskid='+taskid
-        },
-        buttons: [{
-            id: 'btn-1',
-            label: '关闭',
-            cssClass: 'btn-primary',
-            action: function(dialog) {
 
-                dialog.close();
-                $('.filter-submit').click();
-                //$('#content-list').html(data.html);
-
-            }
-        }]
-    });
-}
-
-
-function viewtask(taskid)
+function viewuserbase(userid)
 {
     BootstrapDialog.show({
         title:'查看',
         modalDialogClass:'modal-dialog-lg',
         message: function(dialog) {
             var $message = $('<div></div>');
-            var taskToLoad = dialog.getData('url');
-            $message.load(taskToLoad);
+            var userToLoad = dialog.getData('url');
+            $message.load(userToLoad);
             return $message;
         },
         closable: true,
         draggable: true,
         data: {
-            'url': ''+'viewtask?taskid='+taskid
+            'url': ''+'viewuserbase?userid='+userid
         },
         buttons: [
         {

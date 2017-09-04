@@ -17,7 +17,8 @@
             <li class="sidebar-search-wrapper" style="height:10px;">
 
             </li>
-            {volist name="menumodulegrouplist" id="onemodulegroup" key="mgkey"}
+            {foreach name="menumodulegrouplist" item="onemodulegroup" key="mgkey"}
+
             <li
                 {eq name="mgkey" value="$curmodulegroupid"}class="active open"{/eq}
                 >
@@ -51,7 +52,7 @@
                 {/gt}
             </li>
 
-            {/volist}
+            {/foreach}
 
         </ul>
     <!-- END SIDEBAR MENU -->

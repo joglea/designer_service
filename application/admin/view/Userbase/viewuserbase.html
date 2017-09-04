@@ -1,0 +1,99 @@
+<div class="dialog_notify"></div>
+
+<form id="editroleform" role="form" class="form-horizontal" method="post">
+    <div class="form-body">
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="userid">用户id</label>
+            <div class="col-md-3">
+                <input type="type" autofocus="" required="" placeholder="用户id"
+                       value="{$userbase.userid}"
+                       name="userid" id="userid" class="form-control">
+            </div>
+            <div class="col-md-1"></div>
+            <label class="col-md-2 control-label" for="tel">手机号</label>
+            <div class="col-md-3">
+                <input type="type" autofocus="" required="" placeholder="用户id"
+                       value="{$userbase.tel}"
+                       name="tel" id="tel" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="nickname">用户昵称</label>
+            <div class="col-md-3">
+                <input type="type" autofocus="" required="" placeholder=""
+                       value="{$userinfo.nickname}"
+                       name="nickname" id="nickname" class="form-control">
+            </div>
+            <div class="col-md-1"></div>
+            <label class="col-md-2 control-label" for="birthday">生日</label>
+            <div class="col-md-3">
+                <input type="type" autofocus="" required="" placeholder="生日"
+                       value="{$userinfo.birthday}"
+                       name="birthday" id="birthday" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="nickname">头像</label>
+            <div class="col-md-3">
+                <img src="{$userinfo.avatar}"
+                        />
+            </div>
+            <div class="col-md-1"></div>
+            <label class="col-md-2 control-label" for="personlink">个人链接</label>
+            <div class="col-md-3">
+                <input type="type" autofocus="" required="" placeholder="个人链接"
+                       value="{$userinfo.personlink}"
+                       name="personlink" id="personlink" class="form-control">
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="nickname">性别</label>
+            <div class="col-md-3">
+                <select name="sex" id="sex" class="form-control form-filter input-sm" >
+                    <option {eq name="userinfo.sex" value="0"  }selected="selected"{/eq}
+                    value="0">未知</option>
+                    <option {eq name="userinfo.sex" value="1"  }selected="selected"{/eq}
+                    value="1">男</option>
+                    <option {eq name="userinfo.sex" value="2"  }selected="selected"{/eq}
+                    value="2">女</option>
+                </select>
+            </div>
+            <div class="col-md-1"></div>
+            <label class="col-md-2 control-label" for="personlink">认证状态</label>
+            <div class="col-md-3">
+                <select name="verify_state" id="verify_state" class="form-control form-filter input-sm" >
+                    <option {eq name="userinfo.verify_state" value="0"  }selected="selected"{/eq}
+                    value="0">未认证</option>
+                    <option {eq name="userinfo.verify_state" value="1"  }selected="selected"{/eq}
+                    value="1">商家</option>
+                    <option {eq name="userinfo.verify_state" value="2"  }selected="selected"{/eq}
+                    value="2">设计师</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="brief">简介</label>
+            <div class="col-md-9">
+                <input type="type" autofocus="" required="" placeholder="简介"
+                       value="{$userinfo.brief}"
+                       name="brief" id="brief" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label" for="status">用户状态</label>
+            <div class="col-md-9">
+                <select name="status" id="status" class="form-control form-filter input-sm" >
+                    <option {eq name="userinfo.status" value="1"  }selected="selected"{/eq}
+                    value="1">正常</option>
+                    <option {eq name="userinfo.status" value="2"  }selected="selected"{/eq}
+                    value="2">禁用</option>
+                </select>
+            </div>
+        </div>
+
+
+    </div>
+</form>
