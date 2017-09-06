@@ -215,17 +215,19 @@ class Front extends Base {
             "tel"               => $userBase['tel'],
             'jointime'          => $userBase['createtime'],
             "token"             => $lastLoginToken,
+            "brief"      => $userInfo['brief'],
             "nickname"          => $userInfo['nickname'],
             "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$userInfo['avatar']),
             //""               => $userInfo['sex'],
             "sex"               => $userInfo['sex'],
             "birthday"          => $userInfo['birthday'],
             "city"              => $city,
-            "personlink"      => $userInfo['personlink'],
-            "brief"      => $userInfo['brief'],
             "verify_state"      => $userInfo['verify_state'],
             "verifyid"          => $userInfo['verifyid'],
+            "personlink"      => $userInfo['personlink'],
             "status"          => $userInfo['status'],
+
+
 
         );
 

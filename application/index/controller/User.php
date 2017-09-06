@@ -372,5 +372,4 @@ class User extends Front
     }
 
 
-
 }

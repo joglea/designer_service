@@ -1,0 +1,20 @@
+time:20170809150107---begin send channel notice
+time:20170809150107---total:2--success:0--fail:2
+time:20170809150107-----successinfo:[]--failinfo:[{"id":"o3NdJwswfZBJZ8W_uWdXY97zSmL4","info":"{\"errcode\":40001,\"errmsg\":\"invalid credential, access_token is invalid or not latest hint: [eEDdAa0067vr48!]\"}"},{"id":"o3NdJwu6b8Nynm2ZCuGgrgDqnSCk","info":"{\"errcode\":40001,\"errmsg\":\"invalid credential, access_token is invalid or not latest hint: [wHiTDa0067vr62!]\"}"}]
+time:20170809150107---end send channel notice
+time:20170809150209---begin send channel notice
+time:20170809150209---total:2--success:0--fail:2
+time:20170809150209-----successinfo:[]--failinfo:[{"id":"o3NdJwswfZBJZ8W_uWdXY97zSmL4","info":"{\"errcode\":40001,\"errmsg\":\"invalid credential, access_token is invalid or not latest hint: [DmqcXa0129vr49!]\"}"},{"id":"o3NdJwu6b8Nynm2ZCuGgrgDqnSCk","info":"{\"errcode\":40001,\"errmsg\":\"invalid credential, access_token is invalid or not latest hint: [MOda3a0129vr63!]\"}"}]
+time:20170809150209---end send channel notice
+time:20170809150547---begin send channel notice
+time:20170809150548---total:2--success:1--fail:1
+time:20170809150548-----successinfo:[{"id":"o3NdJwu6b8Nynm2ZCuGgrgDqnSCk","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454419464}"}]--failinfo:[{"id":"o3NdJwswfZBJZ8W_uWdXY97zSmL4","info":"{\"errcode\":40001,\"errmsg\":\"invalid credential, access_token is invalid or not latest hint: [Tbvuya0347vr46!]\"}"}]
+time:20170809150548---end send channel notice
+time:20170809150703---begin send channel notice
+time:20170809150703---total:2--success:2--fail:0
+time:20170809150703-----successinfo:[{"id":"o3NdJwswfZBJZ8W_uWdXY97zSmL4","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454419496}"},{"id":"o3NdJwu6b8Nynm2ZCuGgrgDqnSCk","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454419497}"}]--failinfo:[]
+time:20170809150703---end send channel notice
+time:20170809150723---begin send channel notice
+time:20170809150723---total:2--success:2--fail:0
+time:20170809150723-----successinfo:[{"id":"o3NdJwswfZBJZ8W_uWdXY97zSmL4","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454419499}"},{"id":"o3NdJwu6b8Nynm2ZCuGgrgDqnSCk","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454419500}"}]--failinfo:[]
+time:20170809150723---end send channel notice

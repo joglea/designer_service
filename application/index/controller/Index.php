@@ -14,6 +14,172 @@ use anerg\helper\Exception;
 class Index extends Front
 {
 
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    微信登录接口
+     * @url     /index/wxLogin
+     * @method  POST
+     * @version 1000
+     * @params  openid 'xxx' STRING 微信openid NO
+     * @params  nickname 'xxx' STRING 昵称 NO
+     * @params  gender 2 INT 0未知性别1男2女 NO
+     * @params  city 'xxx' STRING 城市 NO
+     * @params  avatar 'xxx' STRING 头像地址 NO
+     * @params  unionid 'xxx' STRING 微信unionid NO
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function wxLogin(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+
+
+        $openid = input('request.openid','');
+        $nickname = input('request.nickname','');
+        $gender = input('request.gender','');
+        $city = input('request.city','');
+        $avatar = input('request.avatar','');
+        $unionid = input('request.unionid','');
+
+        $cityinfo = model('city')->where(['name'=>$city])->find();
+
+
+        //验证参数是否为空
+        if($openid==''||$nickname==''||$gender<0||
+            $avatar==''||$unionid==''){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+
+        try{
+
+            //判断openid是否存在
+            $userThird = model('userthird')
+                ->where(['channel'=>3,'openid'=>$openid,'delflag'=>0])->find();
+            if ($userThird) {
+
+                $userBase = model('userbase')
+                    ->where(['userid'=>$userThird['userid']])->find();
+                //var_dump($userBase);exit;
+                $this->doLogin($userBase,'');
+
+            }
+            else{
+                $pass='123456';
+                $tel ='';
+                //创建userbase
+                $newUserBase = array();
+                $newUserBase['country_code'] = 0;
+                $newUserBase['tel'] = '';
+                $newUserBase['salt'] = rand_string(6);
+                $newUserBase['pass'] = model('userbase')->setPass($pass,$newUserBase['salt']);
+                $newUserBase['token'] = model('userbase')->setToken($tel,$newUserBase['pass']);
+                $newUserBase['confinedtime'] = 0;
+                $newUserBase['createtime'] = $this->curTime;
+                $newUserBase['updatetime'] = $this->curTime;
+                $userId = model('userbase')->insertGetId($newUserBase);
+
+                if(!$userId){
+                    $this->returndata(14012, 'register fail', $this->curTime, $data);
+                }
+                //创建userinfo
+                $newUserInfo['userid'] = $userId;
+                $newUserInfo['avatar'] = $avatar;
+                $newUserInfo['nickname'] = $nickname;
+                $newUserInfo['email'] = '';
+                $newUserInfo['sex'] = $gender;
+                $newUserInfo['birthday'] = '';
+                $newUserInfo['cityid'] = $cityinfo?$cityinfo['cityid']:0;
+                $newUserInfo['personlink'] = '';
+                $newUserInfo['brief'] = '';
+                $newUserInfo['verify_state'] = 0;
+                $newUserInfo['verify_id'] = 0;
+                $newUserInfo['status'] = 1;
+                $newUserInfo['createtime'] = $this->curTime;
+                $newUserInfo['updatetime'] = $this->curTime;
+                model('userinfo')->insert($newUserInfo);
+
+
+                //创建userlogin
+                $userLoginSalt = rand_string(6);
+                $lastLoginToken = model('userlogin')->setLastLoginToken($newUserBase['token'],$userId,
+                    $this->curTime,$this->dsVersion,$userLoginSalt);
+                $newUserLogin['userid'] = $userId;
+                $newUserLogin['last_login_time'] = $this->curTime;
+                $newUserLogin['last_login_version'] = $this->dsVersion;
+                $newUserLogin['last_login_device_id'] = 0;
+                $newUserLogin['salt'] = $userLoginSalt;
+                $newUserLogin['last_login_token'] = $lastLoginToken;
+                $newUserLogin['last_login_ip'] = get_client_ip();
+                $newUserLogin['last_login_lat'] = input('lat');
+                $newUserLogin['last_login_lon'] = input('lon');
+                $newUserLogin['delflag'] = 0;
+                model('userlogin')->insert($newUserLogin);
+
+                //创建userdata
+                $newUserData['userid'] = $userId;
+                $newUserData['createtime'] = $this->curTime;
+                $newUserData['updatetime'] = $this->curTime;
+                model('userdata')->insert($newUserData);
+
+                //创建userthird
+                $newUserThird['userid'] = $userId;
+                $newUserThird['channel'] = 3;
+                $newUserThird['openid'] = $openid;
+                $newUserThird['unionid'] = $unionid;
+                $newUserThird['nickname'] = $nickname;
+                $newUserThird['gender'] = $gender;
+                $newUserThird['userid'] = $userId;
+                $newUserThird['createtime'] = $this->curTime;
+                $newUserThird['updatetime'] = $this->curTime;
+                model('userthird')->insert($newUserThird);
+
+
+                $allControl = $this->getAllControl();
+                //生成返回结果
+                $this->curUserInfo = array(
+                    "userid"            => $userId,
+                    "country_code"      => $newUserBase['country_code'],
+                    "tel"               => $newUserBase['tel'],
+                    'jointime'          => date('Y-m-d H:i:s',$this->curTime),
+                    "token"             => $lastLoginToken,
+                    //"login_lat"         => $newUserLogin['last_login_lat'],
+                    //"login_lon"         => $newUserLogin['last_login_lon'],
+                    "brief"             => $newUserInfo['brief'],
+                    "nickname"          => $newUserInfo['nickname'],
+                    "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$newUserInfo['avatar']),
+                    "sex"               => $newUserInfo['sex'],
+                    "birthday"     => $newUserInfo['birthday'],
+                    "city"              => $newUserInfo['cityid'],
+                    "verify_state"      => $newUserInfo['verify_state'],
+                    "verifyid"          => $newUserInfo['verifyid'],
+                    "personlink"      => $newUserInfo['personlink'],
+                    "status"          => $newUserInfo['status'],
+                );
+
+                $this->dsToken = $lastLoginToken;
+
+                cache($this->dsToken,$this->curUserInfo,["expire"=>config('login_cache_expire')]);
+                //方便docsdebug调试 保存本地登录信息到session
+                if(config('ENV_VALUE')==1){
+                    session('logintoken',$this->dsToken);
+                }
+            }
+            $data = array();
+            $data['User'] = $this->curUserInfo;
+            $this->returndata(10000, 'login success', $this->curTime, $data);
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, []);
+        }
+    }
+
+
+
     /**
      * ---------------------------------------------------------------------------------------------
      * @desc    打开app需要获取的配置信息接口

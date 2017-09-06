@@ -2,6 +2,9 @@
 namespace app\index\controller;
 
 use app\common\controller\Front;
+
+require_once APP_PATH . "/../extend/wxpay/lib/WxPay.Api.php";
+require_once APP_PATH . "/../extend/wxpay/example/WxPay.JsApiPay.php";
 /**
  * Class Task
  *
@@ -728,7 +731,7 @@ class Task extends Front
             $this->returndata(14001, 'params error', $this->curTime, $data);
         }
 
-        Db::startTrans();
+        model('task')->startTrans();
         try{
 
             $task = model('task')
@@ -739,7 +742,8 @@ class Task extends Front
                 $this->returndata( 14002, 'task not exist', $this->curTime, $data);
             }
             $signupList = model('tasksignup')->where(
-                ['signupid'=>['in',$signupIdsArr],'suit_state'=>1,'delflag'=>0]);
+                ['taskid'=>$taskId,'signupid'=>['in',$signupIdsArr],
+                 'suit_state'=>1,'delflag'=>0]);
             if(!$signupList){
                 $this->returndata( 14003, 'signup not exist or state error', $this->curTime, $data);
             }
@@ -748,13 +752,6 @@ class Task extends Front
             if(!$wallet){
                 $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
             }
-            $price = bcmul($task['price'],config('desposit_rate'),2);
-            $balance = $wallet['now_money']-$price;
-            if($balance<0){
-                $this->returndata( 14003, 'wallet balance insufficient ', $this->curTime, $data);
-            }
-
-
             $order = [
                 'userid'=>$this->curUserInfo['userid'],
                 'taskid'=>$taskId,
@@ -767,6 +764,47 @@ class Task extends Front
             ];
             //创建订单
             $orderid = model('order')->insertGetId($order);
+
+
+            $price = bcmul($task['price'],config('desposit_rate'),2);
+            $balance = $wallet['now_money']-$price;
+            $balance=-1;
+            if($balance<0){
+                model('task')->commit();
+                $data['order_id']=$orderid;
+
+                //①、获取用户openid
+                $tools = new \JsApiPay();
+                // $openId = $tools->GetOpenid();
+                $openId = model('userthird')->where(['userid'=>$this->curUserInfo['userid'],'delflag'=>0])
+                    ->value('openid');
+                //var_dump($openId);exit;
+                //②、统一下单
+                $input = new \WxPayUnifiedOrder();
+                $input->SetBody($task['title']);
+                $input->SetAttach($task['title']);
+                $input->SetOut_trade_no($orderid);
+                $input->SetTotal_fee($price*100);
+                $input->SetTime_start(date("YmdHis"));
+                $input->SetTime_expire(date("YmdHis", time() + 600));
+                $input->SetGoods_tag($task['title']);
+                $input->SetNotify_url("http://".config('server_host')."/task/taskWxNotify");
+                $input->SetTrade_type("JSAPI");
+                $input->SetProduct_id("123456789");
+                $input->SetOpenid($openId);
+                //var_dump(33,$input->GetValues());
+                //$log->INFO(json_encode($input->GetValues()));
+
+                $order = \WxPayApi::unifiedOrder($input);
+                var_dump($order);exit;
+                $jsApiParameters = $tools->GetJsApiParameters($order);
+
+
+
+
+
+                $this->returndata( 10001, 'wallet balance insufficient ', $this->curTime, $data);
+            }
 
             foreach($signupList as $oneSignup){
                 //订单详情
@@ -808,11 +846,11 @@ class Task extends Front
 
                 ]
             );
-            Db::commit();
+            model('task')->commit();
             $this->returndata(10000, 'do success', $this->curTime, $data);
         }catch (Exception $e){
             // 回滚事务
-            Db::rollback();
+            model('task')->rollback();
             $this->returndata(11000, 'server error', $this->curTime, $data);
         }
     }
@@ -929,4 +967,42 @@ class Task extends Front
         }
     }
 
+
+    public function taskWxNotify(){
+        //初始化日志
+        $file = getcwd().'/logs/'.date('Y-m-d',time()).'.txt';
+        // $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+        $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+        file_put_contents($file,$xml,FILE_APPEND);
+        $obj = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
+        $data = json_decode(json_encode($obj), true);
+        $return_data=array();
+        if($data['return_code']!='SUCCESS'){
+            $return_data = array('return_code' => 'FAIL','return_msg'=>'' );
+
+        }else{
+
+            $order = model('order')->where(array('orderid'=>$data['out_trade_no']))->find();
+
+            if($order ){
+
+                $res = model('order')->where(array('orderid'=>$data['out_trade_no']))
+                ->update(['state'=>2,'updatetime'=>$this->curTime]);
+            }
+            $return_data = array('return_code' => 'SUCCESS','return_msg'=>'OK' );
+        }
+
+        $xml = "";
+        foreach ($return_data as $key=>$val){
+            if (is_numeric($val)){
+                $xml.="<".$key.">".$val."</".$key.">";
+            }else{
+                $xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+            }
+        }
+        $xml="<xml>".$xml."</xml>";
+        //var_dump($xml);exit;
+        echo $xml;
+        die;
+    }
 }

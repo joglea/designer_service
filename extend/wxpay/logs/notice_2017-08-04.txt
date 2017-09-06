@@ -1,0 +1,111 @@
+<xml>
+           <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+           <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+           <CreateTime>1395658920</CreateTime>
+           <MsgType><![CDATA[event]]></MsgType>
+           <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+           <MsgID>200163836</MsgID>
+           <Status><![CDATA[success]]></Status>
+           </xml>time:20170804134126---begin notify 
+time:20170804134126---xml:<xml>
+           <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+           <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+           <CreateTime>1395658920</CreateTime>
+           <MsgType><![CDATA[event]]></MsgType>
+           <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+           <MsgID>200163836</MsgID>
+           <Status><![CDATA[success]]></Status>
+           </xml>
+time:20170804134201---begin notify 
+time:20170804134201---xml:<xml>
+           <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+           <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+           <CreateTime>1395658920</CreateTime>
+           <MsgType><![CDATA[event]]></MsgType>
+           <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+           <MsgID>200163836</MsgID>
+           <Status><![CDATA[success]]></Status>
+           </xml>
+time:20170804134207---begin notify 
+time:20170804134207---xml:<xml>
+           <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+           <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+           <CreateTime>1395658920</CreateTime>
+           <MsgType><![CDATA[event]]></MsgType>
+           <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+           <MsgID>200163836</MsgID>
+           <Status><![CDATA[success]]></Status>
+           </xml>
+time:20170804134332---begin notify 
+time:20170804134332---xml:<xml>
+           <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+           <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+           <CreateTime>1395658920</CreateTime>
+           <MsgType><![CDATA[event]]></MsgType>
+           <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+           <MsgID>200163836</MsgID>
+           <Status><![CDATA[success]]></Status>
+           </xml>
+time:20170804134332--- notify success 
+time:20170804134332---end notify 
+time:20170804134426---begin notify 
+time:20170804134426---xml:<xml>
+           <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+           <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+           <CreateTime>1395658920</CreateTime>
+           <MsgType><![CDATA[event]]></MsgType>
+           <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+           <MsgID>200163836</MsgID>
+           <Status><![CDATA[success]]></Status>
+           </xml>
+time:20170804134426--- notify success 
+time:20170804134426---end notify 
+time:20170804134532---begin notify 
+time:20170804134532---xml:<xml>
+           <ToUserName><![CDATA[gh_7f083739789a]]></ToUserName>
+           <FromUserName><![CDATA[oia2TjuEGTNoeX76QEjQNrcURxG8]]></FromUserName>
+           <CreateTime>1395658920</CreateTime>
+           <MsgType><![CDATA[event]]></MsgType>
+           <Event><![CDATA[TEMPLATESENDJOBFINISH]]></Event>
+           <MsgID>200163836</MsgID>
+           <Status><![CDATA[success]]></Status>
+           </xml>
+time:20170804134533--- notify success 
+time:20170804134533---end notify 
+time:20170804134815---begin send notice
+time:20170804134936---begin send notice
+time:20170804135109---begin send notice
+time:20170804144350---begin send notice
+time:20170804144414---begin send notice
+time:20170804144440---begin send notice
+time:20170804144453---begin send notice
+time:20170804144509---begin send notice
+time:20170804144549---begin send notice
+time:20170804144634---begin send notice
+time:20170804144716---begin send notice
+time:20170804145131---begin send notice
+time:20170804145146---begin send notice
+time:20170804145213---begin send notice
+time:20170804145221---begin send notice
+time:20170804145355---begin send notice
+time:20170804145457---begin send notice
+time:20170804145522---begin send notice
+time:20170804145556---begin send notice
+time:20170804150435---begin send notice
+time:20170804151101---begin send notice
+time:20170804151739---begin send notice
+time:20170804151816---begin send notice
+time:20170804152204---begin send notice
+time:20170804152250---begin send notice
+time:20170804152343---begin send notice
+time:20170804152524---begin send notice
+time:20170804153145---begin send notice
+time:20170804153220---begin send notice
+time:20170804153240---begin send notice
+time:20170804153439---begin send notice
+time:20170804153450---begin send notice
+time:20170804153451---notice_id:1--send params:{"touser":"o3NdJwswfZBJZ8W_uWdXY97zSmL4","template_id":"aO2eQTrZXh6p0AsVL4uc2I8rfe1mMORD6l5RiZUkzfY","url":"http:\/\/m.liangyin.tv\/studycard\/add_study_card.html?package_id=1&activity_id=1","data":{"first":{"value":"\u606d\u559c\u4f60\uff0c\u8d2d\u4e70\u6210\u529f","color":"#173177"},"keyword1":{"value":"\u5510\u4fca\u4e54\u5957\u9910\u4e00","color":"#173177"},"keyword2":{"value":"KKKK","color":"#173177"},"remark":{"value":"\u5927\u5927\u5927","color":"#173177"}}}--result:{"errcode":0,"errmsg":"ok","msgid":454290247}
+time:20170804153451---end send notice
+time:20170804154940---begin send notice
+time:20170804154941---notice_id:1--send params:{"touser":"o3NdJwswfZBJZ8W_uWdXY97zSmL4","template_id":"aO2eQTrZXh6p0AsVL4uc2I8rfe1mMORD6l5RiZUkzfY","url":"http:\/\/m.liangyin.tv\/studycard\/add_study_card.html?package_id=1&activity_id=1","data":{"first":{"value":"\u606d\u559c\u4f60\uff0c\u8d2d\u4e70\u6210\u529f","color":"#173177"},"keyword1":{"value":"\u5510\u4fca\u4e54\u5957\u9910\u4e00","color":"#173177"},"keyword2":{"value":"KKKK","color":"#173177"},"remark":{"value":"\u5927\\n\u5927\n\u5927","color":"#173177"}}}--result:{"errcode":0,"errmsg":"ok","msgid":454290513}
+time:20170804154941---end send notice

@@ -1,0 +1,13 @@
+time:20170808183302---begin send channel notice
+time:20170808183348---begin send channel notice
+time:20170808183534---begin send channel notice
+time:20170808183631---begin send channel notice
+time:20170808183806---begin send channel notice
+time:20170808184125---begin send channel notice
+time:20170808184311---begin send channel notice
+time:20170808184318---total:2--success:2--fail:0
+time:20170808184318---successinfo:[{"id":"100","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454356368}"},{"id":"1623","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454356369}"}]--failinfo:[]
+time:20170808184318---end send channel notice
+time:20170808184627---total:2--success:1--fail:1
+time:20170808184627---successinfo:[{"id":"100","info":"{\"errcode\":0,\"errmsg\":\"ok\",\"msgid\":454356358}"}]--failinfo:[{"id":"1623","info":"null"}]
+time:20170808184627---end send channel notice

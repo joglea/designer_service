@@ -1,0 +1,73 @@
+<div class="toolbar-title clearfix" style="margin-bottom:10px;">
+	<span>订单id:{$orderid}</span>
+	<span class="pull-right">{$pageHeaderRightButton}</span>
+</div>
+<div class="dialog_notify"></div>
+<div class="box-content bordered">
+
+	    <table class="table table-striped table-bordered  table-condensed table-hover">
+	        <thead>
+	            <tr>
+				  	<th height="40">订单id</th>
+				  	<th>报名id</th>
+				  	<th width="60" class="text-center">用户id</th>
+                    <th width="60" class="text-center">描述</th>
+                    <th width="60" class="text-center">图片</th>
+                    <th width="60" class="text-center">状态</th>
+				  	<th width="60" class="text-center">支付时间</th>
+				  	<th width="120" class="text-center">操作</th>
+		  		</tr>
+	        </thead>
+	        <tbody>
+
+                {foreach name="signuplist" item="onesignup" key="skey" }
+			  	<tr >
+				    <td height="40">{$onesignup.orderid}</td>
+				    <td>{$onesignup.signupid}</td>
+				    <td class="text-center">{$onesignup.userid}</td>
+				  	<td class="text-center">{$onesignup.desc}</td>
+                    <td class="text-center">
+                        {php}
+                        $pics = json_decode($onesignup['pics']);
+                        foreach($pics as $onepic){
+                            echo '<img style="max-width:100px;" src="'.$allControl['task_image_url'].$onepic.
+                            '" />';
+                        }
+                        {/php}
+                    </td>
+                    <td class="text-center">
+                        {php}
+                        if($onesignup['suit_state']==1){
+                        echo "初稿未选中";
+                        }
+                        elseif($onesignup['suit_state']==2){
+                        echo "初稿被选中";
+                        }
+                        elseif($onesignup['suit_state']==3){
+                        echo "最终选中";
+                        }
+                        else{
+                        echo "最终未选中";
+                        }
+
+                        {/php}
+                    </td>
+                    <td class="text-center">
+                        {php}
+                        echo date('Y-m-d H:i:s',$onesignup['paytime']);
+                        {/php}</td>
+				    <td class="text-center">
+
+					</td>
+			  	</tr>
+			  	{/foreach}
+			  	
+	        </tbody>
+	    </table>
+
+</div>
+
+<script>
+
+</script>
+
