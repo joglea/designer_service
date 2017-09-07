@@ -766,7 +766,7 @@ class Task extends Front
             $orderid = model('order')->insertGetId($order);
 
 
-            $price = bcmul($task['price'],config('desposit_rate'),2);
+            $price = round($task['price']*config('desposit_rate'),2);
             $balance = $wallet['now_money']-$price;
             $balance=-1;
             if($balance<0){
@@ -899,7 +899,7 @@ class Task extends Front
             if(!$wallet){
                 $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
             }
-            $price = bcmul($task['price'],config('tail_rate'),2);
+            $price = round($task['price']*config('tail_rate'),2);
             $balance = $wallet['now_money']-$price;
             if($balance<0){
                 $this->returndata( 14003, 'wallet balance insufficient ', $this->curTime, $data);
