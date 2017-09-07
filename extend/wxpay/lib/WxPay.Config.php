@@ -23,13 +23,13 @@ class WxPayConfig
 	 * @var string
 	 */
     /* prodution start */
-	const APPID = 'wxb8c9adcf75c48f5e';
-	const MCHID = '1440744302';
-	const KEY = 'rnQs7luU7Hl2n5ritN69uktYHrzZBbIe';
-	const APPSECRET = 'f4ca6f0710496dc287e10a1ea5382345';
-	const SSLCERT_PATH = '../cert/apiclient_cert.pem';
-	const SSLKEY_PATH = '../cert/apiclient_key.pem';
-	const PCAPPID = 'wx45f12436fcdf65fa';
+	const APPID = 'wxbd77e14b472ac019';
+	const MCHID = '1488744072';
+	//const KEY = 'rnQs7luU7Hl2n5ritN69uktYHrzZBbIe';
+	//const APPSECRET = 'f4ca6f0710496dc287e10a1ea5382345';
+	//const SSLCERT_PATH = '../cert/apiclient_cert.pem';
+	//const SSLKEY_PATH = '../cert/apiclient_key.pem';
+	//const PCAPPID = 'wx45f12436fcdf65fa';
     /* prodution end */
     
     /* development start */

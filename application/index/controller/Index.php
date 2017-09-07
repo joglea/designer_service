@@ -97,7 +97,7 @@ class Index extends Front
                 $newUserInfo['personlink'] = '';
                 $newUserInfo['brief'] = '';
                 $newUserInfo['verify_state'] = 0;
-                $newUserInfo['verify_id'] = 0;
+                $newUserInfo['verifyid'] = 0;
                 $newUserInfo['status'] = 1;
                 $newUserInfo['createtime'] = $this->curTime;
                 $newUserInfo['updatetime'] = $this->curTime;
