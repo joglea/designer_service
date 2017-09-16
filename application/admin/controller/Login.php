@@ -179,7 +179,7 @@ class Login extends Base
         }
 
         $this->assign($data);
-        return $this->fetch('Login/index');
+        return $this->fetch();
     }
 
     /**
