@@ -796,12 +796,20 @@ class Task extends Front
                 //$log->INFO(json_encode($input->GetValues()));
 
                 $order = \WxPayApi::unifiedOrder($input);
-                var_dump($order);exit;
+
+                if($order['return_code']=='SUCCESS'&&$order['result_code']=='SUCCESS'){
+                    $prepay_id = $order['prepay_id'];
+                    $data['prepay_id'] = $prepay_id;
+                    $this->returndata( 10000, 'wallet balance insufficient ', $this->curTime, $data);
+
+                }
+                else{
+                    $this->returndata( 14001, $order['return_msg'], $this->curTime, $data);
+
+                }
                 $jsApiParameters = $tools->GetJsApiParameters($order);
 
-
-
-
+                //if($jsApiParameters['return_code']=='SUCCESS')
 
                 $this->returndata( 10001, 'wallet balance insufficient ', $this->curTime, $data);
             }
@@ -899,12 +907,6 @@ class Task extends Front
             if(!$wallet){
                 $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
             }
-            $price = round($task['price']*config('tail_rate'),2);
-            $balance = $wallet['now_money']-$price;
-            if($balance<0){
-                $this->returndata( 14003, 'wallet balance insufficient ', $this->curTime, $data);
-            }
-
             $order = [
                 'userid'=>$this->curUserInfo['userid'],
                 'taskid'=>$taskId,
@@ -917,6 +919,55 @@ class Task extends Front
             ];
             //创建订单
             $orderid = model('order')->insertGetId($order);
+
+            $price = round($task['price']*config('tail_rate'),2);
+            $balance = $wallet['now_money']-$price;
+
+            if($balance<0){
+                model('task')->commit();
+                $data['order_id']=$orderid;
+
+                //①、获取用户openid
+                $tools = new \JsApiPay();
+                // $openId = $tools->GetOpenid();
+                $openId = model('userthird')->where(['userid'=>$this->curUserInfo['userid'],'delflag'=>0])
+                    ->value('openid');
+                //var_dump($openId);exit;
+                //②、统一下单
+                $input = new \WxPayUnifiedOrder();
+                $input->SetBody($task['title']);
+                $input->SetAttach($task['title']);
+                $input->SetOut_trade_no($orderid);
+                $input->SetTotal_fee($price*100);
+                $input->SetTime_start(date("YmdHis"));
+                $input->SetTime_expire(date("YmdHis", time() + 600));
+                $input->SetGoods_tag($task['title']);
+                $input->SetNotify_url("http://".config('server_host')."/task/taskWxNotify");
+                $input->SetTrade_type("JSAPI");
+                $input->SetProduct_id("123456789");
+                $input->SetOpenid($openId);
+                //var_dump(33,$input->GetValues());
+                //$log->INFO(json_encode($input->GetValues()));
+
+                $order = \WxPayApi::unifiedOrder($input);
+
+                if($order['return_code']=='SUCCESS'&&$order['result_code']=='SUCCESS'){
+                    $prepay_id = $order['prepay_id'];
+                    $data['prepay_id'] = $prepay_id;
+                    $this->returndata( 10000, 'wallet balance insufficient ', $this->curTime, $data);
+
+                }
+                else{
+                    $this->returndata( 14001, $order['return_msg'], $this->curTime, $data);
+
+                }
+                $jsApiParameters = $tools->GetJsApiParameters($order);
+
+                //if($jsApiParameters['return_code']=='SUCCESS')
+
+                $this->returndata( 10001, 'wallet balance insufficient ', $this->curTime, $data);
+            }
+
 
             foreach($signupList as $oneSignup){
                 //订单详情
@@ -985,7 +1036,6 @@ class Task extends Front
             $order = model('order')->where(array('orderid'=>$data['out_trade_no']))->find();
 
             if($order ){
-
                 $res = model('order')->where(array('orderid'=>$data['out_trade_no']))
                 ->update(['state'=>2,'updatetime'=>$this->curTime]);
             }

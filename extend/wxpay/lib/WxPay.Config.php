@@ -26,7 +26,7 @@ class WxPayConfig
 	const APPID = 'wxbd77e14b472ac019';
 	const MCHID = '1488744072';
 	//const KEY = 'rnQs7luU7Hl2n5ritN69uktYHrzZBbIe';
-	//const APPSECRET = 'f4ca6f0710496dc287e10a1ea5382345';
+	const APPSECRET = '24669ec6a5322518f9d0c03c6e87b3e0';
 	//const SSLCERT_PATH = '../cert/apiclient_cert.pem';
 	//const SSLKEY_PATH = '../cert/apiclient_key.pem';
 	//const PCAPPID = 'wx45f12436fcdf65fa';

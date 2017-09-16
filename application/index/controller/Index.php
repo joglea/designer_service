@@ -5,6 +5,9 @@ use app\common\controller\Front;
 use app\common\controller\Message;
 use anerg\OAuth2\OAuth;
 use anerg\helper\Exception;
+
+require_once APP_PATH . "/../extend/wxpay/lib/WxPay.Config.php";
+
 /**
  * Class Index
  *
@@ -13,7 +16,38 @@ use anerg\helper\Exception;
  */
 class Index extends Front
 {
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    微信登录接口
+     * @url     /index/wxLogin
+     * @method  POST
+     * @version 1000
+     * @params  code 'xxx' STRING 微信登录成功返回code NO
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function wxLogin(){
+        $data=[];
+        $code = input('request.code','');
+        if($code==''){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+        $get_session_url = 'https://api.weixin.qq.com/sns/jscode2session'.
+        '?appid='.\WxPayConfig::APPID.'&secret='.\WxPayConfig::APPSECRET.'&js_code='.
+            $code.'&grant_type=authorization_code';
+        $curlService = new \common\CurlService();
+        $get_session_info = $curlService->curl($get_session_url,[],'');
+        var_dump($get_session_url,$get_session_info);exit;
 
+        $token_data = $this->get_token($code,self::$appid,self::$secret);
+        $weixindata = $this->get_weixindata($token_data);
+        $nickname = $this->filter($weixindata['nickname']);
+        $weixindata['nickname'] = $nickname;
+        $this->CI->session->set_userdata('access_token',$token_data['access_token']);
+        return $weixindata;
+
+    }
 
     /**
      * ---------------------------------------------------------------------------------------------
@@ -31,7 +65,7 @@ class Index extends Front
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function wxLogin(){
+    public function wxLoginByOpenid(){
         //返回结果
         $data = [];
 
