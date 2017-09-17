@@ -227,7 +227,7 @@ $('#submitbtn').click(function(){
     var dsverify='{$dsverify}';
     formdata=formdata+'';
     $.ajax({
-        url: 'http://{$serverhost}'+methodurl,
+        url: '//{$serverhost}'+methodurl,
         beforeSend: function(request) {
             request.setRequestHeader("ds-token", dstoken);
             request.setRequestHeader("ds-version", dsversion);
