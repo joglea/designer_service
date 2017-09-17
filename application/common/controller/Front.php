@@ -242,16 +242,7 @@ class Front extends Base {
 
     public function doRegister($countryCode,$tel,$pass,$code,$nickName,$avatar){
         $data = [];
-        //验证码发送对象类型  1注册 2找回密码
-        $type = 1;
-        if(!$this->checkCode($code,$type,$tel)){
-            $this->returndata(14010, 'code verify fail', $this->curTime, $data);
-        }
-        //判断手机是否存在
-        $userBase = model('userbase')->where(['country_code'=>$countryCode,'tel'=>$tel])->find();
-        if ($userBase) {
-            $this->returndata(14011, 'tel exist', $this->curTime, $data);
-        }
+
 
         //判断昵称是否存在
         //$userInfo = model('userinfo')->where(['nickname'=>$nickName])->find();
@@ -281,17 +272,16 @@ class Front extends Base {
         $newUserInfo['avatar'] = $avatar;
         $newUserInfo['sex'] = 0;
         $newUserInfo['birthday'] = '';
-        $newUserInfo['measurements'] = '';
-        $newUserInfo['height'] = 0;
-        $newUserInfo['weight'] = 0;
         $newUserInfo['cityid'] = 0;
         $newUserInfo['verify_state'] = 0;
-        $newUserInfo['zhima_code'] = 0;
+        $newUserInfo['verifyid'] = 0;
+        $newUserInfo['personlink'] = '';
+        $newUserInfo['status'] = 1;
         $newUserInfo['createtime'] = $this->curTime;
         $newUserInfo['updatetime'] = $this->curTime;
         model('userinfo')->insert($newUserInfo);
 
-        $city = model('city')->where(['id'=>$newUserInfo['cityid']])->find();
+        $city = model('city')->where(['cityid'=>$newUserInfo['cityid']])->find();
 
         //创建userlogin
         $userLoginSalt = rand_string(6);
@@ -315,54 +305,27 @@ class Front extends Base {
         $newUserData['updatetime'] = $this->curTime;
         model('userdata')->insert($newUserData);
 
-        //创建userfavourbar
-        $favourLimitLength = config('favour_limit_length');
-        $userFavourBar = array(
-            "userid"            =>  $userId,
-            "limit_length"      =>  $favourLimitLength,
-            "remain_length"     =>  $favourLimitLength,
-            "last_restore_time" =>  $this->curTime,
-            'total_count'       =>  0,
-            "createtime"        =>  $this->curTime,
-            "updatetime"        =>  $this->curTime
-        );
-        model('userfavourbar')->insert($userFavourBar);
-
-        //创建userhx
-        $newUserHx['userid'] = $userId;
-        $newUserHx['hx_id'] = model('userhx')->setHxId($userId);
-        $newUserHx['hx_pass'] = model('userhx')->setHxPass($newUserBase['token']);
-        model('userhx')->insert($newUserHx);
 
         $allControl = $this->getAllControl();
         //生成返回结果
         $this->curUserInfo = array(
+
             "userid"            => $userId,
             "country_code"      => $newUserBase['country_code'],
             "tel"               => $newUserBase['tel'],
-            'jointime'          => date('Y-m-d H:i:s',$this->curTime),
+            'jointime'          => $newUserBase['createtime'],
             "token"             => $lastLoginToken,
-            "login_lat"         => $newUserLogin['last_login_lat'],
-            "login_lon"         => $newUserLogin['last_login_lon'],
             "brief"             => $newUserInfo['brief'],
-            "brief_service"     => $newUserInfo['brief_service'],
-            "brief_exp"         => $newUserInfo['brief_exp'],
             "nickname"          => $newUserInfo['nickname'],
             "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$newUserInfo['avatar']),
+            //""               => $userInfo['sex'],
             "sex"               => $newUserInfo['sex'],
-            "birthday"     => $newUserInfo['birthday'],
-            "measurements"      => $newUserInfo['measurements'],
-            "height"            => $newUserInfo['height'],
-            "weight"            => $newUserInfo['weight'],
+            "birthday"          => $newUserInfo['birthday'],
             "city"              => $city,
             "verify_state"      => $newUserInfo['verify_state'],
-            "zhima_code"        => $newUserInfo['zhima_code'],
-            "identitys"         => [],
-            "blog_counter"      => 0,
-            "follow_counter"    => 0,
-            "fans_counter"      => 0,
-            'hxid'              => $newUserHx['hx_id'],           //环信id
-            'hxpa'              => $newUserHx['hx_pass']          //环信密码
+            "verifyid"          => $newUserInfo['verifyid'],
+            "personlink"        => $newUserInfo['personlink'],
+            "status"            => $newUserInfo['status'],
         );
 
         $this->dsToken = $lastLoginToken;

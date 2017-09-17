@@ -23,6 +23,9 @@
                                 操作人ID
                             </th>
                             <th width="25%">
+                                操作参数
+                            </th>
+                            <th width="25%">
                                 操作描述
                             </th>
                             <th width="10%">
@@ -45,19 +48,22 @@
                             <td>
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="creatorid">
+                                <input type="text" class="form-control form-filter input-sm" name="userid">
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="description">
+                                <input type="text" class="form-control form-filter input-sm" name="param">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="return">
                             </td>
                             <td>
                                 <input type="text" class="form-control form-filter input-sm" name="ip">
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="moduleidentity">
+                                <input type="text" class="form-control form-filter input-sm" name="controllername">
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="rightname">
+                                <input type="text" class="form-control form-filter input-sm" name="actionname">
                             </td>
                             <td>
                                 <div id="starttimepicker" class="input-group date date-picker">
@@ -163,7 +169,7 @@ var Datatable = function() {
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [0,3,4]
+                        'targets': [2,3,8]
                     }],
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)

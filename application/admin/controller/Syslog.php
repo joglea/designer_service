@@ -46,17 +46,22 @@ class Syslog extends Admin{
                 }
             }
 
-            $creatorid = input('post.creatorid','0');  //操作人ID
-            if($creatorid > 0)
+            $userid = input('post.userid','0');  //操作人ID
+            if($userid > 0)
             {
-                $where['creatorid'] = $creatorid;
+                $where['userid'] = $userid;
             }
 
 
-            $description = input('post.description','');  //描述
-            if('' != $description )
+            $param = input('post.param','');  //描述
+            if('' != $param )
             {
-                $where['description']=array('like','%'.$description.'%');
+                $where['param']=array('like','%'.$param.'%');
+            }
+            $return = input('post.return','');  //描述
+            if('' != $return )
+            {
+                $where['return']=array('like','%'.$return.'%');
             }
             $ip = input('post.ip','');;  //ip
             if('' != $ip )
@@ -64,16 +69,16 @@ class Syslog extends Admin{
                 $where['ip'] = $ip;
             }
 
-            $moduleidentity = input('post.moduleidentity',''); //模块
-            if('' != $moduleidentity )
+            $controllername = input('post.controllername',''); //模块
+            if('' != $controllername )
             {
-                $where['moduleidentity']=$moduleidentity;
+                $where['controllername']=$controllername;
             }
 
-            $rightname = input('post.rightname',''); //操作
-            if('' != $rightname )
+            $actionname = input('post.actionname',''); //操作
+            if('' != $actionname )
             {
-                $where['rightname']=$rightname;
+                $where['actionname']=$actionname;
             }
 
             $draw = input('post.draw','1');
@@ -85,14 +90,20 @@ class Syslog extends Admin{
 
             $order='';
             if(count($ordercolumn>0)){
-                if(1==$ordercolumn[0]['column']){
-                    $order=' creatorid '.$ordercolumn[0]['dir'].' ';
+                if(0==$ordercolumn[0]['column']){
+                    $order=' syslogid '.$ordercolumn[0]['dir'].' ';
+                }
+                elseif(1==$ordercolumn[0]['column']){
+                    $order=' userid '.$ordercolumn[0]['dir'].' ';
+                }
+                else if(4==$ordercolumn[0]['column']){
+                    $order=' ip '.$ordercolumn[0]['dir'].' ';
                 }
                 else if(5==$ordercolumn[0]['column']){
-                    $order=' moduleidentity '.$ordercolumn[0]['dir'].' ';
+                    $order=' controllername '.$ordercolumn[0]['dir'].' ';
                 }
                 else if(6==$ordercolumn[0]['column']){
-                    $order=' rightname '.$ordercolumn[0]['dir'].' ';
+                    $order=' actionname '.$ordercolumn[0]['dir'].' ';
                 }
                 else if(7==$ordercolumn[0]['column']){
                     $order=' createtime '.$ordercolumn[0]['dir'].' ';
@@ -107,11 +118,12 @@ class Syslog extends Admin{
             $data=array();
             foreach($sysloglist as $k=>$v){
                 $data[$k][]=$v['syslogid'];
-                $data[$k][]=$v['creatorid'];
-                $data[$k][]=$v['description'];
+                $data[$k][]=$v['userid'];
+                $data[$k][]=$v['param'];
+                $data[$k][]=$v['return'];
                 $data[$k][]=$v['ip'];
-                $data[$k][]=$v['moduleidentity'];
-                $data[$k][]=$v['rightname'];
+                $data[$k][]=$v['controllername'];
+                $data[$k][]=$v['actionname'];
                 $data[$k][]=date('Y-m-d H:i:s',$v['createtime']);
                 $data[$k][]='<div style="text-align:center;">'.
                     '<a id="remove_log_'.$v['syslogid'].'" class="btn btn-danger btn-xs" href="javascript:;" onclick="return 0;removelog('.$v['syslogid'].')"><i class="fa fa-12px fa-trash-o"></i>删除</a></div>';
@@ -124,7 +136,6 @@ class Syslog extends Admin{
         }
         else{
             return $this->fetch();
-            $this->_display();
         }
 	}
 
