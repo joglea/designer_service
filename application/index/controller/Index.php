@@ -767,6 +767,70 @@ class Index extends Front
     }
 
 
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    上传图片接口
+     * @url     /index/uploadImg
+     * @method  POST
+     * @version 1000
+     * @params  images ’‘ string 上传图片表单名 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function uploadImg(){
+        $data=[];
+        try{
+            if(IS_POST){
+                //var_dump($_FILES);exit;
+                if(!$_FILES){
+                    $msg='不合法';
+                }
+                elseif(''==$_FILES['images']){
+                    $msg='图片不能为空';
+                }
+                else {
+
+                    if ((($_FILES["images"]["type"] == "image/gif")
+                            || ($_FILES["images"]["type"] == "image/jpeg")
+                            || ($_FILES["images"]["type"] == "image/pjpeg")|| ($_FILES["images"]["type"] == "image/png"))
+                        && ($_FILES["images"]["size"] < 10000000)
+                    ) {
+                        if ($_FILES["images"]["error"] > 0) {
+
+                            $msg     = '上传错误' . $_FILES["images"]["error"];
+
+                        } else {
+                            $imgname = $_FILES["images"]["name"];
+                            $imgurl  = date ('YmdHis') . $_FILES["images"]["name"];
+
+                            move_uploaded_file ($_FILES["images"]["tmp_name"] ,
+                                config('TASK_UPLOAD_IMAGE_DIR') . $imgurl);
+
+                            $this->getAllControl();
+                            $newimgurl=$this->allControl['task_image_url']. $imgurl ;
+
+
+                            $msg     = '上传成功' ;
+                            $data['imgurl']=$newimgurl;
+                            $data['imgname']=$imgname;
+
+                            $this->returndata(10000, $msg, $this->curTime, $data);
+                        }
+                    } else {
+                        $msg     = '上传错误Invalid file';
+                    }
+                }
+            }
+            else{
+                $msg='method error';
+            }
+            $this->returndata(14003, $msg, $this->curTime, $data);
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+
+    }
 
 
 

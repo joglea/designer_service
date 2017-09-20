@@ -211,4 +211,8 @@ class Docsdebug extends Front{
 
 
     }
+
+    public function test(){
+        return $this->fetch();
+    }
 }
