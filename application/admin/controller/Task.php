@@ -273,6 +273,7 @@ class Task extends Admin{
                 else{
                     $taskid = model("task")->insertGetId($taskinfo);
                     if($taskid>0){
+                        model("taskdata")->insertGetId(['taskid'=>$taskid]);
                         //$unique_id = MD5(C('PAGE_UNIQUE_CODE').$taskinfo["title"].time());
                         //model("Page")->editbywhere(array('taskid'=>$taskid),array('unique_id'=>$unique_id));
                         $code=0;
@@ -353,6 +354,10 @@ class Task extends Admin{
                     $ret = model("Task")->where(array('taskid'=>$taskinfo["taskid"],'delflag'=>0))->update($taskinfo);
                     //var_dump($ret);exit;
                     if($ret>0||0===$ret){
+                        $taskdata = model("taskdata")->where(['taskid'=>$taskinfo["taskid"]])->find();
+                        if(!$taskdata){
+                            model("taskdata")->insertGetId(['taskid'=>$taskinfo["taskid"]]);
+                        }
                         $code=0;
                         $msg='保存成功';
                         $msgtype=MSG_TYPE_SUCCESS;
