@@ -37,7 +37,7 @@ class Front extends Base {
 
         $this->curTime = time();
         $unitTime = 3;
-        $frequency = 5;
+        $frequency = 50;
 
         //请求检测合法
         $checkRequestRet = $this->checkRequest();
