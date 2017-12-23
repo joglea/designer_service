@@ -24,7 +24,7 @@ class User extends Front
      * @params  sex '1' STRING 0未知性别1男2女 NO
      * @params  birthday '1990-03-01' STRING 生日 NO
      * @params  cityid '0' STRING 城市id NO
-     * @params  personlink '90,90,90' STRING link NO
+     * @params  personlink 'http://www.a.com' STRING link NO
      * @params  brief '0' STRING 简介 NO
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
@@ -90,7 +90,7 @@ class User extends Front
             }
             if($cityid>=0&&$cityid!==''){
 
-                $city = model('city')->where(['id'=>$cityid])->find();
+                $city = model('city')->where(['cityid'=>$cityid])->find();
                 if($city){
                     $userinfo['cityid'] = $cityid;
                     $this->curUserInfo['city']= $city;
