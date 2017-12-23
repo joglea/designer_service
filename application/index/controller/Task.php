@@ -287,6 +287,7 @@ class Task extends Front
 
             $data['task']=[
                 'taskid'                => $task['taskid'],
+                'userid'                 => $task['userid'],
                 'title'                 => $task['title'],
                 'desc'               => $task['desc'],
                 'task_pic'                  => $this->checkpictureurl($this->allControl['task_image_url'],$task['task_pic']),
