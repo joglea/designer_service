@@ -315,7 +315,7 @@ class Task extends Front
                 ];
             }
 
-            model('taskdata')->where(['taskid'=>$taskid])->setInc('read_counter', 1);
+            model('taskdata')->where(['taskid'=>$taskId])->setInc('read_counter', 1);
             $this->returndata(10000, 'view success', $this->curTime, $data);
         }catch (Exception $e){
             $this->returndata(11000, 'server error', $this->curTime, $data);
