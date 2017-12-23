@@ -480,7 +480,8 @@ class User extends Front
                     $piclist = json_decode($oneDesignworks['pic'],true);
 
                     $new_pic_list = [];
-                    if($piclist){
+
+                    if(is_array($piclist)){
                         foreach($piclist as $onepic){
                             $new_pic_list[]=$this->checkPictureUrl($this->allControl['design_works_pic_url'],$onepic);
                         }
