@@ -48,7 +48,7 @@ class Task extends Front
             $taskWhere = ['check_state'=>2,'state'=>['in',[1,2,3,4]],'delflag'=>0];
 
                 //$taskWhere['limittime']=['gt',time()];
-            $order = 'taskid desc';
+            $order = 'state asc,taskid desc';
 
             $taskList = model('task')->where($taskWhere)->order($order)
                 ->limit((($page-1)*$pageSize).','.$pageSize)->select();
