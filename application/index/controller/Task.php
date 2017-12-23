@@ -45,7 +45,7 @@ class Task extends Front
         try{
 
             //新建可以报名的任务列表
-            $taskWhere = ['state'=>1,'delflag'=>0];
+            $taskWhere = ['check_state'=>2,'state'=>1,'delflag'=>0];
 
                 $taskWhere['limittime']=['gt',time()];
                 $order = 'taskid desc';
