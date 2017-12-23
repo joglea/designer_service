@@ -74,7 +74,7 @@ class User extends Front
 
             if($tel!=''){
                 $userbase['tel'] = $tel;
-                $this->curUserInfo['tel']= $userinfo['tel'];
+                $this->curUserInfo['tel']= $userbase['tel'];
             }
             if($email!=''){
                 $userinfo['email'] = $email;
