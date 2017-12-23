@@ -28,20 +28,7 @@ class Designworks extends Front
             "data":{
                 "DesignworksList":[
                 {
-                    "Designworksid":2,
-                    "userid":1000000005,
-                    "nickname":"dd都是",
-                    "invited_userid":1000000006,
-                    "invited_avatar":"http://omsnjcbau.bkt.clouddn.com/avatar/default01",
-                    "invited_nickname":"花满楼",
-                    "invited_Designworkstypename":"",
-                    "invited_exp":0,
-                    "title":"1111",
-                    "content":"1111",
-                    "reward":"11.00",
-                    "state":0,
-                    "image":"http://omsnjcbau.bkt.clouddn.com/a.jpg",
-                    "support_counter":0
+                    
                 }
                 ]
             }
@@ -91,7 +78,7 @@ class Designworks extends Front
                     'designworksid'=>$oneDesignworks['designworksid'],
                     'title'=>$oneDesignworks['title'],
                     'pic'=>$new_pic_list,
-                    'link'=>$oneDesignworks['link']
+                    'desc'=>$oneDesignworks['desc']
                 ];
             }
 
@@ -162,7 +149,7 @@ class Designworks extends Front
                 'designworksid'                => $Designworks['designworksid'],
                 'title'                 => $Designworks['title'],
                 'pic'               => $new_pic_list,
-                'link'            => $Designworks['link']
+                'desc'            => $Designworks['desc']
             ];
 
 
@@ -183,7 +170,7 @@ class Designworks extends Front
      * @version 1000
      * @params  title 标题 STRING 标题 YES
      * @params  pic ["a.jpg"] STRING 图片json串 YES
-     * @params  link 链接 STRING http://www.baidu.com YES
+     * @params  desc 描述 STRING http://www.baidu.com YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
@@ -196,11 +183,11 @@ class Designworks extends Front
         $title = input('request.title','');
         $pic = input('request.pic','[]');
         $picList = json_decode($pic,true);
-        $link = input('request.link','');
+        $desc = input('request.desc','');
 
 
         //验证参数是否为空
-        if($title==''||!$picList||$link==''){
+        if($title==''||!$picList||$desc==''){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
@@ -209,7 +196,7 @@ class Designworks extends Front
                 'userid'=>$this->curUserInfo['userid'],
                 'title'=>$title,
                 'pic'=>$pic,
-                'link'=>$link
+                'desc'=>$desc
             ];
             $Designworksid = model('Designworks')->insertGetId($newDesignworks);
 
@@ -234,7 +221,7 @@ class Designworks extends Front
      * @params  designworksid 1 INT 设计作品id YES
      * @params  title 20160101 STRING 标题 YES
      * @params  pic 20170101 STRING 图片列表json串 YES
-     * @params  link 啊啊 STRING 链接 YES
+     * @params  desc 啊啊 STRING 描述 YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
@@ -248,11 +235,11 @@ class Designworks extends Front
         $title = input('request.title','');
         $pic = input('request.pic','[]');
         $picList = json_decode($pic,true);
-        $link = input('request.link','');
+        $desc = input('request.desc','');
 
 
         //验证参数是否为空
-        if($designworksid<=0||$title==''||!$picList||$link==''){
+        if($designworksid<=0||$title==''||!$picList||$desc==''){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
@@ -260,7 +247,7 @@ class Designworks extends Front
             $newDesignworks = [
                 'title'=>$title,
                 'pic'=>$pic,
-                'link'=>$link
+                'desc'=>$desc
             ];
             $Designworksid = model('Designworks')->where(['userid'=>$this->curUserInfo['userid'],'designworksid'=>$designworksid])->update($newDesignworks);
 
