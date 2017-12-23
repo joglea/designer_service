@@ -48,7 +48,7 @@
                                 任务总价
                             </th>
                             <th width="10%">
-                                支付比例
+                                定金比例
                             </th>
                             <th width="8%">
                                 支付状态
@@ -77,18 +77,16 @@
                                 -
                             </td>
                             <td>
-                                <select name="pay_rate" id="pay_rate" class="form-control form-filter input-sm" >
-                                    <option value="-1">全部</option>
-                                    <option value="0.3">3成</option>
-                                    <option value="0.7">7成</option>
-                                </select>
+                                <input type="text" class="form-control form-filter input-sm" name="pay_rate">
+
                             </td>
                             <td>
                                 <select name="state" id="state" class="form-control form-filter input-sm" >
                                     <option value="-1">全部</option>
                                     <option value="1">未支付</option>
                                     <option value="2">已支付</option>
-                                    <option value="3">支付失败</option>
+                                    <option value="3">取消</option>
+                                    <option value="3">尾款支付</option>
                                 </select>
                             </td>
                             <td>

@@ -742,6 +742,7 @@ class Task extends Front
             if(!$task){
                 $this->returndata( 14002, 'task not exist', $this->curTime, $data);
             }
+            $tasktype = model('tasktype')->where(['tasktypeid'=>$task['tasktypeid'],'delflag'=>0])->find();
             $signupList = model('tasksignup')->where(
                 ['taskid'=>$taskId,'signupid'=>['in',$signupIdsArr],
                  'suit_state'=>1,'delflag'=>0])->select();
@@ -758,7 +759,7 @@ class Task extends Front
                 'userid'=>$this->curUserInfo['userid'],
                 'taskid'=>$taskId,
                 'total_price'=>$task['price'],
-                'pay_rate'=>config('desposit_rate'),
+                'pay_rate'=>$tasktype?$tasktype['pay_rate']:config('pay_rate'),
                 'state'=>1,
                 'createtime'=>$this->curTime,
                 'updatetime'=>$this->curTime,
@@ -901,6 +902,7 @@ class Task extends Front
             if(!$task){
                 $this->returndata( 14002, 'task not exist', $this->curTime, $data);
             }
+            $tasktype = model('tasktype')->where(['tasktypeid'=>$task['tasktypeid'],'delflag'=>0])->find();
             $signupList = model('tasksignup')->where(
                 ['taskid'=>$taskId,'signupid'=>['in',$signupIdsArr],
                  'suit_state'=>1,'delflag'=>0])->select();
@@ -916,7 +918,7 @@ class Task extends Front
                 'userid'=>$this->curUserInfo['userid'],
                 'taskid'=>$taskId,
                 'total_price'=>$task['price'],
-                'pay_rate'=>config('desposit_rate'),
+                'pay_rate'=>$tasktype?$tasktype['pay_rate']:config('pay_rate'),
                 'state'=>2,
                 'createtime'=>$this->curTime,
                 'updatetime'=>$this->curTime,
@@ -925,8 +927,9 @@ class Task extends Front
             //创建订单
             $orderid = model('order')->insertGetId($order);
 
+            $pay_rate=$tasktype?$tasktype['pay_rate']:config('pay_rate');
 
-            $price = round($task['price']*config('desposit_rate'),2);
+            $price = bcmul($task['price'],$pay_rate,2);
             $balance = $wallet['now_money']-$price;
             $balance=-1;
             if($balance<0){

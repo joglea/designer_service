@@ -129,6 +129,12 @@ class Task extends Admin{
             $taskcount=model('Task')->where($where)->count();
             $recordsfiltered=$taskcount;
             $recordstotal=$taskcount;
+
+            $tasktypelist = model('Tasktype')->where(array('delflag'=>0))->select();
+            $newtasktypelist = [];
+            foreach($tasktypelist as $onetasktype){
+                $newtasktypelist[$onetasktype['tasktypeid']]=$onetasktype;
+            }
             //var_dump($this->allControl);exit;
             $data=array();
             foreach($tasklist as $k=>$v){
@@ -156,6 +162,7 @@ class Task extends Admin{
                 }
 
                 $data[$k][]=$v['title'];
+                $data[$k][]=isset($newtasktypelist[$v['tasktypeid']])?$newtasktypelist[$v['tasktypeid']]['type_name']:'-';
                 $data[$k][]=$v['price'];
                 $data[$k][]=date('Y-m-d H:i:s',$v['limittime']);
                 //$data[$k][]=$v['desc'];
@@ -208,6 +215,8 @@ class Task extends Admin{
 
         }
         else{
+            $tasktypelist = model('Tasktype')->where(array('delflag'=>0))->select();
+            $this->assign('tasktypelist',$tasktypelist);
             return $this->fetch($view);
         }
 	}
@@ -292,6 +301,8 @@ class Task extends Admin{
             echo json_encode($ret);exit;
         }
         else{
+            $tasktypelist = model('Tasktype')->where(array('delflag'=>0))->select();
+            $this->assign('tasktypelist',$tasktypelist);
             echo $this->fetch();
         }
     }
@@ -306,6 +317,7 @@ class Task extends Admin{
 
             $taskinfo = array();
             $taskinfo["taskid"] = input("post.taskid",'');
+            $taskinfo["tasktypeid"] = input("post.tasktypeid",'');
             $taskinfo["title"] = input("post.title",'');
             $taskinfo["price"] = input("post.price",'');
             $taskinfo["limittime"] = strtotime(input("post.limittime",''));
@@ -316,6 +328,11 @@ class Task extends Admin{
             if(0>=$taskinfo['taskid']){
                 $code=-1;
                 $msg='id不合法';
+                $msgtype=MSG_TYPE_WARNING;
+            }
+            elseif(0>=$taskinfo['tasktypeid']){
+                $code=-1;
+                $msg='类型id不合法';
                 $msgtype=MSG_TYPE_WARNING;
             }
             elseif(''==$taskinfo['title']){
@@ -385,6 +402,9 @@ class Task extends Admin{
             $taskinfo['desc']=htmlspecialchars_decode($taskinfo['desc']);
             $taskinfo['limittime']=date('Y-m-d',$taskinfo['limittime']);
             $this->assign('taskinfo',$taskinfo);
+
+            $tasktypelist = model('Tasktype')->where(array('delflag'=>0))->select();
+            $this->assign('tasktypelist',$tasktypelist);
             //var_dump($taskinfo);exit;
             echo $this->fetch();
         }

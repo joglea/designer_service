@@ -131,31 +131,47 @@ class Order extends Admin{
                 $data[$k][]=$v['userid'];
                 $data[$k][]=$v['out_order_id'];
                 $data[$k][]=$v['taskid'];
-                $data[$k][]=$v['total_price'];
+                if($v['state']==1){
+                    $data[$k][]='<input type="text" name="total_price_'.$v['orderid'].'" class="total_price_class" value="'.$v['total_price'].'"/>';
+                }
+                else{
+                    $data[$k][]=$v['total_price'];
+                }
 
+                if($v['state']==1){
+                    $data[$k][]='<input type="text" name="pay_rate_'.$v['orderid'].'" class="pay_rate_class" value="'.$v['pay_rate'].'"/>';
+                }
+                else{
+                    $data[$k][]=$v['pay_rate'];
+                }
 
-                $data[$k][]=bcmul($v['pay_rate'],10).'成';
 
 
                 if($v['state']==1){
                     $state = '未支付';
+                    $btn = '<a title="修改" id="already_pay_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="alreadypay('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>改为已支付</a>';
 
                 }
                 elseif($v['state']==2){
-                    $state = '已支付';
+                    $state = '已支付定金';
 
                 }
                 elseif($v['state']==3){
-                    $state = '支付成功';
+                    $state = '已取消';
+
+                }
+                elseif($v['state']==4){
+                    $state = '尾款到账';
 
                 }
                 else{
                     $state='-';
                 }
-                $data[$k][]=$state;
+                $data[$k][]=$state.$btn;
                 $data[$k][]=date('Y-m-d H:i:s',$v['createtime']);
                 $data[$k][]='<div style="text-align:center;">'.
-                   '<a title="查看报名" id="signuplist_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="signuplist('.$v['orderid'].',2)"><i class="fa fa-12px fa-edit"></i>查看报名</a>';
+                   '<a title="查看报名" id="signuplist_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="signuplist('.$v['orderid'].',2)"><i class="fa fa-12px fa-search"></i>查看报名</a>'.
+                    '<a title="修改" id="editorder_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="editorder('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>修改</a>';
                 ;
                     //'<a id="remove_user_'.$v['userid'].'" class="btn btn-danger btn-xs" href="javascript:;" onclick="removeuser('.$v['userid'].')"><i class="fa fa-12px fa-trash-o"></i>删除</a></div>';
             }
@@ -233,6 +249,198 @@ class Order extends Admin{
         }
     }
 
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    修改订单接口
+     * @url     /order/editorder
+     * @method  POST
+     * @version 1000
+     * @params  orderid 1 INT 订单id YES
+     * @params  total_price 10.1 STRING 总价 NO
+     * @params  pay_rate 0.1 STRING 定金比例1成 NO
+     * @params  state 2 STRING 订单状态1未支付2已支付3取消支付4尾款到账  YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function editorder(){
+        if(IS_POST){
+
+            $orderinfo = array();
+            $orderinfo["orderid"] = input("post.orderid",'');
+            if(0>=$orderinfo['orderid']){
+                $code=-1;
+                $msg='id不合法';
+                $msgtype=MSG_TYPE_WARNING;
+            }
+            elseif(!in_array(input("post.state",''),[1,2,3,4])){
+                $code=-1;
+                $msg='状态不合法';
+                $msgtype=MSG_TYPE_WARNING;
+            }
+            elseif(input("post.total_price",'')<=0){
+                $code=-2;
+                $msg='价格不能为空';
+                $msgtype=MSG_TYPE_WARNING;
+            }
+            elseif(input("post.pay_rate",'')<=0||input("post.pay_rate",'')>=1){
+                $code=-2;
+                $msg='定金比例不合法';
+                $msgtype=MSG_TYPE_WARNING;
+            }
+            else{
+
+                model('order')->startTrans();
+                $oldOrderInfo = model('order')->where(['orderid'=>$orderinfo["orderid"],'delflag'=>0])->find();
+                if($oldOrderInfo){
+                    if($oldOrderInfo["state"]==1){
+
+                        if(input("post.state",'')==1){
+                            if(input("post.total_price",'')!= 0 ){
+                                $orderinfo["total_price"] = input("post.total_price",'');
+                            }
+                            if(input("post.pay_rate",'')!= 0 ){
+                                $orderinfo["pay_rate"] = input("post.pay_rate",'');
+                            }
+                        }
+
+                        if(input("post.state",'')==2||input("post.state",'')==3){
+                            $orderinfo["state"] = input("post.state",'');
+                        }
+                        if($orderinfo["state"]==2){
+                            $orderdetaillist = model('orderdetail')->alias('a')
+                                ->join('ds_tasksignup  b' ,'a.signupid=b.signupid')
+                                ->where([
+                                'orderid'=>$orderinfo["orderid"],'delflag'=>0
+                            ])->field('b.userid')->select();
+
+                            foreach($orderdetaillist as $oneorderdetail){
+
+                                $wallet = model('wallet')
+                                    ->where(['userid'=>$oneorderdetail['userid']])->find();
+                                $change_price = bcmul($oldOrderInfo['total_price'],$oldOrderInfo['pay_rate'],2);
+                                if($wallet){
+                                    $data = [
+                                        'now_money'=>bcadd($wallet['now_money'],$change_price,2),
+                                        'updatetime'=>$this->curTime,
+                                    ];
+                                    //更新余额
+                                    $walletUpdate = model('wallet')
+                                        ->where(['userid'=>$oneorderdetail['userid']])->update($data);
+                                }
+                                else{
+                                    $data = [
+                                        'userid'=>$this->curUserInfo['userid'],
+                                        'now_money'=>$change_price,
+                                        'createtime'=>$this->curTime,
+                                        'updatetime'=>$this->curTime,
+                                    ];
+                                    //更新余额
+                                    $walletUpdate = model('wallet')->insertGetId($data);
+                                }
+
+                                //余额变更记录
+                                model('walletrecord')->insertGetId(
+                                    [
+                                        'userid'=>$this->curUserInfo['userid'],
+                                        'objectid'=>$oldOrderInfo['orderid'],
+                                        'objecttype'=>2,//对象类型1支出2收入3充值
+                                        'price'=>$change_price,
+                                        'desc'=>'任务：'.$oldOrderInfo['taskid'].'的支付定金',
+                                        'createtime'=>$this->curTime,
+                                        'updatetime'=>$this->curTime,
+                                        'delflag'=>0,
+
+                                    ]
+                                );
+                            }
+
+                        }
+                        if($orderinfo["state"]==3){
+                            $orderdetaillist = model('orderdetail')->alias('a')
+                                ->join('ds_tasksignup  b' ,'a.signupid=b.signupid')
+                                ->where([
+                                    'orderid'=>$orderinfo["orderid"],'delflag'=>0
+                                ])->field('b.userid,b.signupid')->select();
+
+                            foreach($orderdetaillist as $oneorderdetail){
+
+                                //更新报名状态
+                                model('tasksignup')
+                                    ->where(
+                                        ['signupid'=>$oneorderdetail['signupid']]
+                                    )
+                                    ->update(['suit_state'=>4,'updatetime'=>$this->curTime]);
+                            }
+                        }
+
+
+                    }
+                    elseif($oldOrderInfo["state"]==2){
+                        unset($orderinfo["total_price"]);
+                        unset($orderinfo["pay_rate"]);
+                        if(input("post.state",'')==3){
+                            $orderinfo["state"] = input("post.state",'');
+
+                            $orderdetaillist = model('orderdetail')->alias('a')
+                                ->join('ds_tasksignup  b' ,'a.signupid=b.signupid')
+                                ->where([
+                                    'orderid'=>$orderinfo["orderid"],'delflag'=>0
+                                ])->field('b.userid,b.signupid')->select();
+
+                            foreach($orderdetaillist as $oneorderdetail){
+
+                                //更新报名状态
+                                model('tasksignup')
+                                    ->where(
+                                        ['signupid'=>$oneorderdetail['signupid']]
+                                    )
+                                    ->update(['suit_state'=>4,'updatetime'=>$this->curTime]);
+                            }
+                        }
+                    }
+                    elseif($oldOrderInfo["state"]==3){
+
+                    }
+                    else{
+
+                    }
+                }
+
+                $orderinfo["updatetime"] = time();
+                //更新订单
+                model('order')
+                ->where(['order'=>$orderinfo["orderid"] ])->update($orderinfo);
+
+
+                $code=0;
+                $msg='保存成功';
+                $msgtype=MSG_TYPE_SUCCESS;
+
+            }
+            model('order')->commit();
+
+            $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
+
+            echo json_encode($ret);exit;
+        }
+        else{
+            $taskid = input("get.taskid",0);
+            if(!($taskid>0)){
+                echo '参数错误';exit;
+            }
+            $orderinfo=model('Task')->where(array('taskid'=>$taskid,'delflag'=>0))->find();
+            if(!$orderinfo){
+                echo '记录已被删除或不存在';exit;
+            }
+            $orderinfo['desc']=htmlspecialchars_decode($orderinfo['desc']);
+            $orderinfo['limittime']=date('Y-m-d',$orderinfo['limittime']);
+            $this->assign('$orderinfo',$orderinfo);
+            //var_dump($orderinfo);exit;
+            echo $this->fetch();
+        }
+    }
 
 
 }
