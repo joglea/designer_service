@@ -106,7 +106,7 @@ class Workexp extends Front
      * @url     /Workexp/WorkexpView
      * @method  GET
      * @version 1000
-     * @params  Workexpid 1 INT 工作经验id YES
+     * @params  expid 1 INT 工作经验id YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      * @return
@@ -201,7 +201,7 @@ class Workexp extends Front
                 'companyname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Workexpid = model('Workexp')->add($newWorkexp);
+            $Workexpid = model('Workexp')->insertGetId($newWorkexp);
 
             if(!$Workexpid){
                 $this->returndata( 14002, 'Workexp add fail', $this->curTime, $data);
@@ -254,10 +254,10 @@ class Workexp extends Front
                 'companyname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Workexpid = model('Workexp')->where(['expid'=>$expid])->save($newWorkexp);
+            $Workexpid = model('Workexp')->where(['expid'=>$expid])->update($newWorkexp);
 
             if(!$Workexpid){
-                $this->returndata( 14002, 'Workexp add fail', $this->curTime, $data);
+                $this->returndata( 14002, 'Workexp edit fail', $this->curTime, $data);
             }
 
             $data['expid']=$Workexpid;

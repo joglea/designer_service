@@ -210,7 +210,7 @@ class Designworks extends Front
                 'pic'=>$pic,
                 'link'=>$link
             ];
-            $Designworksid = model('Designworks')->add($newDesignworks);
+            $Designworksid = model('Designworks')->insertGetId($newDesignworks);
 
             if(!$Designworksid){
                 $this->returndata( 14002, 'Designworks add fail', $this->curTime, $data);
@@ -261,7 +261,7 @@ class Designworks extends Front
                 'pic'=>$pic,
                 'link'=>$link
             ];
-            $Designworksid = model('Designworks')->where(['designworksid'=>$designworksid])->save($newDesignworks);
+            $Designworksid = model('Designworks')->where(['designworksid'=>$designworksid])->update($newDesignworks);
 
             if(!$Designworksid){
                 $this->returndata( 14002, 'Designworks edit fail', $this->curTime, $data);

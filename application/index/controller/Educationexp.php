@@ -106,23 +106,23 @@ class Educationexp extends Front
      * @url     /Educationexp/EducationexpView
      * @method  GET
      * @version 1000
-     * @params  Educationexpid 1 INT 教育经验id YES
+     * @params  expid 1 INT 教育经验id YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      * @return
     {
-        "code":10000,
-        "message":"view success",
-        "time":1492593379,
-        "data":{
-            "Educationexp":{
-            },
-            "signup_userlist":{
-            },
-            
-           
-            
-        }
+    "code":10000,
+    "message":"view success",
+    "time":1492593379,
+    "data":{
+    "Educationexp":{
+    "expid":1,
+    "begindate":"2017-01-01",
+    "enddate":"2017-07-07",
+    "schoolname":"xxx",
+    "desc":"xxx"
+    }
+    }
     }
      *
      */
@@ -201,7 +201,7 @@ class Educationexp extends Front
                 'schoolname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Educationexpid = model('Educationexp')->add($newEducationexp);
+            $Educationexpid = model('Educationexp')->insertGetId($newEducationexp);
 
             if(!$Educationexpid){
                 $this->returndata( 14002, 'Educationexp add fail', $this->curTime, $data);
@@ -254,10 +254,10 @@ class Educationexp extends Front
                 'schoolname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Educationexpid = model('Educationexp')->where(['expid'=>$expid])->save($newEducationexp);
+            $Educationexpid = model('Educationexp')->where(['expid'=>$expid])->update($newEducationexp);
 
             if(!$Educationexpid){
-                $this->returndata( 14002, 'Educationexp add fail', $this->curTime, $data);
+                $this->returndata( 14002, 'Educationexp edit fail', $this->curTime, $data);
             }
 
             $data['expid']=$Educationexpid;
