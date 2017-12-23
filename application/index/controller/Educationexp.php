@@ -140,7 +140,7 @@ class Educationexp extends Front
 
         try{
 
-            $Educationexp = model('Educationexp')->where(['expid'=>$EducationexpId,'delflag'=>0])->find();
+            $Educationexp = model('Educationexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$EducationexpId,'delflag'=>0])->find();
 
             if(!$Educationexp  ){
                 $this->returndata( 14002, 'Educationexp not exist', $this->curTime, $data);
@@ -196,6 +196,7 @@ class Educationexp extends Front
 
         try{
             $newEducationexp = [
+                'userid'=>$this->curUserInfo['userid'],
                 'begindate'=>$beginDate,
                 'enddate'=>$endDate,
                 'schoolname'=>$companyName,
@@ -254,7 +255,7 @@ class Educationexp extends Front
                 'schoolname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Educationexpid = model('Educationexp')->where(['expid'=>$expid])->update($newEducationexp);
+            $Educationexpid = model('Educationexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expid])->update($newEducationexp);
 
             if(!$Educationexpid){
                 $this->returndata( 14002, 'Educationexp edit fail', $this->curTime, $data);

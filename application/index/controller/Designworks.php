@@ -145,7 +145,7 @@ class Designworks extends Front
 
         try{
 
-            $Designworks = model('Designworks')->where(['designworksid'=>$DesignworksId,'delflag'=>0])->find();
+            $Designworks = model('Designworks')->where(['userid'=>$this->curUserInfo['userid'],'designworksid'=>$DesignworksId,'delflag'=>0])->find();
 
             if(!$Designworks  ){
                 $this->returndata( 14002, 'Designworks not exist', $this->curTime, $data);
@@ -206,6 +206,7 @@ class Designworks extends Front
 
         try{
             $newDesignworks = [
+                'userid'=>$this->curUserInfo['userid'],
                 'title'=>$title,
                 'pic'=>$pic,
                 'link'=>$link
@@ -261,7 +262,7 @@ class Designworks extends Front
                 'pic'=>$pic,
                 'link'=>$link
             ];
-            $Designworksid = model('Designworks')->where(['designworksid'=>$designworksid])->update($newDesignworks);
+            $Designworksid = model('Designworks')->where(['userid'=>$this->curUserInfo['userid'],'designworksid'=>$designworksid])->update($newDesignworks);
 
             if(!$Designworksid){
                 $this->returndata( 14002, 'Designworks edit fail', $this->curTime, $data);

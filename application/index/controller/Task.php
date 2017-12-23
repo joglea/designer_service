@@ -707,6 +707,166 @@ class Task extends Front
     }
 
 
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    直接下单
+     * @url     /task/taskOrder
+     * @method  POST
+     * @version 1000
+     * @params  taskid 1 INT 任务id YES
+     * @params  signupids 1,2 STRING 报名id串,多个id逗号隔开 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function taskOrder(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $taskId = input('taskid',0);
+        $signupIds = input('signupids','');
+        $signupIdsArr = explode(',',$signupIds);
+        if($taskId<0||!$signupIdsArr){
+            $this->returndata(14001, 'params error', $this->curTime, $data);
+        }
+
+        model('task')->startTrans();
+        try{
+
+            $task = model('task')
+                ->where(['userid'=>$this->curUserInfo['userid'],
+                         'taskid'=>$taskId,'delflag'=>0])
+                ->find();
+            if(!$task){
+                $this->returndata( 14002, 'task not exist', $this->curTime, $data);
+            }
+            $signupList = model('tasksignup')->where(
+                ['taskid'=>$taskId,'signupid'=>['in',$signupIdsArr],
+                 'suit_state'=>1,'delflag'=>0])->select();
+
+            if(!$signupList){
+                $this->returndata( 14003, 'signup not exist or state error', $this->curTime, $data);
+            }
+            /*$wallet = model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->find();
+            if(!$wallet){
+                $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
+            }*/
+            $order = [
+                'userid'=>$this->curUserInfo['userid'],
+                'taskid'=>$taskId,
+                'total_price'=>$task['price'],
+                'pay_rate'=>config('desposit_rate'),
+                'state'=>1,
+                'createtime'=>$this->curTime,
+                'updatetime'=>$this->curTime,
+                'delflag'=>0,
+            ];
+            //创建订单
+            $orderid = model('order')->insertGetId($order);
+
+
+            /*$price = round($task['price']*config('desposit_rate'),2);
+            $balance = $wallet['now_money']-$price;
+            $balance=-1;
+            if($balance<0){
+                model('task')->commit();
+                $data['order_id']=$orderid;
+
+                //①、获取用户openid
+                $tools = new \JsApiPay();
+                // $openId = $tools->GetOpenid();
+                $openId = model('userthird')->where(['userid'=>$this->curUserInfo['userid'],'delflag'=>0])
+                    ->value('openid');
+                //var_dump($openId);exit;
+                //②、统一下单
+                $input = new \WxPayUnifiedOrder();
+                $input->SetBody($task['title']);
+                $input->SetAttach($task['title']);
+                $input->SetOut_trade_no($orderid);
+                $input->SetTotal_fee($price*100);
+                $input->SetTime_start(date("YmdHis"));
+                $input->SetTime_expire(date("YmdHis", time() + 600));
+                $input->SetGoods_tag($task['title']);
+                $input->SetNotify_url("http://".config('server_host')."/task/taskWxNotify");
+                $input->SetTrade_type("JSAPI");
+                $input->SetProduct_id("123456789");
+                $input->SetOpenid($openId);
+                //var_dump(33,$input->GetValues());
+                //$log->INFO(json_encode($input->GetValues()));
+
+                $order = \WxPayApi::unifiedOrder($input);
+
+                if($order['return_code']=='SUCCESS'&&$order['result_code']=='SUCCESS'){
+                    $prepay_id = $order['prepay_id'];
+                    $data['prepay_id'] = $prepay_id;
+                    $this->returndata( 10000, 'wallet balance insufficient ', $this->curTime, $data);
+
+                }
+                else{
+                    $this->returndata( 14001, $order['return_msg'], $this->curTime, $data);
+
+                }
+                $jsApiParameters = $tools->GetJsApiParameters($order);
+
+                //if($jsApiParameters['return_code']=='SUCCESS')
+
+                $this->returndata( 10001, 'wallet balance insufficient ', $this->curTime, $data);
+            }*/
+
+            foreach($signupList as $oneSignup){
+
+                //订单详情
+                $detailid = model('orderdetail')->insertGetId(
+                    [
+                        'orderid'=>$orderid,
+                        'signupid'=>$oneSignup['signupid'],
+                        'createtime'=>$this->curTime,
+                        'updatetime'=>$this->curTime,
+                        'delflag'=>0,
+                    ]
+                );
+                //更新报名状态
+                model('tasksignup')
+                    ->where(
+                        ['signupid'=>$oneSignup['signupid']]
+                    )
+                    ->update(['suit_state'=>2,'updatetime'=>$this->curTime]);
+            }
+
+           /* $date = [
+                'now_money'=>$balance,
+                'updatetime'=>$this->curTime,
+            ];
+            //更新余额
+            $walletUpdate = model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->update($date);
+            //余额变更记录
+            model('walletrecord')->insertGetId(
+                [
+                    'userid'=>$this->curUserInfo['userid'],
+                    'objectid'=>$orderid,
+                    'objecttype'=>1,//对象类型1支出2收入3充值
+                    'price'=>$price,
+                    'desc'=>'任务：'.$taskId.'的支付定金',
+                    'createtime'=>$this->curTime,
+                    'updatetime'=>$this->curTime,
+                    'delflag'=>0,
+
+                ]
+            );*/
+            model('task')->commit();
+            $data['order_id']=$orderid;
+            $this->returndata(10000, 'do success', $this->curTime, $data);
+        }catch (Exception $e){
+            // 回滚事务
+            model('task')->rollback();
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+    }
+
     /**
      * ---------------------------------------------------------------------------------------------
      * @desc    支付定金
@@ -743,7 +903,7 @@ class Task extends Front
             }
             $signupList = model('tasksignup')->where(
                 ['taskid'=>$taskId,'signupid'=>['in',$signupIdsArr],
-                 'suit_state'=>1,'delflag'=>0]);
+                 'suit_state'=>1,'delflag'=>0])->select();
             if(!$signupList){
                 $this->returndata( 14003, 'signup not exist or state error', $this->curTime, $data);
             }
@@ -898,7 +1058,7 @@ class Task extends Front
                 $this->returndata( 14002, 'task not exist', $this->curTime, $data);
             }
             $signupList = model('tasksignup')->where(
-                ['signupid'=>$signupId,'suit_state'=>2,'delflag'=>0]);
+                ['signupid'=>$signupId,'suit_state'=>2,'delflag'=>0])->select();
             if(!$signupList){
                 $this->returndata( 14003, 'signup not exist or state error', $this->curTime, $data);
             }

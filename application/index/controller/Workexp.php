@@ -140,7 +140,7 @@ class Workexp extends Front
 
         try{
 
-            $Workexp = model('Workexp')->where(['expid'=>$WorkexpId,'delflag'=>0])->find();
+            $Workexp = model('Workexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$WorkexpId,'delflag'=>0])->find();
 
             if(!$Workexp  ){
                 $this->returndata( 14002, 'Workexp not exist', $this->curTime, $data);
@@ -196,6 +196,7 @@ class Workexp extends Front
 
         try{
             $newWorkexp = [
+                'userid'=>$this->curUserInfo['userid'],
                 'begindate'=>$beginDate,
                 'enddate'=>$endDate,
                 'companyname'=>$companyName,
@@ -254,7 +255,7 @@ class Workexp extends Front
                 'companyname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Workexpid = model('Workexp')->where(['expid'=>$expid])->update($newWorkexp);
+            $Workexpid = model('Workexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expid])->update($newWorkexp);
 
             if(!$Workexpid){
                 $this->returndata( 14002, 'Workexp edit fail', $this->curTime, $data);
