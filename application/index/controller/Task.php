@@ -38,7 +38,7 @@ class Task extends Front
 
         //验证参数是否为空
         if($page<1){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
+            $page = 1;
         }
 
 
@@ -130,7 +130,8 @@ class Task extends Front
 
         //验证参数是否为空
         if($page<1){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
+            $page = 1;
+
         }
 
 
@@ -332,7 +333,8 @@ class Task extends Front
 
         //验证参数是否为空
         if($page<1){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
+            $page = 1;
+            //$this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
 
@@ -431,8 +433,11 @@ class Task extends Front
         $page = input('request.page',1,'intval');
 
         //验证参数是否为空
-        if($page<1||$taskid<=0){
+        if($taskid<=0){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+        if($page<1){
+            $page= 1;
         }
 
 
