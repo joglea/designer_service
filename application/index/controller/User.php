@@ -53,6 +53,7 @@ class User extends Front
         try{
 
             $userinfo = [];
+            $userbase=[];
             if($avatar!=''){
                 $allControls = $this->getAllControl();
                 $userinfo['avatar'] = $this->checkPictureUrl($allControls['avatar_url'],$avatar);
@@ -72,7 +73,7 @@ class User extends Front
             }
 
             if($tel!=''){
-                $userinfo['tel'] = $tel;
+                $userbase['tel'] = $tel;
                 $this->curUserInfo['tel']= $userinfo['tel'];
             }
             if($email!=''){
@@ -113,7 +114,10 @@ class User extends Front
             $userinfo['updatetime'] = $this->curTime;
 
             model('userinfo')->where(['userid'=>$this->curUserInfo['userid']])->update($userinfo);
-
+            if($userbase){
+                $userbase['updatetime'] = $this->curTime;
+                model('userbase')->where(['userid'=>$this->curUserInfo['userid']])->update($userbase);
+            }
             //生成返回结果
             $this->jzToken = $this->curUserInfo['token'];
             cache($this->jzToken,$this->curUserInfo,["expire"=>config('login_cache_expire')]);
