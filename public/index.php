@@ -3,7 +3,7 @@
 if($_SERVER['HTTP_HOST']=='www.mrdgr.com'){
     require __DIR__ . '/mrdgr_index.php';
 }
-elseif($_SERVER['HTTP_HOST']=='api.mrdgr.com'){
+elseif($_SERVER['HTTP_HOST']=='api.mrdgr.com'||$_SERVER['HTTP_HOST']=='www.ds.com'){
     require __DIR__ . '/ds_index.php';
 }
 else{

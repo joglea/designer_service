@@ -372,4 +372,131 @@ class User extends Front
     }
 
 
+
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    用户简历接口
+     * @url     /User/ResumeList
+     * @method  GET
+     * @version 1000
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     * @return
+    {
+    "code":10000,
+    "message":"获取成功",
+    "time":1492413087,
+    "data":{
+    "WorkexpList":[
+    {
+    "expid":3,
+    "begindate":"2016-07-08",
+    "enddate":"2016-12-31",
+    "companyname":"zzz",
+    "desc":"zzz"
+    }
+    ],
+    "EducationexpList":[
+    {
+    "expid":1,
+    "begindate":"2017-01-01",
+    "enddate":"2017-07-07",
+    "schoolname":"xxx",
+    "desc":"xxx"
+    }
+    ],
+    "DesignworksList":[
+    {
+    "designworksid":0,
+    "title":"ssss",
+    "pic":"http://www.ds.com/statics/Image/designworks/a.jpg",
+    "link":"http://www.baidu.com"
+    }
+    ]
+    }
+    }
+     *
+     */
+    public function ResumeList(){
+        //返回结果
+        $data = [];
+        //验证参数是否为空
+
+        try{
+            $userId = $this->curUserInfo['userid'];
+            $this->getAllControl();
+            $WorkexpWhere = ['userid'=>$userId,'delflag'=>0];
+            $order = 'begindate desc,expid desc';
+
+            $WorkexpList = model('Workexp')->where($WorkexpWhere)->order($order)
+                ->select();
+
+            $newWorkexpList = [];
+            if($WorkexpList){
+                foreach($WorkexpList as $oneWorkexp){
+                    $newWorkexpList[]=[
+                        'expid'=>$oneWorkexp['expid'],
+                        'begindate'=>$oneWorkexp['begindate'],
+                        'enddate'=>$oneWorkexp['enddate'],
+                        'companyname'=>$oneWorkexp['companyname'],
+                        'desc'=>$oneWorkexp['desc'],
+                    ];
+                }
+            }
+
+            $EducationexpWhere = ['userid'=>$userId,'delflag'=>0];
+            $order = 'begindate desc,expid desc';
+
+            $EducationexpList = model('Educationexp')->where($EducationexpWhere)->order($order)
+                ->select();
+            //var_dump($EducationexpList);exit;
+
+            $newEducationexpList = [];
+            if($EducationexpList){
+                foreach($EducationexpList as $oneEducationexp){
+                    $newEducationexpList[]=[
+                        'expid'=>$oneEducationexp['expid'],
+                        'begindate'=>$oneEducationexp['begindate'],
+                        'enddate'=>$oneEducationexp['enddate'],
+                        'schoolname'=>$oneEducationexp['schoolname'],
+                        'desc'=>$oneEducationexp['desc'],
+                    ];
+                }
+            }
+
+
+            $DesignworksWhere = ['userid'=>$userId,'delflag'=>0];
+            $order = 'designworksid desc';
+
+            $DesignworksList = model('Designworks')->where($DesignworksWhere)->order($order)
+                ->select();
+
+
+            $newDesignworksList = [];
+            if($DesignworksList){
+
+                foreach($DesignworksList as $oneDesignworks){
+                    $newDesignworksList[]=[
+                        'designworksid'=>$oneDesignworks['designworksid'],
+                        'title'=>$oneDesignworks['title'],
+                        'pic'=>$this->checkPictureUrl($this->allControl['design_works_pic_url'],$oneDesignworks['pic']),
+                        'link'=>$oneDesignworks['link']
+                    ];
+                }
+            }
+
+
+            $data['WorkexpList'] = $newWorkexpList;
+            $data['EducationexpList'] = $newEducationexpList;
+            $data['DesignworksList'] = $newDesignworksList;
+
+            $this->returndata(10000, '获取成功', $this->curTime, $data);
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+
+    }
+
 }

@@ -3,18 +3,18 @@ namespace app\index\controller;
 
 use app\common\controller\Front;
 /**
- * Class Workexp
+ * Class Educationexp
  *
- * @classdesc 工作经验接口类
+ * @classdesc 经验接口类
  * @package app\index\controller
  */
-class Workexp extends Front
+class Educationexp extends Front
 {
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    工作经验列表接口
-     * @url     /Workexp/WorkexpList
+     * @desc    教育经验列表接口
+     * @url     /Educationexp/EducationexpList
      * @method  GET
      * @version 1000
      * @params  page 1 INT 当前请求的是第几页数据 YES
@@ -26,15 +26,15 @@ class Workexp extends Front
             "message":"获取成功",
             "time":1492413087,
             "data":{
-                "WorkexpList":[
+                "EducationexpList":[
                 {
-                    "Workexpid":2,
+                    "Educationexpid":2,
                     "userid":1000000005,
                     "nickname":"dd都是",
                     "invited_userid":1000000006,
                     "invited_avatar":"http://omsnjcbau.bkt.clouddn.com/avatar/default01",
                     "invited_nickname":"花满楼",
-                    "invited_Workexptypename":"",
+                    "invited_Educationexptypename":"",
                     "invited_exp":0,
                     "title":"1111",
                     "content":"1111",
@@ -48,7 +48,7 @@ class Workexp extends Front
         }
      *
      */
-    public function WorkexpList(){
+    public function EducationexpList(){
         //返回结果
         $data = [];
         $pageSize = config('page_size');
@@ -62,35 +62,35 @@ class Workexp extends Front
         try{
             $userId = $this->curUserInfo['userid'];
 
-            $WorkexpWhere = ['userid'=>$userId,'delflag'=>0];
+            $EducationexpWhere = ['userid'=>$userId,'delflag'=>0];
             $order = 'begindate desc,expid desc';
 
-            $WorkexpList = model('Workexp')->where($WorkexpWhere)->order($order)
+            $EducationexpList = model('educationexp')->where($EducationexpWhere)->order($order)
                 ->limit((($page-1)*$pageSize).','.$pageSize)->select();
-            $WorkexpIds = [];
+            $EducationexpIds = [];
             $userIds = [];
-            foreach($WorkexpList as $oneWorkexp){
-                $WorkexpIds[]=$oneWorkexp['expid'];
+            foreach($EducationexpList as $oneEducationexp){
+                $EducationexpIds[]=$oneEducationexp['expid'];
             }
 
-            if(!$WorkexpIds){
+            if(!$EducationexpIds){
                 $this->returndata( 14003, '', $this->curTime, $data);
             }
 
             $this->getAllControl();
 
-            $newWorkexpList = [];
-            foreach($WorkexpList as $oneWorkexp){
-                $newWorkexpList[]=[
-                    'expid'=>$oneWorkexp['expid'],
-                    'begindate'=>$oneWorkexp['begindate'],
-                    'enddate'=>$oneWorkexp['enddate'],
-                    'companyname'=>$oneWorkexp['companyname'],
-                    'desc'=>$oneWorkexp['desc'],
+            $newEducationexpList = [];
+            foreach($EducationexpList as $oneEducationexp){
+                $newEducationexpList[]=[
+                    'expid'=>$oneEducationexp['expid'],
+                    'begindate'=>$oneEducationexp['begindate'],
+                    'enddate'=>$oneEducationexp['enddate'],
+                    'schoolname'=>$oneEducationexp['schoolname'],
+                    'desc'=>$oneEducationexp['desc'],
                 ];
             }
 
-            $data['WorkexpList'] = $newWorkexpList;
+            $data['EducationexpList'] = $newEducationexpList;
             $this->returndata(10000, '获取成功', $this->curTime, $data);
 
         }catch (Exception $e){
@@ -102,11 +102,11 @@ class Workexp extends Front
     
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    查看工作经验详情
-     * @url     /Workexp/WorkexpView
+     * @desc    查看教育经验详情
+     * @url     /Educationexp/EducationexpView
      * @method  GET
      * @version 1000
-     * @params  Workexpid 1 INT 工作经验id YES
+     * @params  Educationexpid 1 INT 教育经验id YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      * @return
@@ -115,7 +115,7 @@ class Workexp extends Front
         "message":"view success",
         "time":1492593379,
         "data":{
-            "Workexp":{
+            "Educationexp":{
             },
             "signup_userlist":{
             },
@@ -126,32 +126,32 @@ class Workexp extends Front
     }
      *
      */
-    public function WorkexpView(){
+    public function EducationexpView(){
 
         //返回结果
         $data = [];
 
         //获取接口参数
-        $WorkexpId = input('expid');
+        $EducationexpId = input('expid');
 
-        if($WorkexpId <= 0){
+        if($EducationexpId <= 0){
             $this->returndata(14001, 'params error', $this->curTime, $data);
         }
 
         try{
 
-            $Workexp = model('Workexp')->where(['expid'=>$WorkexpId,'delflag'=>0])->find();
+            $Educationexp = model('Educationexp')->where(['expid'=>$EducationexpId,'delflag'=>0])->find();
 
-            if(!$Workexp  ){
-                $this->returndata( 14002, 'Workexp not exist', $this->curTime, $data);
+            if(!$Educationexp  ){
+                $this->returndata( 14002, 'Educationexp not exist', $this->curTime, $data);
             }
 
-            $data['Workexp']=[
-                'expid'                => $Workexp['expid'],
-                'begindate'                 => $Workexp['begindate'],
-                'enddate'               => $Workexp['enddate'],
-                'companyname'            => $Workexp['companyname'],
-                'desc'                => $Workexp['desc'],
+            $data['Educationexp']=[
+                'expid'                => $Educationexp['expid'],
+                'begindate'                 => $Educationexp['begindate'],
+                'enddate'               => $Educationexp['enddate'],
+                'companyname'            => $Educationexp['companyname'],
+                'desc'                => $Educationexp['desc'],
             ];
 
 
@@ -166,8 +166,8 @@ class Workexp extends Front
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    添加工作经历接口
-     * @url     /Workexp/WorkexpAdd
+     * @desc    添加教育经历接口
+     * @url     /Educationexp/EducationexpAdd
      * @method  POST
      * @version 1000
      * @params  begindate 20160101 STRING 开始日期 YES
@@ -178,7 +178,7 @@ class Workexp extends Front
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function WorkexpAdd(){
+    public function EducationexpAdd(){
         //返回结果
         $data = [];
 
@@ -195,19 +195,19 @@ class Workexp extends Front
         }
 
         try{
-            $newWorkexp = [
+            $newEducationexp = [
                 'begindate'=>$beginDate,
                 'enddate'=>$endDate,
                 'companyname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Workexpid = model('Workexp')->add($newWorkexp);
+            $Educationexpid = model('Educationexp')->add($newEducationexp);
 
-            if(!$Workexpid){
-                $this->returndata( 14002, 'Workexp add fail', $this->curTime, $data);
+            if(!$Educationexpid){
+                $this->returndata( 14002, 'Educationexp add fail', $this->curTime, $data);
             }
 
-            $data['expid']=$Workexpid;
+            $data['expid']=$Educationexpid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
         }catch (Exception $e){
@@ -217,8 +217,8 @@ class Workexp extends Front
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    修改工作经历接口
-     * @url     /Workexp/WorkexpEdit
+     * @desc    修改教育经历接口
+     * @url     /Educationexp/EducationexpEdit
      * @method  POST
      * @version 1000
      * @params  expid 1 INT 经历id YES
@@ -230,7 +230,7 @@ class Workexp extends Front
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function WorkexpEdit(){
+    public function EducationexpEdit(){
         //返回结果
         $data = [];
 
@@ -248,19 +248,19 @@ class Workexp extends Front
         }
 
         try{
-            $newWorkexp = [
+            $newEducationexp = [
                 'begindate'=>$beginDate,
                 'enddate'=>$endDate,
                 'companyname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Workexpid = model('Workexp')->where(['expid'=>$expid])->save($newWorkexp);
+            $Educationexpid = model('Educationexp')->where(['expid'=>$expid])->save($newEducationexp);
 
-            if(!$Workexpid){
-                $this->returndata( 14002, 'Workexp add fail', $this->curTime, $data);
+            if(!$Educationexpid){
+                $this->returndata( 14002, 'Educationexp add fail', $this->curTime, $data);
             }
 
-            $data['expid']=$Workexpid;
+            $data['expid']=$Educationexpid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
         }catch (Exception $e){
@@ -273,7 +273,7 @@ class Workexp extends Front
     /**
      * ---------------------------------------------------------------------------------------------
      * @desc    删除自己的经验
-     * @url     /Workexp/WorkexpDel
+     * @url     /Educationexp/EducationexpDel
      * @method  POST
      * @version 1000
      * @params  expid 1 INT 经历id YES
@@ -281,7 +281,7 @@ class Workexp extends Front
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function WorkexpDel(){
+    public function EducationexpDel(){
 
         //返回结果
         $data = [];
