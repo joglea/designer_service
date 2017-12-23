@@ -477,10 +477,11 @@ class User extends Front
             if($DesignworksList){
 
                 foreach($DesignworksList as $oneDesignworks){
+                    $piclist = json_decode($oneDesignworks['pic'],true);
                     $newDesignworksList[]=[
                         'designworksid'=>$oneDesignworks['designworksid'],
                         'title'=>$oneDesignworks['title'],
-                        'pic'=>$this->checkPictureUrl($this->allControl['design_works_pic_url'],$oneDesignworks['pic']),
+                        'pic'=>$piclist?$this->checkPictureUrl($this->allControl['design_works_pic_url'],$piclist[0]):'',
                         'link'=>$oneDesignworks['link']
                     ];
                 }

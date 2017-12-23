@@ -3,18 +3,18 @@ namespace app\index\controller;
 
 use app\common\controller\Front;
 /**
- * Class Educationexp
+ * Class Designworks
  *
- * @classdesc 教育经验接口类
+ * @classdesc 设计作品接口类
  * @package app\index\controller
  */
-class Educationexp extends Front
+class Designworks extends Front
 {
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    教育经验列表接口
-     * @url     /Educationexp/EducationexpList
+     * @desc    设计作品列表接口
+     * @url     /Designworks/DesignworksList
      * @method  GET
      * @version 1000
      * @params  page 1 INT 当前请求的是第几页数据 YES
@@ -26,15 +26,15 @@ class Educationexp extends Front
             "message":"获取成功",
             "time":1492413087,
             "data":{
-                "EducationexpList":[
+                "DesignworksList":[
                 {
-                    "Educationexpid":2,
+                    "Designworksid":2,
                     "userid":1000000005,
                     "nickname":"dd都是",
                     "invited_userid":1000000006,
                     "invited_avatar":"http://omsnjcbau.bkt.clouddn.com/avatar/default01",
                     "invited_nickname":"花满楼",
-                    "invited_Educationexptypename":"",
+                    "invited_Designworkstypename":"",
                     "invited_exp":0,
                     "title":"1111",
                     "content":"1111",
@@ -48,7 +48,7 @@ class Educationexp extends Front
         }
      *
      */
-    public function EducationexpList(){
+    public function DesignworksList(){
         //返回结果
         $data = [];
         $pageSize = config('page_size');
@@ -62,35 +62,35 @@ class Educationexp extends Front
         try{
             $userId = $this->curUserInfo['userid'];
 
-            $EducationexpWhere = ['userid'=>$userId,'delflag'=>0];
-            $order = 'begindate desc,expid desc';
+            $DesignworksWhere = ['userid'=>$userId,'delflag'=>0];
+            $order = 'title desc,designworksid desc';
 
-            $EducationexpList = model('educationexp')->where($EducationexpWhere)->order($order)
+            $DesignworksList = model('educationexp')->where($DesignworksWhere)->order($order)
                 ->limit((($page-1)*$pageSize).','.$pageSize)->select();
-            $EducationexpIds = [];
+            $DesignworksIds = [];
             $userIds = [];
-            foreach($EducationexpList as $oneEducationexp){
-                $EducationexpIds[]=$oneEducationexp['expid'];
+            foreach($DesignworksList as $oneDesignworks){
+                $DesignworksIds[]=$oneDesignworks['designworksid'];
             }
 
-            if(!$EducationexpIds){
+            if(!$DesignworksIds){
                 $this->returndata( 14003, '', $this->curTime, $data);
             }
 
             $this->getAllControl();
 
-            $newEducationexpList = [];
-            foreach($EducationexpList as $oneEducationexp){
-                $newEducationexpList[]=[
-                    'expid'=>$oneEducationexp['expid'],
-                    'begindate'=>$oneEducationexp['begindate'],
-                    'enddate'=>$oneEducationexp['enddate'],
-                    'schoolname'=>$oneEducationexp['schoolname'],
-                    'desc'=>$oneEducationexp['desc'],
+            $newDesignworksList = [];
+            foreach($DesignworksList as $oneDesignworks){
+                $newDesignworksList[]=[
+                    'designworksid'=>$oneDesignworks['designworksid'],
+                    'title'=>$oneDesignworks['title'],
+                    'pic'=>$oneDesignworks['pic'],
+                    'link'=>$oneDesignworks['link'],
+                    'desc'=>$oneDesignworks['desc'],
                 ];
             }
 
-            $data['EducationexpList'] = $newEducationexpList;
+            $data['DesignworksList'] = $newDesignworksList;
             $this->returndata(10000, '获取成功', $this->curTime, $data);
 
         }catch (Exception $e){
@@ -102,11 +102,11 @@ class Educationexp extends Front
     
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    查看教育经验详情
-     * @url     /Educationexp/EducationexpView
+     * @desc    查看设计作品详情
+     * @url     /Designworks/DesignworksView
      * @method  GET
      * @version 1000
-     * @params  Educationexpid 1 INT 教育经验id YES
+     * @params  Designworksid 1 INT 设计作品id YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      * @return
@@ -115,7 +115,7 @@ class Educationexp extends Front
         "message":"view success",
         "time":1492593379,
         "data":{
-            "Educationexp":{
+            "Designworks":{
             },
             "signup_userlist":{
             },
@@ -126,32 +126,32 @@ class Educationexp extends Front
     }
      *
      */
-    public function EducationexpView(){
+    public function DesignworksView(){
 
         //返回结果
         $data = [];
 
         //获取接口参数
-        $EducationexpId = input('expid');
+        $DesignworksId = input('designworksid');
 
-        if($EducationexpId <= 0){
+        if($DesignworksId <= 0){
             $this->returndata(14001, 'params error', $this->curTime, $data);
         }
 
         try{
 
-            $Educationexp = model('Educationexp')->where(['expid'=>$EducationexpId,'delflag'=>0])->find();
+            $Designworks = model('Designworks')->where(['designworksid'=>$DesignworksId,'delflag'=>0])->find();
 
-            if(!$Educationexp  ){
-                $this->returndata( 14002, 'Educationexp not exist', $this->curTime, $data);
+            if(!$Designworks  ){
+                $this->returndata( 14002, 'Designworks not exist', $this->curTime, $data);
             }
 
-            $data['Educationexp']=[
-                'expid'                => $Educationexp['expid'],
-                'begindate'                 => $Educationexp['begindate'],
-                'enddate'               => $Educationexp['enddate'],
-                'schoolname'            => $Educationexp['schoolname'],
-                'desc'                => $Educationexp['desc'],
+            $data['Designworks']=[
+                'designworksid'                => $Designworks['designworksid'],
+                'title'                 => $Designworks['title'],
+                'pic'               => $Designworks['pic'],
+                'link'            => $Designworks['link'],
+                'desc'                => $Designworks['desc'],
             ];
 
 
@@ -166,48 +166,46 @@ class Educationexp extends Front
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    添加教育经历接口
-     * @url     /Educationexp/EducationexpAdd
+     * @desc    添加设计作品接口
+     * @url     /Designworks/DesignworksAdd
      * @method  POST
      * @version 1000
-     * @params  begindate 20160101 STRING 开始日期 YES
-     * @params  enddate 20170101 STRING 结束日期 YES
-     * @params  schoolname 啊啊 STRING 公司名称 YES
-     * @params  desc 啊 STRING 描述 YES
+     * @params  title 标题 STRING 标题 YES
+     * @params  pic ["a.jpg"] STRING 图片json串 YES
+     * @params  link 链接 STRING http://www.baidu.com YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function EducationexpAdd(){
+    public function DesignworksAdd(){
         //返回结果
         $data = [];
 
         //获取接口参数
-        $beginDate = input('request.begindate','');
-        $endDate = input('request.enddate','');
-        $companyName = input('request.schoolname','');
-        $desc = input('request.desc','');
+        $title = input('request.title','');
+        $pic = input('request.pic','[]');
+        $picList = json_decode($pic,true);
+        $link = input('request.link','');
 
 
         //验证参数是否为空
-        if($beginDate==''||$endDate==''||$companyName==''||$desc==''){
+        if($title==''||!$picList||$link==''){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
         try{
-            $newEducationexp = [
-                'begindate'=>$beginDate,
-                'enddate'=>$endDate,
-                'schoolname'=>$companyName,
-                'desc'=>$desc
+            $newDesignworks = [
+                'title'=>$title,
+                'pic'=>$pic,
+                'link'=>$link
             ];
-            $Educationexpid = model('Educationexp')->add($newEducationexp);
+            $Designworksid = model('Designworks')->add($newDesignworks);
 
-            if(!$Educationexpid){
-                $this->returndata( 14002, 'Educationexp add fail', $this->curTime, $data);
+            if(!$Designworksid){
+                $this->returndata( 14002, 'Designworks add fail', $this->curTime, $data);
             }
 
-            $data['expid']=$Educationexpid;
+            $data['designworksid']=$Designworksid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
         }catch (Exception $e){
@@ -217,50 +215,48 @@ class Educationexp extends Front
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    修改教育经历接口
-     * @url     /Educationexp/EducationexpEdit
+     * @desc    修改设计作品接口
+     * @url     /Designworks/DesignworksEdit
      * @method  POST
      * @version 1000
-     * @params  expid 1 INT 经历id YES
-     * @params  begindate 20160101 STRING 开始日期 YES
-     * @params  enddate 20170101 STRING 结束日期 YES
-     * @params  schoolname 啊啊 STRING 公司名称 YES
-     * @params  desc 啊 STRING 描述 YES
+     * @params  designworksid 1 INT 设计作品id YES
+     * @params  title 20160101 STRING 标题 YES
+     * @params  pic 20170101 STRING 图片列表json串 YES
+     * @params  link 啊啊 STRING 链接 YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function EducationexpEdit(){
+    public function DesignworksEdit(){
         //返回结果
         $data = [];
 
         //获取接口参数
-        $expid = input('request.expid','');
-        $beginDate = input('request.begindate','');
-        $endDate = input('request.enddate','');
-        $companyName = input('request.schoolname','');
-        $desc = input('request.desc','');
+        $designworksid = input('request.designworksid','');
+        $title = input('request.title','');
+        $pic = input('request.pic','[]');
+        $picList = json_decode($pic,true);
+        $link = input('request.link','');
 
 
         //验证参数是否为空
-        if($expid<=0||$beginDate==''||$endDate==''||$companyName==''||$desc==''){
+        if($designworksid<=0||$title==''||!$picList||$link==''){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
         try{
-            $newEducationexp = [
-                'begindate'=>$beginDate,
-                'enddate'=>$endDate,
-                'schoolname'=>$companyName,
-                'desc'=>$desc
+            $newDesignworks = [
+                'title'=>$title,
+                'pic'=>$pic,
+                'link'=>$link
             ];
-            $Educationexpid = model('Educationexp')->where(['expid'=>$expid])->save($newEducationexp);
+            $Designworksid = model('Designworks')->where(['designworksid'=>$designworksid])->save($newDesignworks);
 
-            if(!$Educationexpid){
-                $this->returndata( 14002, 'Educationexp add fail', $this->curTime, $data);
+            if(!$Designworksid){
+                $this->returndata( 14002, 'Designworks edit fail', $this->curTime, $data);
             }
 
-            $data['expid']=$Educationexpid;
+            $data['designworksid']=$Designworksid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
         }catch (Exception $e){
@@ -272,22 +268,22 @@ class Educationexp extends Front
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    删除自己的经验
-     * @url     /Educationexp/EducationexpDel
+     * @desc    删除自己的设计作品
+     * @url     /Designworks/DesignworksDel
      * @method  POST
      * @version 1000
-     * @params  expid 1 INT 经历id YES
+     * @params  designworksid 1 INT 设计作品id YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
      */
-    public function EducationexpDel(){
+    public function DesignworksDel(){
 
         //返回结果
         $data = [];
 
         //获取接口参数
-        $expId = input('expid',0);
+        $expId = input('designworksid',0);
 
         if($expId<0){
             $this->returndata(14001, 'params error', $this->curTime, $data);
@@ -295,14 +291,14 @@ class Educationexp extends Front
 
         try{
 
-            $educationexp = model('educationexp')
-                ->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expId,'delflag'=>0])
+            $Designworks = model('Designworks')
+                ->where(['userid'=>$this->curUserInfo['userid'],'designworksid'=>$expId,'delflag'=>0])
                 ->find();
-            if(!$educationexp){
+            if(!$Designworks){
                 $this->returndata( 14002, 'exp not exist', $this->curTime, $data);
             }
-            model('educationexp')
-                ->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expId,'delflag'=>0])
+            model('Designworks')
+                ->where(['userid'=>$this->curUserInfo['userid'],'designworksid'=>$expId,'delflag'=>0])
                 ->update(['delflag'=>1,'updatetime'=>$this->curTime]);
 
 
