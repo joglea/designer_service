@@ -56,7 +56,7 @@ class Designworks extends Front
         $page = input('request.page',1,'intval');
         //验证参数是否为空
         if($page<1){
-            $this->returndata( 14001,  'params error', $this->curTime, $data);
+            $page=1;
         }
 
         try{
@@ -65,7 +65,7 @@ class Designworks extends Front
             $DesignworksWhere = ['userid'=>$userId,'delflag'=>0];
             $order = 'title desc,designworksid desc';
 
-            $DesignworksList = model('educationexp')->where($DesignworksWhere)->order($order)
+            $DesignworksList = model('Designworks')->where($DesignworksWhere)->order($order)
                 ->limit((($page-1)*$pageSize).','.$pageSize)->select();
             $DesignworksIds = [];
             $userIds = [];
@@ -81,12 +81,17 @@ class Designworks extends Front
 
             $newDesignworksList = [];
             foreach($DesignworksList as $oneDesignworks){
+
+                $piclist = json_decode($oneDesignworks['pic'],true);
+                $new_pic_list = [];
+                foreach($piclist as $onepic){
+                    $new_pic_list[]=$this->checkPictureUrl($this->allControl['design_works_pic_url'],$onepic);
+                }
                 $newDesignworksList[]=[
                     'designworksid'=>$oneDesignworks['designworksid'],
                     'title'=>$oneDesignworks['title'],
-                    'pic'=>$oneDesignworks['pic'],
-                    'link'=>$oneDesignworks['link'],
-                    'desc'=>$oneDesignworks['desc'],
+                    'pic'=>$new_pic_list,
+                    'link'=>$oneDesignworks['link']
                 ];
             }
 
@@ -106,7 +111,7 @@ class Designworks extends Front
      * @url     /Designworks/DesignworksView
      * @method  GET
      * @version 1000
-     * @params  Designworksid 1 INT 设计作品id YES
+     * @params  designworksid 1 INT 设计作品id YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      * @return
@@ -146,12 +151,18 @@ class Designworks extends Front
                 $this->returndata( 14002, 'Designworks not exist', $this->curTime, $data);
             }
 
+            $this->getAllControl();
+
+            $piclist = json_decode($Designworks['pic'],true);
+            $new_pic_list = [];
+            foreach($piclist as $onepic){
+                $new_pic_list[]=$this->checkPictureUrl($this->allControl['design_works_pic_url'],$onepic);
+            }
             $data['Designworks']=[
                 'designworksid'                => $Designworks['designworksid'],
                 'title'                 => $Designworks['title'],
-                'pic'               => $Designworks['pic'],
-                'link'            => $Designworks['link'],
-                'desc'                => $Designworks['desc'],
+                'pic'               => $new_pic_list,
+                'link'            => $Designworks['link']
             ];
 
 
