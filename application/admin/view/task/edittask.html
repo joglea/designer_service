@@ -79,6 +79,24 @@
                 </div>
             </div>
 
+
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="stopsignup">停止报名时间</label>
+                        <div class="col-md-10">
+                            <div id="stopsignupdatepicker" class="input-group date date-picker">
+                                <input class="form-control form-filter " name="stopsignup" id="stopsignup"
+                                       value="{$taskinfo.stop_signup_time}" data-format="yyyy-MM-dd hh:mm:ss" type="text" readonly  placeholder="日期"/>
+                                    <span class="add-on input-group-addon">
+                                      <i class="fa fa-calendar fa-6" data-time-icon="fa fa-clock-o" data-date-icon="fa fa-calendar">
+                                      </i>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row ">
                 <div class="col-sm-12">
                     <div class="form-group">
@@ -131,10 +149,16 @@
 
 
 jQuery(document).ready(function() {
-    $('#datepicker').datetimepicker({
+    $('#limittimedatepicker').datetimepicker({
         language: 'zh',
         format : 'yyyy-MM-dd',
         pickTime: false
+    });
+
+    $('#stopsignupdatepicker').datetimepicker({
+        language: 'zh',
+        format : 'yyyy-MM-dd hh:mm:ss',
+        pickTime: true
     });
 });
 

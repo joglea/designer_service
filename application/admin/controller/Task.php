@@ -112,13 +112,13 @@ class Task extends Admin{
                 else if(4==$ordercolumn[0]['column']){
                     $order=' limittime '.$ordercolumn[0]['dir'].' ';
                 }
-                else if(6==$ordercolumn[0]['column']){
+                else if(7==$ordercolumn[0]['column']){
                     $order=' state '.$ordercolumn[0]['dir'].' ';
                 }
-                else if(7==$ordercolumn[0]['column']){
+                else if(8==$ordercolumn[0]['column']){
                     $order=' check_state '.$ordercolumn[0]['dir'].' ';
                 }
-                else if(10==$ordercolumn[0]['column']){
+                else if(11==$ordercolumn[0]['column']){
                     $order=' createtime '.$ordercolumn[0]['dir'].' ';
                 }
             }
@@ -167,6 +167,9 @@ class Task extends Admin{
                 $data[$k][]=date('Y-m-d H:i:s',$v['limittime']);
                 //$data[$k][]=$v['desc'];
                 $data[$k][]='<a class="btn red btn-xs" href="javascript:;" onclick="viewtask('.$v['taskid'].')" title="正文内容">查看</a>';
+
+
+                $data[$k][]=date('Y-m-d H:i:s',$v['stop_signup_time']);
                 //任务状态 1新建接受报名 2停止报名 3订金预付 4尾款支付 5关闭
                 if($v['state']==1){
                     $state= '新建接受报名';
@@ -243,6 +246,7 @@ class Task extends Admin{
             $taskinfo["title"] = input("post.title",'');
             $taskinfo["price"] = input("post.price",'');
             $taskinfo["limittime"] = strtotime(input("post.limittime",''));
+            $taskinfo["stop_signup_time"] = strtotime(input("post.stop_signup_time",''));
             $taskinfo["desc"] = input("post.desc",'');
 
             if(''==$taskinfo['title']){
@@ -258,6 +262,11 @@ class Task extends Admin{
             elseif(''==$taskinfo['limittime']){
                 $code=-4;
                 $msg='截止时间不能为空';
+                $msgtype=MSG_TYPE_WARNING;
+            }
+            elseif(''==$taskinfo['stop_signup_time']){
+                $code=-4;
+                $msg='停止报名时间不能为空';
                 $msgtype=MSG_TYPE_WARNING;
             }
             elseif(''==$taskinfo['desc']){
@@ -321,6 +330,7 @@ class Task extends Admin{
             $taskinfo["title"] = input("post.title",'');
             $taskinfo["price"] = input("post.price",'');
             $taskinfo["limittime"] = strtotime(input("post.limittime",''));
+            $taskinfo["stop_signup_time"] = strtotime(input("post.stop_signup_time",''));
             $taskinfo["desc"] = input("post.desc",'');
             $taskinfo["check_state"] = input("post.check_state",'');
             $taskinfo["check_desc"] = input("post.check_desc",'');
@@ -348,6 +358,11 @@ class Task extends Admin{
             elseif(''==$taskinfo['limittime']){
                 $code=-4;
                 $msg='截止时间不能为空';
+                $msgtype=MSG_TYPE_WARNING;
+            }
+            elseif(''==$taskinfo['stop_signup_time']){
+                $code=-4;
+                $msg='停止报名时间不能为空';
                 $msgtype=MSG_TYPE_WARNING;
             }
             elseif(''==$taskinfo['desc']){
@@ -401,6 +416,7 @@ class Task extends Admin{
             }
             $taskinfo['desc']=htmlspecialchars_decode($taskinfo['desc']);
             $taskinfo['limittime']=date('Y-m-d',$taskinfo['limittime']);
+            $taskinfo['stop_signup_time']=$taskinfo['stop_signup_time']==0?date('Y-m-d H:i:s'):date('Y-m-d H:i:s',$taskinfo['stop_signup_time']);
             $this->assign('taskinfo',$taskinfo);
 
             $tasktypelist = model('Tasktype')->where(array('delflag'=>0))->select();

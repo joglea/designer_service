@@ -45,10 +45,10 @@ class Task extends Front
         try{
 
             //新建可以报名的任务列表
-            $taskWhere = ['check_state'=>2,'state'=>1,'delflag'=>0];
+            $taskWhere = ['check_state'=>2,'state'=>['in',[1,2,3,4]],'delflag'=>0];
 
-                $taskWhere['limittime']=['gt',time()];
-                $order = 'taskid desc';
+                //$taskWhere['limittime']=['gt',time()];
+            $order = 'taskid desc';
 
             $taskList = model('task')->where($taskWhere)->order($order)
                 ->limit((($page-1)*$pageSize).','.$pageSize)->select();
@@ -239,12 +239,18 @@ class Task extends Front
             //
             $task = model('task')->where(['taskid'=>$taskId,'delflag'=>0])->find();
 
+
             $taskData = model('taskdata')->where(['taskid'=>$taskId])->find();
             $taskSignupUserList = model('tasksignup')->where(['taskid'=>$taskId,'delflag'=>0])->select();
 
 
             if(!$task || !$taskData ){
                 $this->returndata( 14002, 'task not exist', $this->curTime, $data);
+            }
+            if($task['state']==1&&$task['stop_signup_time']<=$this->curTime){
+                model('task')->where(['taskid'=>$taskId,'state'=>1,'delflag'=>0])
+                    ->update(['state'=>2,'updatetime'=>$this->curTime]);
+                $task['state']=2;
             }
             $userIds = [];
             foreach($taskSignupUserList as $oneTaskUser){
@@ -272,7 +278,12 @@ class Task extends Front
             }
             //$userHxList = model('userhx')->where(['userid'=>$task['userid']])->find();
 
-
+            if(in_array($this->curUserInfo['userid'],$userIds)){
+                $is_signup=1;
+            }
+            else{
+                $is_signup=0;
+            }
 
             $data['task']=[
                 'taskid'                => $task['taskid'],
@@ -286,6 +297,7 @@ class Task extends Front
 
                 'read_counter'       => $taskData['read_counter'],
                 'signup_counter'       => $taskData['signup_counter'],
+                'is_signup'=>$is_signup
             ];
 
 
@@ -531,6 +543,11 @@ class Task extends Front
 
         try{
             $task = model('task')->where(['taskid'=>$taskid,'delflag'=>0])->find();
+            if($task&&$task['state']==1&&$task['stop_signup_time']<=$this->curTime){
+                model('task')->where(['taskid'=>$taskid,'state'=>1,'delflag'=>0])
+                    ->update(['state'=>2,'updatetime'=>$this->curTime]);
+                $task['state']=2;
+            }
             if(!$task||!($task['check_state']==2&&$task['state']==1)){
                 $this->returndata( 14002, 'task can not signup ', $this->curTime, $data);
             }

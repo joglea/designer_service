@@ -54,6 +54,9 @@
                                 描述
                             </th>
                             <th width="8%">
+                                停止报名时间
+                            </th>
+                            <th width="8%">
                                 报名支付状态
                             </th>
                             <th width="8%">
@@ -111,6 +114,9 @@
                                 <input type="text" class="form-control form-filter input-sm" name="desc">
                             </td>
 
+                            <td>
+                                -
+                            </td>
                             <td>
                                 <select name="state" id="state" class="form-control form-filter input-sm" >
                                     <option value="-1">全部</option>
@@ -237,7 +243,7 @@ var Datatable = function() {
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [1,2,6,9,11]
+                        'targets': [1,2,7,10,12]
                     }],
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)

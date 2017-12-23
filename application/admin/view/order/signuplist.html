@@ -55,9 +55,16 @@
                     <td class="text-center">
                         {php}
                         echo date('Y-m-d H:i:s',$onesignup['paytime']);
-                        {/php}</td>
+                        {/php}
+                    </td>
 				    <td class="text-center">
 
+                        {php}
+                        if($orderinfo['state']==2){
+                        echo '<a title="" id="tail_pay_'.$orderinfo['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="tailpay('.$orderinfo['orderid'].',)"><i class="fa fa-12px fa-edit"></i>支付尾款</a>';
+                        }
+
+                        {/php}
 					</td>
 			  	</tr>
 			  	{/foreach}

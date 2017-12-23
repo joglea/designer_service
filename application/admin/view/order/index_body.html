@@ -583,6 +583,30 @@ function signuplist(orderid)
 
 }
 
+$('.total_price_class').click(function(){
+    var new_total_price = $(this).val();
+    var orderid = $(this).attr('data-orderid');
+    $.ajax({
+        url: '__URL__' + '/changetotalprice',
+        type: 'POST',
+        dataType: 'JSON',
+        timeout: 30000, //超时时间：30秒
+        data: {orderid:orderid,total_price:new_total_price},
+        error: function () {
+            //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+            showNotify(-1,'保存模块权限错误',1,'warning',0);
+        },
+        success: function (data) {
+
+            if(data.code==0)
+            {
+                $('.in_dialog_notify').remove();
+
+            }
+            showNotify(data.code,data.msg,1,data.msg_type,0);
+        }
+    });
+});
 
 
 

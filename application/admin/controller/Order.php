@@ -132,28 +132,29 @@ class Order extends Admin{
                 $data[$k][]=$v['out_order_id'];
                 $data[$k][]=$v['taskid'];
                 if($v['state']==1){
-                    $data[$k][]='<input type="text" name="total_price_'.$v['orderid'].'" class="total_price_class" value="'.$v['total_price'].'"/>';
+                    $data[$k][]='<input type="text" name="total_price_'.$v['orderid'].'" data-orderid="'.$v['orderid'].'" class="total_price_class" value="'.$v['total_price'].'"/>';
                 }
                 else{
                     $data[$k][]=$v['total_price'];
                 }
 
                 if($v['state']==1){
-                    $data[$k][]='<input type="text" name="pay_rate_'.$v['orderid'].'" class="pay_rate_class" value="'.$v['pay_rate'].'"/>';
+                    $data[$k][]='<input type="text" name="pay_rate_'.$v['orderid'].'" data-orderid="'.$v['orderid'].'" class="pay_rate_class" value="'.$v['pay_rate'].'"/>';
                 }
                 else{
                     $data[$k][]=$v['pay_rate'];
                 }
 
-
-
+                $btn='';
                 if($v['state']==1){
                     $state = '未支付';
-                    $btn = '<a title="修改" id="already_pay_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="alreadypay('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>改为已支付</a>';
+                    $btn = '<a title="" id="already_pay_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="alreadypay('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>改为已支付</a>';
+                    $btn .= '<a title="" id="cancel_pay_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="cancelpay('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>取消订单</a>';
 
                 }
                 elseif($v['state']==2){
                     $state = '已支付定金';
+                    //$btn = '<a title="" id="tail_pay_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="tailpay('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>支付尾款</a>';
 
                 }
                 elseif($v['state']==3){
@@ -171,8 +172,8 @@ class Order extends Admin{
                 $data[$k][]=date('Y-m-d H:i:s',$v['createtime']);
                 $data[$k][]='<div style="text-align:center;">'.
                    '<a title="查看报名" id="signuplist_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="signuplist('.$v['orderid'].',2)"><i class="fa fa-12px fa-search"></i>查看报名</a>'.
-                    '<a title="修改" id="editorder_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="editorder('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>修改</a>';
-                ;
+                    //'<a title="修改" id="editorder_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="editorder('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>修改</a>';
+                    '';
                     //'<a id="remove_user_'.$v['userid'].'" class="btn btn-danger btn-xs" href="javascript:;" onclick="removeuser('.$v['userid'].')"><i class="fa fa-12px fa-trash-o"></i>删除</a></div>';
             }
             //var_dump($data);exit;
@@ -191,30 +192,71 @@ class Order extends Admin{
      *
      */
     public function signuplist(){
-        if(IS_POST){
 
-            $verifycompanyinfo = array();
-            $verifycompanyinfo["companyid"] = input("post.companyid",'');
-            $verifycompanyinfo["state"] = input("post.state",'');
 
-            if(0>=$verifycompanyinfo['companyid']){
-                $code=-1;
-                $msg='id不合法';
-                $msgtype=MSG_TYPE_WARNING;
-            }
-            elseif(''==$verifycompanyinfo['state']){
-                $code=-5;
-                $msg='状态不合法';
-                $msgtype=MSG_TYPE_WARNING;
+
+        $allControl = $this->getAllControl();
+        $orderid = input("get.orderid",'');
+        $orderinfo = model('order')->where(['orderid'=>$orderid,'delflag'=>0])->find();
+        if(!$orderinfo){
+            echo '订单不存在';
+        }
+        else{
+            $signuplist = model('orderdetail')->alias('a')
+                ->join('ds_tasksignup b',' a.signupid = b.signupid ')
+                ->where(['a.orderid'=>$orderid,'a.delflag'=>0,'b.delflag'=>0])
+                ->field('a.orderid,a.createtime  paytime,b.*')
+                ->select();
+            $this->assign('orderid',$orderid);
+            $this->assign('orderinfo',$orderinfo);
+            $this->assign('signuplist',$signuplist);
+            $this->assign('allControl',$allControl);
+
+            $this->assign('allControl',$allControl);
+            //var_dump($signuplist);exit;
+            echo $this->fetch();
+        }
+
+
+    }
+
+    public function changetotalprice(){
+        $orderinfo = array();
+        $orderinfo["orderid"] = input("post.orderid",'');
+        $orderinfo["total_price"] = input("post.total_price",'');
+
+        if(0>=$orderinfo['orderid']){
+            $code=-1;
+            $msg='id不合法';
+            $msgtype=MSG_TYPE_WARNING;
+        }
+        else if(0>=$orderinfo['total_price']){
+            $code=-1;
+            $msg='价格不合法';
+            $msgtype=MSG_TYPE_WARNING;
+        }
+        else{
+
+            $orderinfo["updatetime"] = time();
+
+            $isExist=model("order")->where(array('orderid'=>$orderinfo["orderid"],'delflag'=>0))
+                ->find();
+
+            if(!$isExist){
+                $code=-8;
+                $msg='订单不存在';
+                $msgtype=MSG_TYPE_DANGER;
             }
             else{
+                if($isExist['state']!=1){
+                    $code=-8;
+                    $msg='订单不存在';
+                    $msgtype=MSG_TYPE_DANGER;
+                }
+                else{
 
-                $verifycompanyinfo["updatetime"] = time();
-
-
-                $ret = model("verifycompany")
-                    ->where(array('companyid'=>$verifycompanyinfo["companyid"]))
-                    ->update($verifycompanyinfo);
+                }
+                $ret = model("tasktype")->where(array('tasktypeid'=>$orderinfo["tasktypeid"],'delflag'=>0))->update($orderinfo);
                 //var_dump($ret);exit;
                 if($ret>0||0===$ret){
                     $code=0;
@@ -227,43 +269,22 @@ class Order extends Admin{
                     $msgtype=MSG_TYPE_DANGER;
                 }
             }
-            $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
-
-            echo json_encode($ret);exit;
         }
-        else{
+        $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
 
+        echo json_encode($ret);exit;
+    }
 
-            $allControl = $this->getAllControl();
-            $orderid = input("get.orderid",'');
-            $signuplist = model('orderdetail')->alias('a')
-                ->join('ds_tasksignup b',' a.signupid = b.signupid ')
-                ->where(['a.orderid'=>$orderid,'a.delflag'=>0,'b.delflag'=>0])
-                ->field('a.orderid,a.createtime  paytime,b.*')
-                ->select();
-            $this->assign('orderid',$orderid);
-            $this->assign('signuplist',$signuplist);
-            $this->assign('allControl',$allControl);
-            //var_dump($signuplist);exit;
-            echo $this->fetch();
-        }
+    public function changepayrate(){
+
+    }
+    
+    public function alreadypay(){
+
     }
 
 
-    /**
-     * ---------------------------------------------------------------------------------------------
-     * @desc    修改订单接口
-     * @url     /order/editorder
-     * @method  POST
-     * @version 1000
-     * @params  orderid 1 INT 订单id YES
-     * @params  total_price 10.1 STRING 总价 NO
-     * @params  pay_rate 0.1 STRING 定金比例1成 NO
-     * @params  state 2 STRING 订单状态1未支付2已支付3取消支付4尾款到账  YES
-     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
-     * @params  ct '' STRING 当前时间戳 YES
-     *
-     */
+
     public function editorder(){
         if(IS_POST){
 
