@@ -770,6 +770,9 @@ class Task extends Front
         if($taskId<0||!$signupIdsArr){
             $this->returndata(14001, 'params error', $this->curTime, $data);
         }
+        if(count($signupIdsArr)>2){
+            $this->returndata(14001, 'signup max count just can be 2', $this->curTime, $data);
+        }
 
         model('task')->startTrans();
         try{
@@ -794,6 +797,15 @@ class Task extends Front
             if(!$wallet){
                 $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
             }*/
+            //是否已经有未取消的订单
+            $orderexist = model('order')->where(
+                ['userid'=>$this->curUserInfo['userid'],
+                 'taskid'=>$taskId,'state'=>['in',[1,2,4]],'delflag'=>0]
+            )->find();
+
+            if($orderexist){
+                $this->returndata( 14003, 'not cancel state order exist', $this->curTime, $data);
+            }
             $order = [
                 'userid'=>$this->curUserInfo['userid'],
                 'taskid'=>$taskId,

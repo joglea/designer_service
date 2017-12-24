@@ -132,14 +132,16 @@ class Order extends Admin{
                 $data[$k][]=$v['out_order_id'];
                 $data[$k][]=$v['taskid'];
                 if($v['state']==1){
-                    $data[$k][]='<input type="text" name="total_price_'.$v['orderid'].'" data-orderid="'.$v['orderid'].'" class="total_price_class" value="'.$v['total_price'].'"/>';
+                    $data[$k][]='<input style="width:70px;" type="text" name="total_price_'.$v['orderid'].'"  class="total_price_input_'.$v['orderid'].'" value="'.$v['total_price'].'"/>'.
+                        '<a title=""  class="total_price_btn btn green btn-xs" href="javascript:;" onclick="changetotalprice('.$v['orderid'].')"><i class="fa fa-12px fa-edit"></i>保存</a>';
                 }
                 else{
                     $data[$k][]=$v['total_price'];
                 }
 
                 if($v['state']==1){
-                    $data[$k][]='<input type="text" name="pay_rate_'.$v['orderid'].'" data-orderid="'.$v['orderid'].'" class="pay_rate_class" value="'.$v['pay_rate'].'"/>';
+                    $data[$k][]='<input style="width:40px;" type="text" name="pay_rate_'.$v['orderid'].'"  class="pay_rate_input_'.$v['orderid'].'" value="'.$v['pay_rate'].'"/>'.
+                        '<a title=""  class="pay_rate_btn btn green btn-xs" href="javascript:;" onclick="changepayrate('.$v['orderid'].')"><i class="fa fa-12px fa-edit"></i>保存</a>';
                 }
                 else{
                     $data[$k][]=$v['pay_rate'];
@@ -220,6 +222,8 @@ class Order extends Admin{
 
     }
 
+
+
     public function changetotalprice(){
         $orderinfo = array();
         $orderinfo["orderid"] = input("post.orderid",'');
@@ -250,15 +254,304 @@ class Order extends Admin{
             else{
                 if($isExist['state']!=1){
                     $code=-8;
-                    $msg='订单不存在';
+                    $msg='此订单状态不能修改价格';
+                    $msgtype=MSG_TYPE_DANGER;
+                }
+                else{
+                    $ret = model("order")->where(array('orderid'=>$orderinfo["orderid"],'delflag'=>0))->update($orderinfo);
+                    //var_dump($ret);exit;
+                    if($ret>0||0===$ret){
+                        $code=0;
+                        $msg='保存成功';
+                        $msgtype=MSG_TYPE_SUCCESS;
+                    }
+                    else{
+                        $code=-9;
+                        $msg='保存失败';
+                        $msgtype=MSG_TYPE_DANGER;
+                    }
+                }
+
+            }
+        }
+        $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
+
+        echo json_encode($ret);exit;
+    }
+
+    public function changepayrate(){
+        $orderinfo = array();
+        $orderinfo["orderid"] = input("post.orderid",'');
+        $orderinfo["pay_rate"] = input("post.pay_rate",'');
+
+        if(0>=$orderinfo['orderid']){
+            $code=-1;
+            $msg='id不合法';
+            $msgtype=MSG_TYPE_WARNING;
+        }
+        else if(0>=$orderinfo['pay_rate']||$orderinfo['pay_rate']>0.5){
+            $code=-1;
+            $msg='定金比例不合法';
+            $msgtype=MSG_TYPE_WARNING;
+        }
+        else{
+
+            $orderinfo["updatetime"] = time();
+
+            $isExist=model("order")->where(array('orderid'=>$orderinfo["orderid"],'delflag'=>0))
+                ->find();
+
+            if(!$isExist){
+                $code=-8;
+                $msg='订单不存在';
+                $msgtype=MSG_TYPE_DANGER;
+            }
+            else{
+                if($isExist['state']!=1){
+                    $code=-8;
+                    $msg='此订单状态不能修改价格';
+                    $msgtype=MSG_TYPE_DANGER;
+                }
+                else{
+                    $ret = model("order")->where(array('orderid'=>$orderinfo["orderid"],'delflag'=>0))->update($orderinfo);
+                    //var_dump($ret);exit;
+                    if($ret>0||0===$ret){
+                        $code=0;
+                        $msg='保存成功';
+                        $msgtype=MSG_TYPE_SUCCESS;
+                    }
+                    else{
+                        $code=-9;
+                        $msg='保存失败';
+                        $msgtype=MSG_TYPE_DANGER;
+                    }
+                }
+
+            }
+        }
+        $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
+
+        echo json_encode($ret);exit;
+    }
+    
+    public function alreadypay(){
+
+        $orderid = input("post.orderid",'');
+
+        if(0>=$orderid){
+            $code=-1;
+            $msg='id不合法';
+            $msgtype=MSG_TYPE_WARNING;
+        }
+        else{
+
+
+            $isExist=model("order")->where(array('orderid'=>$orderid,'delflag'=>0))
+                ->find();
+
+            if(!$isExist){
+                $code=-8;
+                $msg='订单不存在';
+                $msgtype=MSG_TYPE_DANGER;
+            }
+            else{
+                if($isExist['state']!=1){
+                    $code=-8;
+                    $msg='此订单状态已不是未支付，不能改为已支付';
                     $msgtype=MSG_TYPE_DANGER;
                 }
                 else{
 
+                    $ret = model("order")
+                        ->where(array('orderid'=>$orderid,'delflag'=>0,'state'=>1))
+                        ->update(['state'=>2,'updatetime'=>$this->curTime]);
+                    //var_dump($ret);exit;
+                    if($ret>0||0===$ret){
+
+                        $change_price = bcmul($isExist['pay_rate'],$isExist['total_price'],2);
+
+                        $orderdetaillist = model('orderdetail')->alias('a')
+                            ->join('ds_tasksignup  b' ,'a.signupid=b.signupid')
+                            ->where([
+                                'orderid'=>$orderid,'delflag'=>0
+                            ])->field('b.userid')->select();
+
+                        foreach($orderdetaillist as $oneorderdetail){
+
+                            $wallet = model('wallet')
+                                ->where(['userid'=>$oneorderdetail['userid']])->find();
+
+                            if($wallet){
+                                $data = [
+                                    'now_money'=>bcadd($wallet['now_money'],$change_price,2),
+                                    'updatetime'=>$this->curTime,
+                                ];
+                                //更新余额
+                                model('wallet')
+                                    ->where(['userid'=>$oneorderdetail['userid']])->update($data);
+                            }
+                            else{
+                                $data = [
+                                    'userid'=>$oneorderdetail['userid'],
+                                    'now_money'=>$change_price,
+                                    'createtime'=>$this->curTime,
+                                    'updatetime'=>$this->curTime,
+                                ];
+                                //更新余额
+                                model('wallet')->insertGetId($data);
+                            }
+
+                            //余额变更记录
+                            model('walletrecord')->insertGetId(
+                                [
+                                    'userid'=>$oneorderdetail['userid'],
+                                    'objectid'=>$orderid,
+                                    'objecttype'=>2,//对象类型1支出2收入3充值
+                                    'price'=>$change_price,
+                                    'desc'=>'任务：'.$isExist['taskid'].'的支付定金',
+                                    'createtime'=>$this->curTime,
+                                    'updatetime'=>$this->curTime,
+                                    'delflag'=>0,
+
+                                ]
+                            );
+                        }
+
+                        $code=0;
+                        $msg='保存成功';
+                        $msgtype=MSG_TYPE_SUCCESS;
+                    }
+                    else{
+                        $code=-9;
+                        $msg='保存失败';
+                        $msgtype=MSG_TYPE_DANGER;
+                    }
                 }
-                $ret = model("tasktype")->where(array('tasktypeid'=>$orderinfo["tasktypeid"],'delflag'=>0))->update($orderinfo);
+
+            }
+        }
+        $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
+
+        echo json_encode($ret);exit;
+
+    }
+
+    public function cancelpay(){
+        $orderid = input("post.orderid",'');
+
+        if(0>=$orderid){
+            $code=-1;
+            $msg='id不合法';
+            $msgtype=MSG_TYPE_WARNING;
+        }
+        else{
+
+
+            $isExist=model("order")->where(array('orderid'=>$orderid,'delflag'=>0))
+                ->find();
+
+            if(!$isExist){
+                $code=-8;
+                $msg='订单不存在';
+                $msgtype=MSG_TYPE_DANGER;
+            }
+            else{
+                if($isExist['state']!=1){
+                    $code=-8;
+                    $msg='此订单状态已不是未支付,不能取消';
+                    $msgtype=MSG_TYPE_DANGER;
+                }
+                else{
+
+                    $ret = model("order")
+                        ->where(array('orderid'=>$orderid,'delflag'=>0,'state'=>1))
+                        ->update(['state'=>3,'updatetime'=>$this->curTime]);
+                    //var_dump($ret);exit;
+                    if($ret>0||0===$ret){
+
+                        $orderdetaillist = model('orderdetail')
+                            ->where([
+                                'orderid'=>$orderid,'delflag'=>0
+                            ])->field('signupid')->select();
+
+                        foreach($orderdetaillist as $oneorderdetail){
+
+                            //更新报名状态为最终未选中
+                            model('tasksignup')
+                                ->where(
+                                    ['signupid'=>$oneorderdetail['signupid']]
+                                )
+                                ->update(['suit_state'=>4,'updatetime'=>$this->curTime]);
+                        }
+
+                        $code=0;
+                        $msg='保存成功';
+                        $msgtype=MSG_TYPE_SUCCESS;
+                    }
+                    else{
+                        $code=-9;
+                        $msg='保存失败';
+                        $msgtype=MSG_TYPE_DANGER;
+                    }
+                }
+
+            }
+        }
+        $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
+
+        echo json_encode($ret);exit;
+    }
+
+
+    public function tailpay(){
+        $orderid = input("post.orderid",'');
+        $signupid = input("post.signupid",'');
+
+        if(0>=$orderid||0>=$signupid){
+            $code=-1;
+            $msg='id不合法';
+            $msgtype=MSG_TYPE_WARNING;
+        }
+        else{
+
+
+            $isExistOrder=model("order")
+                ->where(array('orderid'=>$orderid,'delflag'=>0))
+                ->find();
+            $isExistOrderDetail=model("orderdetail")
+                ->where(array('orderid'=>$orderid,'signupid'=>$signupid,'delflag'=>0))
+                ->find();
+
+            if(!$isExistOrder){
+                $code=-7;
+                $msg='订单不存在';
+                $msgtype=MSG_TYPE_DANGER;
+            }
+            elseif(!$isExistOrderDetail){
+                $code=-8;
+                $msg='报名不存在';
+                $msgtype=MSG_TYPE_DANGER;
+            }
+            elseif($isExistOrder['state']!=2){
+                $code=-8;
+                $msg='此订单状态已不是已经支付状态,不能支付尾款';
+                $msgtype=MSG_TYPE_DANGER;
+            }
+            else{
+
+                $ret = model("order")
+                    ->where(array('orderid'=>$orderid,'delflag'=>0,'state'=>2))
+                    ->update(['state'=>4,'updatetime'=>$this->curTime]);
                 //var_dump($ret);exit;
-                if($ret>0||0===$ret){
+                if($ret>0){
+
+                    //更新报名状态为最终选中
+                    model('tasksignup')
+                        ->where(
+                            ['signupid'=>$signupid]
+                        )
+                        ->update(['suit_state'=>3,'updatetime'=>$this->curTime]);
+
                     $code=0;
                     $msg='保存成功';
                     $msgtype=MSG_TYPE_SUCCESS;
@@ -268,19 +561,13 @@ class Order extends Admin{
                     $msg='保存失败';
                     $msgtype=MSG_TYPE_DANGER;
                 }
+
+
             }
         }
         $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
 
         echo json_encode($ret);exit;
-    }
-
-    public function changepayrate(){
-
-    }
-    
-    public function alreadypay(){
-
     }
 
 

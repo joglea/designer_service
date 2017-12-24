@@ -61,7 +61,7 @@
 
                         {php}
                         if($orderinfo['state']==2){
-                        echo '<a title="" id="tail_pay_'.$orderinfo['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="tailpay('.$orderinfo['orderid'].',)"><i class="fa fa-12px fa-edit"></i>支付尾款</a>';
+                        echo '<a title="" id="tail_pay_'.$orderinfo['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="tailpay('.$orderinfo['orderid'].','.$onesignup['signupid'].')"><i class="fa fa-12px fa-edit"></i>支付尾款</a>';
                         }
 
                         {/php}
@@ -76,5 +76,28 @@
 
 <script>
 
+
+function cancelpay(orderid,signupid){
+    $.ajax({
+        url: '__URL__' + '/cancelpay',
+        type: 'POST',
+        dataType: 'JSON',
+        timeout: 30000, //超时时间：30秒
+        data: {orderid:orderid,signupid:signupid},
+        error: function () {
+            //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+            showNotify(-1,'保存错误',1,'warning',0);
+        },
+        success: function (data) {
+
+            if(data.code==0)
+            {
+                $('.in_dialog_notify').remove();
+
+            }
+            showNotify(data.code,data.msg,1,data.msg_type,0);
+        }
+    });
+}
 </script>
 
