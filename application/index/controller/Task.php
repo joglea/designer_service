@@ -557,8 +557,20 @@ class Task extends Front
             $signup = model('tasksignup')->where([
                 'taskid'=>$taskid,
                 'userid'=>$this->curUserInfo['userid'],'delflag'=>0])->find();
+            $is_exist = 0;
+            //已经报名并且没用被选中的话  再次报名就覆盖原先的报名
             if($signup){
-                $this->returndata( 14002, 'signup exist', $this->curTime, $data);
+                if($signup['suit_state']==1){
+                    model('tasksignup')->where([
+                        'taskid'=>$taskid,
+                        'userid'=>$this->curUserInfo['userid'],'delflag'=>0])
+                        ->update(['delflag'=>1,'updatetime'=>$this->curTime]);
+                    $is_exist=1;
+                }
+                else{
+                    $this->returndata( 14002, 'signup exist', $this->curTime, $data);
+                }
+
             }
 
             $newtaskSignup = [
@@ -576,8 +588,10 @@ class Task extends Front
             if(!$signupid){
                 $this->returndata( 14002, 'signup  fail', $this->curTime, $data);
             }
+            if(!$is_exist){
+                model('taskdata')->where(['taskid'=>$taskid])->setInc('signup_counter', 1);
+            }
 
-            model('taskdata')->where(['taskid'=>$taskid])->setInc('signup_counter', 1);
             $data['signupid']=$signupid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
