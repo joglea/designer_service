@@ -422,6 +422,124 @@ class Task extends Front
 
     }
 
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    接受的任务详情
+     * @url     /task/myAcceptTaskView
+     * @method  GET
+     * @version 1000
+     * @params  taskid 1 INT 任务id YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     * @return
+    {
+    "code":10000,
+    "message":"view success",
+    "time":1492593379,
+    "data":{
+    "task|":{
+    "taskid":15,
+    "userid":1000000005,
+    "title":"77",
+    "desc":"<p><br/><img src=\"http://www.ds.com/statics/Plugin/umeditor1_2_2/php/upload/20170822/15034080574507.jpg\" _src=\"http://www.ds.com/statics/Plugin/umeditor1_2_2/php/upload/20170822/15034080574507.jpg\"/></p>",
+    "task_pic":"http://www.ds.com/statics/Image/task/2017082221382753993f2263787.jpg",
+    "price":"77.000",
+    "createtime":1503408076,
+    "limittime":1503331200,
+    "state":2,
+    "read_counter":0,
+    "signup_counter":0
+    },
+    "mytasksignup":{
+    "userid":1000000005,
+    "desc":"111",
+    "pics":[
+    "http://www.ds.com/statics/Image/task/b.jpg"
+    ],
+    "suit_state":3
+    }
+    }
+    }
+     *
+     */
+    public function myAcceptTaskView(){
+
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $taskId = input('taskid');
+
+        if($taskId <= 0){
+            $this->returndata(14001, 'params error', $this->curTime, $data);
+        }
+
+        try{
+
+            $task = model('task')->where(['taskid'=>$taskId,'delflag'=>0])->find();
+
+            $taskData = model('taskdata')->where(['taskid'=>$taskId])->find();
+            $myTaskSignup = model('tasksignup')
+                ->where(['taskid'=>$taskId,'userid'=>$this->curUserInfo['userid'],'delflag'=>0])
+                ->find();
+
+            if(!$task || !$taskData ){
+                $this->returndata( 14002, 'task not exist', $this->curTime, $data);
+            }
+            if(!$myTaskSignup){
+                $this->returndata( 14002, 'my task signup not exist', $this->curTime, $data);
+            }
+            if($task['state']==1&&$task['stop_signup_time']<=$this->curTime){
+                model('task')->where(['taskid'=>$taskId,'state'=>1,'delflag'=>0])
+                    ->update(['state'=>2,'updatetime'=>$this->curTime]);
+                $task['state']=2;
+            }
+
+            $this->getAllControl();
+
+            $userInfo= model('userinfo')->where(['userid'=>$this->curUserInfo['userid']])->find();
+
+            //$userData = model('userdata')->where(['userid'=>$this->curUserInfo['userid']])->find();
+
+            $data['task']=[
+                'taskid'                => $task['taskid'],
+                'userid'                 => $task['userid'],
+                'title'                 => $task['title'],
+                'desc'               => $task['desc'],
+                'task_pic'                  => $this->checkpictureurl($this->allControl['task_image_url'],$task['task_pic']),
+                'price'                => $task['price'],
+                'createtime'            => $task['createtime'],
+                'limittime'              => $task['limittime'],
+                'state'              => $task['state'],
+                'read_counter'       => $taskData['read_counter'],
+                'signup_counter'       => $taskData['signup_counter'],
+            ];
+
+            $piclist = json_decode($myTaskSignup['pics'],true);
+            $new_pic_list = [];
+            if(is_array($piclist)){
+                foreach($piclist as $onepic){
+                    $new_pic_list[]=$this->checkPictureUrl($this->allControl['task_image_url'],$onepic);
+                }
+            }
+
+            $data['mytasksignup'] = [
+                'userid'=>$this->curUserInfo['userid'],
+                'desc'=>$myTaskSignup['desc'],
+                'pics'=>$new_pic_list,
+                'suit_state'=>$myTaskSignup['suit_state'],
+                //'avatar'=>$userInfo?$this->checkPictureUrl($this->allControl['avatar_url'],$userInfo['avatar']):'',
+                //'nickname'=>$userInfo?$userInfo['nickname']:'',
+            ];
+
+            model('taskdata')->where(['taskid'=>$taskId])->setInc('read_counter', 1);
+            $this->returndata(10000, 'view success', $this->curTime, $data);
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+    }
+
     /**
      * ---------------------------------------------------------------------------------------------
      * @desc    任务报名人员列表接口

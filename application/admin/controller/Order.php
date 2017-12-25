@@ -371,9 +371,9 @@ class Order extends Admin{
                         $change_price = bcmul($isExist['pay_rate'],$isExist['total_price'],2);
 
                         $orderdetaillist = model('orderdetail')->alias('a')
-                            ->join('ds_tasksignup  b' ,'a.signupid=b.signupid')
+                            ->join('ds_tasksignup b' ,'a.signupid=b.signupid')
                             ->where([
-                                'orderid'=>$orderid,'delflag'=>0
+                                'a.orderid'=>$orderid,'a.delflag'=>0
                             ])->field('b.userid')->select();
 
                         foreach($orderdetaillist as $oneorderdetail){
@@ -522,12 +522,20 @@ class Order extends Admin{
                 ->where(array('orderid'=>$orderid,'signupid'=>$signupid,'delflag'=>0))
                 ->find();
 
+            $isExisttasksignup=model("tasksignup")
+                ->where(array('signupid'=>$signupid,'delflag'=>0))
+                ->find();
             if(!$isExistOrder){
                 $code=-7;
                 $msg='订单不存在';
                 $msgtype=MSG_TYPE_DANGER;
             }
             elseif(!$isExistOrderDetail){
+                $code=-8;
+                $msg='报名订单详情不存在';
+                $msgtype=MSG_TYPE_DANGER;
+            }
+            elseif(!$isExisttasksignup){
                 $code=-8;
                 $msg='报名不存在';
                 $msgtype=MSG_TYPE_DANGER;
@@ -551,6 +559,54 @@ class Order extends Admin{
                             ['signupid'=>$signupid]
                         )
                         ->update(['suit_state'=>3,'updatetime'=>$this->curTime]);
+
+
+                    $orderdetailcount = model('orderdetail')
+                        ->where([
+                            'orderid'=>$orderid,'delflag'=>0
+                        ])->count();
+                    $change_price = $isExistOrder['total_price'] - bcmul(bcmul($isExistOrder['pay_rate'],$isExistOrder['total_price'],2),$orderdetailcount,2);
+
+
+
+                        $wallet = model('wallet')
+                            ->where(['userid'=>$isExisttasksignup['userid']])->find();
+
+                        if($wallet){
+                            $data = [
+                                'now_money'=>bcadd($wallet['now_money'],$change_price,2),
+                                'updatetime'=>$this->curTime,
+                            ];
+                            //更新余额
+                            model('wallet')
+                                ->where(['userid'=>$isExisttasksignup['userid']])->update($data);
+                        }
+                        else{
+                            $data = [
+                                'userid'=>$isExisttasksignup['userid'],
+                                'now_money'=>$change_price,
+                                'createtime'=>$this->curTime,
+                                'updatetime'=>$this->curTime,
+                            ];
+                            //更新余额
+                            model('wallet')->insertGetId($data);
+                        }
+
+                        //余额变更记录
+                        model('walletrecord')->insertGetId(
+                            [
+                                'userid'=>$isExisttasksignup['userid'],
+                                'objectid'=>$orderid,
+                                'objecttype'=>2,//对象类型1支出2收入3充值
+                                'price'=>$change_price,
+                                'desc'=>'任务：'.$isExistOrder['taskid'].'的支付定金',
+                                'createtime'=>$this->curTime,
+                                'updatetime'=>$this->curTime,
+                                'delflag'=>0,
+
+                            ]
+                        );
+
 
                     $code=0;
                     $msg='保存成功';
@@ -618,7 +674,7 @@ class Order extends Admin{
                         }
                         if($orderinfo["state"]==2){
                             $orderdetaillist = model('orderdetail')->alias('a')
-                                ->join('ds_tasksignup  b' ,'a.signupid=b.signupid')
+                                ->join('ds_tasksignup b' ,'a.signupid=b.signupid')
                                 ->where([
                                 'orderid'=>$orderinfo["orderid"],'delflag'=>0
                             ])->field('b.userid')->select();
