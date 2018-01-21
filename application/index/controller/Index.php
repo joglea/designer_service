@@ -152,6 +152,9 @@ class Index extends Front
                         'cityid'=>$cityinfo['cityid'],
                         'updatetime'=>$this->curTime
                     ]);
+                $userBase = model('userbase')->where(['userid'=>$userThird['userid']])->find();
+
+                $this->doLogin($userBase,$this->dsToken);
                 $this->returndata(10000, 'save success', $this->curTime, $data);
             }
             else{
