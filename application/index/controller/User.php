@@ -81,7 +81,7 @@ class User extends Front
                 $this->curUserInfo['email']= $userinfo['email'];
             }
 
-            if(in_array($sex,[1,2])){
+            if(in_array($sex,[0,1,2])){
                 $userinfo['sex'] = $sex;
                 $this->curUserInfo['sex']= $userinfo['sex'];
             }
@@ -164,6 +164,7 @@ class User extends Front
                     'jointime'          => $this->curUserInfo['jointime'],
                     "token"             => $this->curUserInfo['token'],
                     "nickname"          => $this->curUserInfo['nickname'],
+                    "email"             => $this->curUserInfo['email'],
                     "avatar"            => $this->curUserInfo['avatar'],
                     //""               => $userInfo['sex'],
                     "sex"               => $this->curUserInfo['sex'],
@@ -206,6 +207,7 @@ class User extends Front
                     "country_code"      => $userBase['country_code'],
                     'jointime'          => $userBase['createtime'],
                     "nickname"          => $userInfo['nickname'],
+                    "email"             => $userInfo['email'],
                     "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$userInfo['avatar']),
                     //""               => $userInfo['sex'],
                     "sex"               => $userInfo['sex'],

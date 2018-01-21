@@ -215,8 +215,9 @@ class Front extends Base {
             "tel"               => $userBase['tel'],
             'jointime'          => $userBase['createtime'],
             "token"             => $lastLoginToken,
-            "brief"      => $userInfo['brief'],
+            "brief"             => $userInfo['brief'],
             "nickname"          => $userInfo['nickname'],
+            "email"             => $userInfo['email'],
             "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$userInfo['avatar']),
             //""               => $userInfo['sex'],
             "sex"               => $userInfo['sex'],
@@ -224,8 +225,8 @@ class Front extends Base {
             "city"              => $city,
             "verify_state"      => $userInfo['verify_state'],
             "verifyid"          => $userInfo['verifyid'],
-            "personlink"      => $userInfo['personlink'],
-            "status"          => $userInfo['status'],
+            "personlink"        => $userInfo['personlink'],
+            "status"            => $userInfo['status'],
 
 
 
@@ -269,6 +270,7 @@ class Front extends Base {
         $newUserInfo['userid'] = $userId;
         $newUserInfo['brief'] = '';
         $newUserInfo['nickname'] = $nickName;
+        $newUserInfo['email'] = '';
         $newUserInfo['avatar'] = $avatar;
         $newUserInfo['sex'] = 0;
         $newUserInfo['birthday'] = '';
@@ -317,6 +319,7 @@ class Front extends Base {
             "token"             => $lastLoginToken,
             "brief"             => $newUserInfo['brief'],
             "nickname"          => $newUserInfo['nickname'],
+            "email"             => $newUserInfo['email'],
             "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$newUserInfo['avatar']),
             //""               => $userInfo['sex'],
             "sex"               => $newUserInfo['sex'],
