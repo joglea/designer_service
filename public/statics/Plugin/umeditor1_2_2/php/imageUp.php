@@ -23,7 +23,7 @@
 
     }
     else{
-        $info['url']='http://'.config('server_host').$info['url'];
+        $info['url']='http://api.mrdgr.com/'.$info['url'];
     }
 
     /**
