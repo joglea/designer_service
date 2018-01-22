@@ -14,6 +14,7 @@ require_once APP_PATH . "/../extend/wxpay/example/WxPay.JsApiPay.php";
 class Task extends Front
 {
 
+
     /**
      * ---------------------------------------------------------------------------------------------
      * @desc    任务列表接口

@@ -9,7 +9,7 @@ return array(
 
     //所有接口控制器关联映射
     'CONTROLLER_LIST'=>array(
-        'index','user','task','workexp','wallet','educationexp','designworks'
+        'index','user','task','workexp','wallet','educationexp','designworks','recommend'
     )
 
 );

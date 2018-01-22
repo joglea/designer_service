@@ -255,13 +255,13 @@ class Workexp extends Front
                 'companyname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Workexpid = model('Workexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expid])->update($newWorkexp);
+            $ret = model('Workexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expid])->update($newWorkexp);
 
-            if(!$Workexpid){
+            if($ret===false){
                 $this->returndata( 14002, 'Workexp edit fail', $this->curTime, $data);
             }
 
-            $data['expid']=$Workexpid;
+            $data['expid']=$expid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
         }catch (Exception $e){

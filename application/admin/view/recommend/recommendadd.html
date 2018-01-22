@@ -1,0 +1,139 @@
+
+
+<link href="/statics/Plugin/bootstrap-fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+
+<script src="/statics/Plugin/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="/statics/Plugin/bootstrap-fileinput/js/locales/zh.js"></script>
+
+
+<style>
+    .edui-scale{
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+<div class="dialog_notify"></div>
+<form id="recommendaddform" role="form" class="form-horizontal" method="post">
+    <div class="form-body">
+        <div class="box-content bordered">
+
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="image_url">推荐图</label>
+                        <div class="col-md-10">
+                            <input id="image_url_upload" name="image_url_upload" value="" type="file"  class="file-loading">
+                            <input id="image_url" name="image_url" type="hidden" value="" class="file-loading">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="sort">排序值</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value=""
+                               name="sort" id="sort" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="state">上架状态</label>
+                        <div class="col-md-10">
+                            <select name="state" id="state" class="form-control">
+                                <option  value="1">未上架</option>
+                                <option  value="2">已上架</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="object_value">跳转对象</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value=""
+                                   name="object_value" id="object_value" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+
+
+$("#image_url_upload").fileinput({
+    language: 'zh',
+    uploadUrl: "/index.php/admin/login/uploadImg",
+    uploadExtraData:{
+        module: 'task',
+    },
+    showCaption:true,
+    showPreview: true,
+    uploadAsync: true,
+    maxFileCount: 1,
+    autoReplace:true,
+    overwriteInitial: true,
+    initialPreviewAsData: true,
+    //initialPreview:'',
+    //initialPreviewConfig:'',
+    allowedFileExtensions : ['jpg', 'png','gif'],
+}).on("filebatchselected", function(event, files) {
+    $("#image_url_upload").fileinput("upload");
+}).on('fileuploaded', function(event, data, id, index) {
+
+    $('#image_url').val(data.response.img_data.storage_name);
+    var i_parent = $(this).parent().parent().parent().children('.file-caption').children('.file-caption-name');
+    console.log(i_parent.html());
+    i_parent.html(i_parent.children('i'));
+    i_parent.append(data.response.img_data.storage_name);
+});
+
+
+
+$('#recommendaddform').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'fa fa-check',
+            invalid: 'fa fa-times',
+            validating: 'fa fa-refresh'
+        },
+        //container:'custom',
+        fields: {
+            'sort': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">不能为空</div>'
+                    }
+                }
+            },
+            'object_value': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">不能为空</div>'
+                    }
+                }
+            }
+        }
+    })
+    .on('success.form.bv', function(e) {
+
+    });
+
+
+</script>
+

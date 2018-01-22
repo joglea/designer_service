@@ -396,6 +396,72 @@ class Login extends Base
 
 
 
+    /**
+     * 上传图片到OSS
+     */
+    public function uploadImg(){
+
+
+        $newimgurl='';
+        if(!$_FILES){
+            $msg='不合法';
+        }
+        elseif(''==$_FILES['image_url_upload']){
+            $msg='图片不能为空';
+        }
+        else {
+
+            if ((($_FILES["image_url_upload"]["type"] == "image/gif")
+                    || ($_FILES["image_url_upload"]["type"] == "image/jpeg")
+                    || ($_FILES["image_url_upload"]["type"] == "image/pjpeg")|| ($_FILES["image_url_upload"]["type"] == "image/png"))
+                && ($_FILES["image_url_upload"]["size"] < 10000000)
+            ) {
+                if ($_FILES["image_url_upload"]["error"] > 0) {
+                    $code    = - 11;
+                    $msg     = '上传错误' . $_FILES["image_url_upload"]["error"];
+                    $msgtype = MSG_TYPE_DANGER;
+                } else {
+                    $imgname = $_FILES["image_url_upload"]["name"];
+                    $imgurl  = date ('YmdHis') . $_FILES["image_url_upload"]["name"];
+
+                    move_uploaded_file ($_FILES["image_url_upload"]["tmp_name"] ,
+                        config('TASK_UPLOAD_IMAGE_DIR') . $imgurl);
+
+
+
+                    $newimgurl='http://'.config('server_host').'/'.config('TASK_UPLOAD_IMAGE_DIR').'/'. $imgurl ;
+
+                    $msg     = '上传成功' ;
+                }
+            } else {
+                $msg     = '上传错误Invalid file';
+            }
+        }
+
+
+        $ret = [];
+        if(!$newimgurl){
+
+            $ret['error']=$msg;
+        }
+        else{
+            $ret['img_data']=[
+                'storage_name'=>$imgurl,
+                'url'=>$newimgurl
+            ];
+            $ret['initialPreviewConfig']=[
+                'caption'=>'333',
+                'key'=>1
+            ];
+        }
+
+        echo json_encode($ret);exit;
+
+
+
+    }
+
+
 
 
 

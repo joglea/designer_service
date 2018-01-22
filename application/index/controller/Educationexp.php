@@ -255,13 +255,13 @@ class Educationexp extends Front
                 'schoolname'=>$companyName,
                 'desc'=>$desc
             ];
-            $Educationexpid = model('Educationexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expid])->update($newEducationexp);
+            $ret = model('Educationexp')->where(['userid'=>$this->curUserInfo['userid'],'expid'=>$expid])->update($newEducationexp);
 
-            if(!$Educationexpid){
+            if($ret===false){
                 $this->returndata( 14002, 'Educationexp edit fail', $this->curTime, $data);
             }
 
-            $data['expid']=$Educationexpid;
+            $data['expid']=$expid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
         }catch (Exception $e){

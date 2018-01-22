@@ -252,13 +252,13 @@ class Designworks extends Front
                 'pic'=>$pic,
                 'desc'=>$desc
             ];
-            $Designworksid = model('Designworks')->where(['userid'=>$this->curUserInfo['userid'],'designworksid'=>$designworksid])->update($newDesignworks);
+            $ret = model('Designworks')->where(['userid'=>$this->curUserInfo['userid'],'designworksid'=>$designworksid])->update($newDesignworks);
 
-            if(!$Designworksid){
+            if($ret===false){
                 $this->returndata( 14002, 'Designworks edit fail', $this->curTime, $data);
             }
 
-            $data['designworksid']=$Designworksid;
+            $data['designworksid']=$designworksid;
             $this->returndata(10000, 'do success', $this->curTime, $data);
 
         }catch (Exception $e){
