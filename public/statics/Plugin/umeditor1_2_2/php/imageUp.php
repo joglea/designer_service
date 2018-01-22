@@ -23,7 +23,7 @@
 
     }
     else{
-        $info['url']='http://api.mrdgr.com/'.$info['url'];
+        $info['url']='http://api.mrdgr.com/statics/Plugin/umeditor1_2_2/php/'.$info['url'];
     }
 
     /**
