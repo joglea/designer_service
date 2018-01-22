@@ -640,7 +640,7 @@ class Task extends Front
      * @version 1000
      * @params  taskid 1 INT 任务id YES
      * @params  desc 啊 STRING 描述 YES
-     * @params  pics ["aa.jpg"] STRING 图片列表 YES
+     * @params  pics ["aa.jpg"] STRING 图片列表 NO
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
@@ -657,7 +657,7 @@ class Task extends Front
 
 
         //验证参数是否为空
-        if($taskid<=0 || $desc==''||!$newPics){
+        if($taskid<=0 || $desc==''){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
@@ -695,7 +695,7 @@ class Task extends Front
                 'taskid'=>$taskid,
                 'userid'=>$this->curUserInfo['userid'],
                 'desc'=>$desc,
-                'pics'=>json_encode($newPics),
+                'pics'=>json_encode((array)$newPics),
                 'suit_state'=>1,//被商家选中的适合报名状态 1初稿未选中 2初稿被选中 3最终选中 4最终未选中
                 'createtime'=>$this->curTime,
                 'updatetime'=>$this->curTime,

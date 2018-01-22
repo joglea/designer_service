@@ -19,6 +19,13 @@
     $callback=$_GET['callback'];
 
     $info = $up->getFileInfo();
+    if(strpos($info['url'],'http')===0){
+
+    }
+    else{
+        $info['url']='http://'.config('server_host').$info['url'];
+    }
+
     /**
      * 返回数据
      */
