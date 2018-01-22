@@ -22,6 +22,7 @@ class Task extends Front
      * @method  GET
      * @version 1000
      * @params  page 1 INT 当前请求的是第几页数据 YES
+     * @params  tasktypeid 1 INT 任务分类id为0表示全部 YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
@@ -34,21 +35,27 @@ class Task extends Front
 
         $pageSize = config('page_size');
         //获取接口参数
-
         $page = input('request.page',1,'intval');
+        $tasktypeid = input('request.tasktypeid',0,'intval');
+
 
         //验证参数是否为空
         if($page<1){
             $page = 1;
         }
-
+        if($tasktypeid<0){
+            $this->returndata(14001, 'params error', $this->curTime, $data);
+        }
 
         try{
 
+
             //新建可以报名的任务列表
             $taskWhere = ['check_state'=>2,'state'=>['in',[1,2,3,4]],'delflag'=>0];
-
-                //$taskWhere['limittime']=['gt',time()];
+            if($tasktypeid>0){
+                $taskWhere['tasktypeid']=$tasktypeid;
+            }
+            //$taskWhere['limittime']=['gt',time()];
             $order = 'state asc,taskid desc';
 
             $taskList = model('task')->where($taskWhere)->order($order)

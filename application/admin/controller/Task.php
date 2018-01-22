@@ -25,7 +25,7 @@ class Task extends Admin{
                 'text'=>'添加'),
                 array(
                     'class'=>'btn btn-fit-height grey-salt refresh',
-                    'icon'=>"<i class='fa fa-plus'></i>",
+                    'icon'=>"<i class='fa fa-refresh'></i>",
                     'text'=>'刷新')
             )
         );
@@ -38,6 +38,13 @@ class Task extends Admin{
             {
                 $where['title'] = ['like','%'.$title.'%'];
             }
+
+            $tasktypeid = input('post.tasktypeid','-1');  //操作人ID
+            if($tasktypeid !='-1')
+            {
+                $where['tasktypeid'] = $tasktypeid;
+            }
+
             $price = input('post.price','0');;  //
             if($price>0 )
             {
@@ -71,6 +78,12 @@ class Task extends Admin{
             if('-1' != $state )
             {
                 $where['state']=$state;
+            }
+
+            $check_state = input('post.check_state','-1'); //
+            if('-1' != $check_state )
+            {
+                $where['check_state']=$check_state;
             }
 
             $createstarttime = input('post.createstarttime','');  //开始时间
