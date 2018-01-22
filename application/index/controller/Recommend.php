@@ -17,7 +17,6 @@ class Recommend extends Front
      * @url     /Recommend/RecommendList
      * @method  GET
      * @version 1000
-     * @params  page 1 INT 当前请求的是第几页数据 YES
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      * @return
@@ -31,6 +30,12 @@ class Recommend extends Front
     "recommend_id|推荐id":16,
     "image_url|推荐图片":"http://www.ds.com/statics/Image/task//20180122185116body_bg_page.jpg",
     "object_value|跳转任务id":"111"
+    }
+    ],
+    "tasktypeList|任务分类列表":[
+    {
+    "tasktypeid|分类id":1,
+    "type_name|分类名称":"aa1"
     }
     ]
     }
@@ -59,7 +64,25 @@ class Recommend extends Front
                 ];
             }
 
-            $data['RecommendList'] = $newRecommendList;
+            $data['recommendList'] = $newRecommendList;
+
+            $tasktypeWhere = ['delflag'=>0];
+            $order = 'type_sort desc,tasktypeid desc';
+
+            $tasktypeList = model('tasktype')->where($tasktypeWhere)->order($order)
+                ->select();
+            $newtasktypeList = [];
+            foreach($tasktypeList as $onetasktype){
+
+                $newtasktypeList[]=[
+                    'tasktypeid'=>$onetasktype['tasktypeid'],
+                    'type_name'=>$onetasktype['type_name']
+                ];
+            }
+
+            $data['tasktypeList'] = $newtasktypeList;
+
+
             $this->returndata(10000, '获取成功', $this->curTime, $data);
 
         }catch (Exception $e){

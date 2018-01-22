@@ -232,21 +232,47 @@ class Verifycompany extends Admin{
 
                 $verifycompanyinfo["updatetime"] = time();
 
-
-                $ret = model("verifycompany")
-                    ->where(array('companyid'=>$verifycompanyinfo["companyid"]))
-                    ->update($verifycompanyinfo);
-                //var_dump($ret);exit;
-                if($ret>0||0===$ret){
-                    $code=0;
-                    $msg='保存成功';
-                    $msgtype=MSG_TYPE_SUCCESS;
-                }
-                else{
+                $companyInfo = model("verifycompany")
+                    ->where(array('companyid'=>$verifycompanyinfo["companyid"],'delflag'=>0))
+                    ->find();
+                if(!$companyInfo){
                     $code=-9;
-                    $msg='保存失败';
+                    $msg='公司信息不存在';
                     $msgtype=MSG_TYPE_DANGER;
                 }
+                else{
+                    $ret = model("verifycompany")
+                        ->where(array('companyid'=>$verifycompanyinfo["companyid"]))
+                        ->update($verifycompanyinfo);
+                    //var_dump($ret);exit;
+                    if($ret>0||0===$ret){
+                        if($verifycompanyinfo['state']==2){
+                            model("userinfo")
+                                ->where(array('userid'=>$companyInfo["userid"]))
+                                ->update(['verify_state'=>2,
+                                          'verifyid'=>$verifycompanyinfo["companyid"],
+                                          'updatetime'=>time()]);
+                        }
+                        elseif($verifycompanyinfo['state']==3){
+                            model("userinfo")
+                                ->where(array('userid'=>$companyInfo["userid"]))
+                                ->update(['verify_state'=>0,
+                                          'verifyid'=>0,
+                                          'updatetime'=>time()]);
+                        }
+
+
+                        $code=0;
+                        $msg='保存成功';
+                        $msgtype=MSG_TYPE_SUCCESS;
+                    }
+                    else{
+                        $code=-9;
+                        $msg='保存失败';
+                        $msgtype=MSG_TYPE_DANGER;
+                    }
+                }
+
             }
             $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
 

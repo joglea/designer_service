@@ -148,6 +148,8 @@ class Front extends Base {
     public function checkLogin(){
 
         $this->curUserInfo = cache($this->dsToken);
+
+
 //var_dump($this->dsToken,$this->curUserInfo);exit;
         if(!$this->curUserInfo){
             $userLogin = model('userlogin')->where(['last_login_token'=>$this->dsToken,'delflag'=>0])->find();
@@ -159,6 +161,17 @@ class Front extends Base {
                 }
 
                 $this->doLogin($userBase,$this->dsToken);
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            $userInfo = model('userinfo')->where(['userid'=>$this->curUserInfo['userid']])->find();
+            if($userInfo){
+
+                $this->curUserInfo['verify_state']= $userInfo['verify_state'];
+                $this->curUserInfo['verifyid']= $userInfo['verifyid'];
             }
             else{
                 return false;

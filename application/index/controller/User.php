@@ -238,12 +238,12 @@ class User extends Front
      * @url     /user/verifyCompany
      * @method  POST
      * @version 1000
-     * @params  companyname '' STRING 头像 NO
-     * @params  businesslicense '' STRING 昵称 NO
-     * @params  license_pic '' STRING 手机号 NO
-     * @params  truename '' STRING 邮箱 NO
-     * @params  idcard '1' STRING 0未知性别1男2女 NO
-     * @params  idcard_pic '1990-03-01' STRING 生日 NO
+     * @params  companyname '' STRING 公司名 NO
+     * @params  businesslicense '' STRING 营业执照号 NO
+     * @params  license_pic '' STRING 营业执照照片 NO
+     * @params  truename '' STRING 姓名 NO
+     * @params  idcard '1' STRING 身份证号 NO
+     * @params  idcard_pic '' STRING 身份证照片 NO
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
@@ -315,9 +315,9 @@ class User extends Front
      * @url     /user/verifyDesigner
      * @method  POST
      * @version 1000
-     * @params  truename '' STRING 邮箱 NO
-     * @params  idcard '1' STRING 0未知性别1男2女 NO
-     * @params  idcard_pic '1990-03-01' STRING 生日 NO
+     * @params  truename '' STRING 真名 NO
+     * @params  idcard '1' STRING 身份证号 NO
+     * @params  idcard_pic '' STRING 身份证照片 NO
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *

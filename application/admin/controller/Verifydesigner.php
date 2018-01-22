@@ -207,20 +207,47 @@ class Verifydesigner extends Admin{
 
                 $verifydesignerinfo["updatetime"] = time();
 
-
-                $ret = model("verifydesigner")
-                    ->where(array('designerid'=>$verifydesignerinfo["designerid"]))
-                    ->update($verifydesignerinfo);
-                //var_dump($ret);exit;
-                if($ret>0||0===$ret){
-                    $code=0;
-                    $msg='保存成功';
-                    $msgtype=MSG_TYPE_SUCCESS;
+                $designerInfo = model("verifydesigner")
+                    ->where(array('designerid'=>$verifydesignerinfo["designerid"],'delflag'=>0))
+                    ->find();
+                if(!$designerInfo){
+                    $code=-9;
+                    $msg='公司信息不存在';
+                    $msgtype=MSG_TYPE_DANGER;
                 }
                 else{
-                    $code=-9;
-                    $msg='保存失败';
-                    $msgtype=MSG_TYPE_DANGER;
+                    $ret = model("verifydesigner")
+                        ->where(array('designerid'=>$verifydesignerinfo["designerid"]))
+                        ->update($verifydesignerinfo);
+                    //var_dump($ret);exit;
+                    if($ret>0||0===$ret){
+
+                        if($verifydesignerinfo['state']==2){
+                            model("userinfo")
+                                ->where(array('userid'=>$designerInfo["userid"]))
+                                ->update(['verify_state'=>2,
+                                          'verifyid'=>$verifydesignerinfo["designerid"],
+                                          'updatetime'=>time()]);
+
+                        }
+                        elseif($verifydesignerinfo['state']==3){
+                            model("userinfo")
+                                ->where(array('userid'=>$designerInfo["userid"]))
+                                ->update(['verify_state'=>0,
+                                          'verifyid'=>0,
+                                          'updatetime'=>time()]);
+                            //var_dump(model("userinfo")->getLastSql());exit;
+                        }
+                        $code=0;
+                        $msg='保存成功';
+                        $msgtype=MSG_TYPE_SUCCESS;
+                    }
+                    else{
+                        $code=-9;
+                        $msg='保存失败';
+                        $msgtype=MSG_TYPE_DANGER;
+                    }
+
                 }
             }
             $ret= array('code'=>$code,'msg'=>$msg,'msg_type'=>$msgtype);
