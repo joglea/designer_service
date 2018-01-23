@@ -156,26 +156,31 @@ class User extends Front
 
         try{
             if($userId == 0){
+                if($this->curUserInfo){
+                    $data['user'] = array(
+                        "userid"            => $this->curUserInfo['userid'],
+                        "country_code"      => $this->curUserInfo['country_code'],
+                        "tel"               => $this->curUserInfo['tel'],
+                        'jointime'          => $this->curUserInfo['jointime'],
+                        "token"             => $this->curUserInfo['token'],
+                        "nickname"          => $this->curUserInfo['nickname'],
+                        "email"             => $this->curUserInfo['email'],
+                        "avatar"            => $this->curUserInfo['avatar'],
+                        //""               => $userInfo['sex'],
+                        "sex"               => $this->curUserInfo['sex'],
+                        "birthday"          => $this->curUserInfo['birthday'],
+                        "city"              => $this->curUserInfo['city'],
+                        "personlink"      => $this->curUserInfo['personlink'],
+                        "brief"      => $this->curUserInfo['brief'],
+                        "verify_state"      => $this->curUserInfo['verify_state'],
+                        "verifyid"          => $this->curUserInfo['verifyid'],
+                        "status"          => $this->curUserInfo['status'],        //环信密码
+                    );
+                }
+                else{
+                    $this->returndata( 14001,  'not login ', $this->curTime, $data);
+                }
 
-                $data['user'] = array(
-                    "userid"            => $this->curUserInfo['userid'],
-                    "country_code"      => $this->curUserInfo['country_code'],
-                    "tel"               => $this->curUserInfo['tel'],
-                    'jointime'          => $this->curUserInfo['jointime'],
-                    "token"             => $this->curUserInfo['token'],
-                    "nickname"          => $this->curUserInfo['nickname'],
-                    "email"             => $this->curUserInfo['email'],
-                    "avatar"            => $this->curUserInfo['avatar'],
-                    //""               => $userInfo['sex'],
-                    "sex"               => $this->curUserInfo['sex'],
-                    "birthday"          => $this->curUserInfo['birthday'],
-                    "city"              => $this->curUserInfo['city'],
-                    "personlink"      => $this->curUserInfo['personlink'],
-                    "brief"      => $this->curUserInfo['brief'],
-                    "verify_state"      => $this->curUserInfo['verify_state'],
-                    "verifyid"          => $this->curUserInfo['verifyid'],
-                    "status"          => $this->curUserInfo['status'],        //环信密码
-                );
             }
             else{
 
@@ -496,7 +501,8 @@ class User extends Front
                         'designworksid'=>$oneDesignworks['designworksid'],
                         'title'=>$oneDesignworks['title'],
                         'pic'=>$new_pic_list,
-                        'link'=>$oneDesignworks['link']
+                        'desc'=>$oneDesignworks['desc']
+                        //'link'=>$oneDesignworks['link']
                     ];
                 }
             }
