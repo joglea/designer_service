@@ -429,7 +429,7 @@ class Login extends Base
 
 
 
-                    $newimgurl='http://'.config('server_host').'/'.config('TASK_UPLOAD_IMAGE_DIR').'/'. $imgurl ;
+                    $newimgurl='\\'.config('server_host').'/'.config('TASK_UPLOAD_IMAGE_DIR').'/'. $imgurl ;
 
                     $msg     = '上传成功' ;
                 }
