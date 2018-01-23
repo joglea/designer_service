@@ -139,45 +139,55 @@ class Wallet extends Front
                 ->where(['userid'=>$this->curUserInfo['userid']])->find();
 
             if($wallet){
+
                 if($wallet['now_money']<$money){
                     $this->returndata( 14001,  '余额不足', $this->curTime, $data);
                 }
                 else{
 
-                    $data = [
-                        'now_money'=>bcmul($wallet['now_money'],$money,2),
-                        'updatetime'=>$this->curTime,
-                    ];
-                    //更新余额
-                    model('wallet')
-                        ->where(['userid'=>$this->curUserInfo['userid']])->update($data);
+                    $isexistwalletcash = model('walletcash')->where(['userid'=>$this->curUserInfo['userid'],'delflag'=>0,'state'=>1])->find();
 
-                    //余额变更记录
-                    model('walletcash')->insertGetId(
-                        [
-                            'userid'=>$this->curUserInfo['userid'],
-
-                            'money'=>$money,
-                            'contact'=>$contact,
-                            'state'=>1,
-                            'createtime'=>$this->curTime,
+                    if($isexistwalletcash){
+                        $this->returndata( 14001,  '您有提现进行中', $this->curTime, $data);
+                    }
+                    else{
+                        $updatewallet = [
+                            'now_money'=>bcmul($wallet['now_money'],$money,2),
                             'updatetime'=>$this->curTime,
-                            'delflag'=>0,
-                        ]
-                    );
-                    $this->returndata(10000, 'do success', $this->curTime, $data);
+                        ];
+                        //更新余额
+                        model('wallet')
+                            ->where(['userid'=>$this->curUserInfo['userid']])->update($updatewallet);
+
+                        //余额变更记录
+                        model('walletcash')->insertGetId(
+                            [
+                                'userid'=>$this->curUserInfo['userid'],
+
+                                'money'=>$money,
+                                'contact'=>$contact,
+                                'state'=>1,
+                                'createtime'=>$this->curTime,
+                                'updatetime'=>$this->curTime,
+                                'delflag'=>0,
+                            ]
+                        );
+                        $this->returndata(10000, 'do success', $this->curTime, $data);
+                    }
+
+
                 }
 
             }
             else{
-                $data = [
+                $newwallet = [
                     'userid'=>$this->curUserInfo['userid'],
                     'now_money'=>0,
                     'createtime'=>$this->curTime,
                     'updatetime'=>$this->curTime,
                 ];
                 //更新余额
-                model('wallet')->insertGetId($data);
+                model('wallet')->insertGetId($newwallet);
                 $this->returndata( 14001,  '余额不足', $this->curTime, $data);
             }
 
