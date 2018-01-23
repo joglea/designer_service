@@ -108,4 +108,86 @@ class Wallet extends Front
     }
 
 
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    发起钱包提现接口
+     * @url     /Wallet/walletCash
+     * @method  POST
+     * @version 1000
+     * @params  money 3.03 FLOAT 提现金额 YES
+     * @params  contact 13625718928 STRING 联系方式 YES
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function walletCash(){
+        //返回结果
+        $data = [];
+
+        //获取接口参数
+        $money = input('request.money','0');
+        $contact = input('request.contact','');
+
+        //验证参数是否为空
+        if($money<=0||$contact==''){
+            $this->returndata( 14001,  'params error', $this->curTime, $data);
+        }
+
+        try{
+
+            $wallet = model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->find();
+
+            if($wallet){
+                if($wallet['now_money']<$money){
+                    $this->returndata( 14001,  '余额不足', $this->curTime, $data);
+                }
+                else{
+
+                    $data = [
+                        'now_money'=>bcmul($wallet['now_money'],$money,2),
+                        'updatetime'=>$this->curTime,
+                    ];
+                    //更新余额
+                    model('wallet')
+                        ->where(['userid'=>$this->curUserInfo['userid']])->update($data);
+
+                    //余额变更记录
+                    model('walletcash')->insertGetId(
+                        [
+                            'userid'=>$this->curUserInfo['userid'],
+
+                            'money'=>$money,
+                            'contact'=>$contact,
+                            'state'=>1,
+                            'createtime'=>$this->curTime,
+                            'updatetime'=>$this->curTime,
+                            'delflag'=>0,
+                        ]
+                    );
+                    $this->returndata(10000, 'do success', $this->curTime, $data);
+                }
+
+            }
+            else{
+                $data = [
+                    'userid'=>$this->curUserInfo['userid'],
+                    'now_money'=>0,
+                    'createtime'=>$this->curTime,
+                    'updatetime'=>$this->curTime,
+                ];
+                //更新余额
+                model('wallet')->insertGetId($data);
+                $this->returndata( 14001,  '余额不足', $this->curTime, $data);
+            }
+
+
+
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, []);
+        }
+
+    }
+
+
 }
