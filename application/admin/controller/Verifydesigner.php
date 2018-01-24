@@ -225,7 +225,7 @@ class Verifydesigner extends Admin{
                         if($verifydesignerinfo['state']==2){
                             model("userinfo")
                                 ->where(array('userid'=>$designerInfo["userid"]))
-                                ->update(['verify_state'=>2,
+                                ->update(['verify_state'=>1,
                                           'verifyid'=>$verifydesignerinfo["designerid"],
                                           'updatetime'=>time()]);
 
