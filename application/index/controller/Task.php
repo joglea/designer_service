@@ -286,7 +286,7 @@ class Task extends Front
             }
             //$userHxList = model('userhx')->where(['userid'=>$task['userid']])->find();
 
-            if(in_array($this->curUserInfo['userid'],$userIds)){
+            if($this->checkLogin()&&in_array($this->curUserInfo['userid'],$userIds)){
                 $is_signup=1;
             }
             else{
