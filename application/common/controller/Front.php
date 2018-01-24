@@ -159,7 +159,6 @@ class Front extends Base {
                 if($userBase && $userBase['confinedtime'] >= $this->curTime){
                     $this->returndata(11003, 'account forbidden', $this->curTime, []);
                 }
-
                 $this->doLogin($userBase,$this->dsToken);
             }
             else{
@@ -169,8 +168,8 @@ class Front extends Base {
         else{
             $userInfo = model('userinfo')->where(['userid'=>$this->curUserInfo['userid']])->find();
             if($userInfo){
-
                 $this->curUserInfo['verify_state']= $userInfo['verify_state'];
+                $this->curUserInfo['verify_type']= $userInfo['verify_type'];
                 $this->curUserInfo['verifyid']= $userInfo['verifyid'];
             }
             else{
@@ -237,6 +236,7 @@ class Front extends Base {
             "birthday"          => $userInfo['birthday'],
             "city"              => $city,
             "verify_state"      => $userInfo['verify_state'],
+            "verify_type"       => $userInfo['verify_type'],
             "verifyid"          => $userInfo['verifyid'],
             "personlink"        => $userInfo['personlink'],
             "status"            => $userInfo['status'],
@@ -288,6 +288,7 @@ class Front extends Base {
         $newUserInfo['sex'] = 0;
         $newUserInfo['birthday'] = '';
         $newUserInfo['cityid'] = 0;
+        $newUserInfo['verify_type'] = 0;
         $newUserInfo['verify_state'] = 0;
         $newUserInfo['verifyid'] = 0;
         $newUserInfo['personlink'] = '';
@@ -338,6 +339,7 @@ class Front extends Base {
             "sex"               => $newUserInfo['sex'],
             "birthday"          => $newUserInfo['birthday'],
             "city"              => $city,
+            "verify_type"       => $newUserInfo['verify_type'],
             "verify_state"      => $newUserInfo['verify_state'],
             "verifyid"          => $newUserInfo['verifyid'],
             "personlink"        => $newUserInfo['personlink'],

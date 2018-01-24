@@ -249,14 +249,16 @@ class Verifycompany extends Admin{
                         if($verifycompanyinfo['state']==2){
                             model("userinfo")
                                 ->where(array('userid'=>$companyInfo["userid"]))
-                                ->update(['verify_state'=>2,
+                                ->update(['verify_type'=>2,
+                                          'verify_state'=>2,
                                           'verifyid'=>$verifycompanyinfo["companyid"],
                                           'updatetime'=>time()]);
                         }
                         elseif($verifycompanyinfo['state']==3){
                             model("userinfo")
                                 ->where(array('userid'=>$companyInfo["userid"]))
-                                ->update(['verify_state'=>0,
+                                ->update(['verify_type'=>0,
+                                          'verify_state'=>2,
                                           'verifyid'=>0,
                                           'updatetime'=>time()]);
                         }

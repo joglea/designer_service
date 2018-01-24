@@ -190,7 +190,7 @@ class Designworks extends Front
 
 
         //验证参数是否为空
-        if($title==''||!$picList||$desc==''){
+        if($title==''||!$picList){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
@@ -242,7 +242,7 @@ class Designworks extends Front
 
 
         //验证参数是否为空
-        if($designworksid<=0||$title==''||!$picList||$desc==''){
+        if($designworksid<=0||$title==''||!$picList){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 

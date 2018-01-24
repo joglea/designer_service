@@ -133,11 +133,10 @@ class User extends Front
 
     /**
      * ---------------------------------------------------------------------------------------------
-     * @desc    用户信息查看
+     * @desc    用户自己信息查看
      * @url     /user/userView
      * @method  GET
      * @version 1000
-     * @params  userid '0' STRING 用户id为0表示当前用户自己 NO
      * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
      * @params  ct '' STRING 当前时间戳 YES
      *
@@ -146,86 +145,181 @@ class User extends Front
 
         //返回结果
         $data = [];
+        try{
+            if($this->curUserInfo){
+                $data['user'] = array(
+                    "userid"            => $this->curUserInfo['userid'],
+                    "country_code"      => $this->curUserInfo['country_code'],
+                    "tel"               => $this->curUserInfo['tel'],
+                    'jointime'          => $this->curUserInfo['jointime'],
+                    "token"             => $this->curUserInfo['token'],
+                    "nickname"          => $this->curUserInfo['nickname'],
+                    "email"             => $this->curUserInfo['email'],
+                    "avatar"            => $this->curUserInfo['avatar'],
+                    "sex"               => $this->curUserInfo['sex'],
+                    "birthday"          => $this->curUserInfo['birthday'],
+                    "city"              => $this->curUserInfo['city'],
+                    "personlink"        => $this->curUserInfo['personlink'],
+                    "brief"             => $this->curUserInfo['brief'],
+                    "verify_type"       => $this->curUserInfo['verify_type'],
+                    "verify_state"      => $this->curUserInfo['verify_state'],
+                    "verifyid"          => $this->curUserInfo['verifyid'],
+                    "status"            => $this->curUserInfo['status'],        //环信密码
+                );
+
+                $this->returndata(10000, 'do success', $this->curTime, $data);
+            }
+            else{
+                $this->returndata( 14001,  'not login ', $this->curTime, $data);
+            }
+        }catch (Exception $e){
+            $this->returndata(11000, 'server error', $this->curTime, $data);
+        }
+
+    }
+
+
+    /**
+     * ---------------------------------------------------------------------------------------------
+     * @desc    其他用户信息查看
+     * @url     /user/userOtherView
+     * @method  GET
+     * @version 1000
+     * @params  userid '1000000041' STRING 用户id NO
+     * @params  sid 'c16551f3986be2768e632e95767f6574' STRING 当前混淆串 YES
+     * @params  ct '' STRING 当前时间戳 YES
+     *
+     */
+    public function userOtherView(){
+
+        //返回结果
+        $data = [];
 
         //获取接口参数
         $userId = input('request.userid');
 
-        if($userId<0){
+        if($userId<=0){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
         try{
-            if($userId == 0){
-                if($this->curUserInfo){
-                    $data['user'] = array(
-                        "userid"            => $this->curUserInfo['userid'],
-                        "country_code"      => $this->curUserInfo['country_code'],
-                        "tel"               => $this->curUserInfo['tel'],
-                        'jointime'          => $this->curUserInfo['jointime'],
-                        "token"             => $this->curUserInfo['token'],
-                        "nickname"          => $this->curUserInfo['nickname'],
-                        "email"             => $this->curUserInfo['email'],
-                        "avatar"            => $this->curUserInfo['avatar'],
-                        //""               => $userInfo['sex'],
-                        "sex"               => $this->curUserInfo['sex'],
-                        "birthday"          => $this->curUserInfo['birthday'],
-                        "city"              => $this->curUserInfo['city'],
-                        "personlink"      => $this->curUserInfo['personlink'],
-                        "brief"      => $this->curUserInfo['brief'],
-                        "verify_state"      => $this->curUserInfo['verify_state'],
-                        "verifyid"          => $this->curUserInfo['verifyid'],
-                        "status"          => $this->curUserInfo['status'],        //环信密码
-                    );
-                }
-                else{
-                    $this->returndata( 14001,  'not login ', $this->curTime, $data);
-                }
 
+            $userBase = model('userbase')->where(['userid'=>$userId])->find();
+            if(!$userBase){
+                $this->returndata( 14002, 'account not exist1', $this->curTime, []);
             }
-            else{
 
-
-                $userBase = model('userbase')->where(['userid'=>$userId])->find();
-                if(!$userBase){
-                    $this->returndata( 14002, 'account not exist1', $this->curTime, []);
-                }
-
-                $userInfo = model('userinfo')->where(['userid'=>$userBase['userid']])->find();
-                if(!$userInfo){
-                    $this->returndata( 14003, 'account not exist2', $this->curTime, []);
-                }
-                $verifyCompany = model('verifycompany')->where(['userid'=>$userBase['userid'],'delflag'=>0])->find();
-                $verifyDesigner = model('verifydesigner')->where(['userid'=>$userBase['userid'],'delflag'=>0])->find();
-
-                $city = model('city')->where(['cityid'=>$userInfo['cityid']])->find();
-
-                $userData = model('userdata')->where(['userid'=>$userBase['userid']])->find();
-                if(!$userData){
-                    $this->returndata( 14004, 'account not exist3', $this->curTime, []);
-                }
-
-                $allControl = $this->getAllControl();
-
-                $data['user'] = array(
-
-                    "userid"            => $userBase['userid'],
-                    "country_code"      => $userBase['country_code'],
-                    'jointime'          => $userBase['createtime'],
-                    "nickname"          => $userInfo['nickname'],
-                    "email"             => $userInfo['email'],
-                    "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$userInfo['avatar']),
-                    //""               => $userInfo['sex'],
-                    "sex"               => $userInfo['sex'],
-                    "birthday"          => $userInfo['birthday'],
-                    "city"              => $city,
-                    "personlink"      => $userInfo['personlink'],
-                    "brief"      => $userInfo['brief'],
-                    "verify_state"      => $userInfo['verify_state'],
-                    "verifyid"          => $userInfo['verifyid'],
-                    "status"          => $userInfo['status'],
-
-                );
+            $userInfo = model('userinfo')->where(['userid'=>$userBase['userid']])->find();
+            if(!$userInfo){
+                $this->returndata( 14003, 'account not exist2', $this->curTime, []);
             }
+            //$verifyCompany = model('verifycompany')->where(['userid'=>$userBase['userid'],'delflag'=>0])->find();
+            //$verifyDesigner = model('verifydesigner')->where(['userid'=>$userBase['userid'],'delflag'=>0])->find();
+
+            $city = model('city')->where(['cityid'=>$userInfo['cityid']])->find();
+
+            $userData = model('userdata')->where(['userid'=>$userBase['userid']])->find();
+            if(!$userData){
+                $this->returndata( 14004, 'account not exist3', $this->curTime, []);
+            }
+
+            $allControl = $this->getAllControl();
+
+
+            $data['user'] = array(
+
+                "userid"            => $userBase['userid'],
+                "country_code"      => $userBase['country_code'],
+                'jointime'          => $userBase['createtime'],
+                "nickname"          => $userInfo['nickname'],
+                //"email"             => $userInfo['email'],
+                "avatar"            => $this->checkpictureurl($allControl['avatar_url'],$userInfo['avatar']),
+                //""               => $userInfo['sex'],
+                "sex"               => $userInfo['sex'],
+                "city"              => $city,
+                "personlink"        => $userInfo['personlink'],
+                "brief"             => $userInfo['brief'],
+                "verify_type"       => $userInfo['verify_type'],
+                "verify_state"      => $userInfo['verify_state'],
+                "verifyid"          => $userInfo['verifyid'],
+                "status"            => $userInfo['status'],
+
+            );
+
+            $WorkexpWhere = ['userid'=>$userId,'delflag'=>0];
+            $order = 'begindate desc,expid desc';
+
+            $WorkexpList = model('Workexp')->where($WorkexpWhere)->order($order)
+                ->select();
+
+            $newWorkexpList = [];
+            if($WorkexpList){
+                foreach($WorkexpList as $oneWorkexp){
+                    $newWorkexpList[]=[
+                        'expid'=>$oneWorkexp['expid'],
+                        'begindate'=>$oneWorkexp['begindate'],
+                        'enddate'=>$oneWorkexp['enddate'],
+                        'companyname'=>$oneWorkexp['companyname'],
+                        'desc'=>$oneWorkexp['desc'],
+                    ];
+                }
+            }
+
+            $EducationexpWhere = ['userid'=>$userId,'delflag'=>0];
+            $order = 'begindate desc,expid desc';
+
+            $EducationexpList = model('Educationexp')->where($EducationexpWhere)->order($order)
+                ->select();
+            //var_dump($EducationexpList);exit;
+
+            $newEducationexpList = [];
+            if($EducationexpList){
+                foreach($EducationexpList as $oneEducationexp){
+                    $newEducationexpList[]=[
+                        'expid'=>$oneEducationexp['expid'],
+                        'begindate'=>$oneEducationexp['begindate'],
+                        'enddate'=>$oneEducationexp['enddate'],
+                        'schoolname'=>$oneEducationexp['schoolname'],
+                        'desc'=>$oneEducationexp['desc'],
+                    ];
+                }
+            }
+
+
+            $DesignworksWhere = ['userid'=>$userId,'delflag'=>0];
+            $order = 'designworksid desc';
+
+            $DesignworksList = model('Designworks')->where($DesignworksWhere)->order($order)
+                ->select();
+
+
+            $newDesignworksList = [];
+            if($DesignworksList){
+
+                foreach($DesignworksList as $oneDesignworks){
+                    $piclist = json_decode($oneDesignworks['pic'],true);
+
+                    $new_pic_list = [];
+
+                    if(is_array($piclist)){
+                        foreach($piclist as $onepic){
+                            $new_pic_list[]=$this->checkPictureUrl($this->allControl['design_works_pic_url'],$onepic);
+                        }
+                    }
+                    $newDesignworksList[]=[
+                        'designworksid'=>$oneDesignworks['designworksid'],
+                        'title'=>$oneDesignworks['title'],
+                        'pic'=>$new_pic_list,
+                        'desc'=>$oneDesignworks['desc']
+                        //'link'=>$oneDesignworks['link']
+                    ];
+                }
+            }
+
+
+            $data['WorkexpList'] = $newWorkexpList;
+            $data['EducationexpList'] = $newEducationexpList;
+            $data['DesignworksList'] = $newDesignworksList;
 
 
             $this->returndata(10000, 'do success', $this->curTime, $data);
@@ -235,7 +329,6 @@ class User extends Front
         }
 
     }
-
 
     /**
      * ---------------------------------------------------------------------------------------------
@@ -275,7 +368,7 @@ class User extends Front
         try{
             $userinfo = model('userinfo')->where(['userid'=>$this->curUserInfo['userid']])
                 ->find();
-            if($userinfo['verify_state']!=0){
+            if($userinfo['verify_type']!=0){
                 $this->returndata( 14001,  'already verifyed ', $this->curTime, $data);
             }
             $verifyCompany = model('verifycompany')->where(

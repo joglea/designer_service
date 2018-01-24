@@ -190,7 +190,7 @@ class Educationexp extends Front
 
 
         //验证参数是否为空
-        if($beginDate==''||$endDate==''||$companyName==''||$desc==''){
+        if($beginDate==''||$endDate==''||$companyName==''){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 
@@ -244,7 +244,7 @@ class Educationexp extends Front
 
 
         //验证参数是否为空
-        if($expid<=0||$beginDate==''||$endDate==''||$companyName==''||$desc==''){
+        if($expid<=0||$beginDate==''||$endDate==''||$companyName==''){
             $this->returndata( 14001,  'params error', $this->curTime, $data);
         }
 

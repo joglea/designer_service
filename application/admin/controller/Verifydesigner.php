@@ -225,7 +225,8 @@ class Verifydesigner extends Admin{
                         if($verifydesignerinfo['state']==2){
                             model("userinfo")
                                 ->where(array('userid'=>$designerInfo["userid"]))
-                                ->update(['verify_state'=>1,
+                                ->update(['verify_type'=>1,
+                                          'verify_state'=>2,
                                           'verifyid'=>$verifydesignerinfo["designerid"],
                                           'updatetime'=>time()]);
 
@@ -233,7 +234,8 @@ class Verifydesigner extends Admin{
                         elseif($verifydesignerinfo['state']==3){
                             model("userinfo")
                                 ->where(array('userid'=>$designerInfo["userid"]))
-                                ->update(['verify_state'=>0,
+                                ->update(['verify_type'=>0,
+                                          'verify_state'=>2,
                                           'verifyid'=>0,
                                           'updatetime'=>time()]);
                             //var_dump(model("userinfo")->getLastSql());exit;
