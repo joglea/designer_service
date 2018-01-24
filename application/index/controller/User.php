@@ -276,14 +276,14 @@ class User extends Front
             $userinfo = model('userinfo')->where(['userid'=>$this->curUserInfo['userid']])
                 ->find();
             if($userinfo['verify_state']!=0){
-                $this->returndata( 14001,  'alread verify ', $this->curTime, $data);
+                $this->returndata( 14001,  'already verifyed ', $this->curTime, $data);
             }
             $verifyCompany = model('verifycompany')->where(
-                ['userid'=>$this->curUserInfo['userid'],'delflag'=>0
-                ]
+                ['userid'=>$this->curUserInfo['userid'],'delflag'=>0 ]
             )->find();
-            if($verifyCompany){
-                $this->returndata( 14001,  'alread exist verify ', $this->curTime, $data);
+
+            if($verifyCompany&&$verifyCompany['state']==1){
+                $this->returndata( 14001,  'alread  verifying ', $this->curTime, $data);
             }
             $newVerifyCompany = [
 
@@ -344,18 +344,19 @@ class User extends Front
         }
 
         try{
+            //判断是否已经有身份
             $userinfo = model('userinfo')->where(['userid'=>$this->curUserInfo['userid']])
                 ->find();
             if($userinfo['verify_state']!=0){
-                $this->returndata( 14001,  'alread verify ', $this->curTime, $data);
+                $this->returndata( 14001,  'already verifyed ', $this->curTime, $data);
             }
 
+            //判断是否存在认证中
             $verifyDesigner = model('verifydesigner')->where(
-                ['userid'=>$this->curUserInfo['userid'],'delflag'=>0
-                ]
+                ['userid'=>$this->curUserInfo['userid'],'delflag'=>0]
             )->find();
-            if($verifyDesigner){
-                $this->returndata( 14001,  'alread exist verify ', $this->curTime, $data);
+            if($verifyDesigner&&$verifyDesigner['state']==1){
+                $this->returndata( 14001,  'already  verifying ', $this->curTime, $data);
             }
             $newVerifyDesigner = [
                 'userid'=>$this->curUserInfo['userid'],
