@@ -253,7 +253,7 @@ class Task extends Admin{
     /**
      * 添加任务
      */
-    public function addTask(){
+    public function addtask(){
         if(IS_POST){
             $taskinfo = array();
             $taskinfo["title"] = input("post.title",'');
