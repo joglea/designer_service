@@ -174,10 +174,7 @@ class Wallet extends Front
                         );
                         $this->returndata(10000, 'do success', $this->curTime, $data);
                     }
-
-
                 }
-
             }
             else{
                 $newwallet = [
@@ -190,9 +187,6 @@ class Wallet extends Front
                 model('wallet')->insertGetId($newwallet);
                 $this->returndata( 14001,  '余额不足', $this->curTime, $data);
             }
-
-
-
         }catch (Exception $e){
             $this->returndata(11000, 'server error', $this->curTime, []);
         }

@@ -1,0 +1,122 @@
+
+
+
+
+<script type="text/javascript" src="/statics/Plugin/umeditor1_2_2/umeditor.config.js"></script>
+
+<script type="text/javascript" src="/statics/Plugin/umeditor1_2_2/umeditor.js"></script>
+<script type="text/javascript" src="/statics/Plugin/umeditor1_2_2/lang/zh-cn/zh-cn.js"></script>
+
+<style>
+    .edui-scale{
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+<div class="dialog_notify"></div>
+<form id="editwalletcashform" role="form" class="form-horizontal" method="post">
+    <input type="hidden" name="walletcashid" value="{$walletcashinfo.walletcashid}" />
+    <div class="form-body">
+        <div class="box-content bordered">
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="money">用户id</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value="{$walletcashinfo.userid}"
+                                   name="userid" id="userid" class="form-control" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="money">提现金额</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value="{$walletcashinfo.money}"
+                                   name="money" id="money" class="form-control" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="contact">联系方式</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value="{$walletcashinfo.contact}"
+                                   name="contact" id="contact" class="form-control" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="state">提现状态</label>
+                        <div class="col-md-10">
+                            <select name="state" id="state" class="form-control">
+                                <option {php}
+                                        if($walletcashinfo['state']==1){echo 'selected="selected"';}
+                                {/php} value="1">新创建</option>
+                                <option {php}
+                                        if($walletcashinfo['state']==2){echo 'selected="selected"';}
+                                {/php} value="2">提现成功</option>
+                                <option {php}
+                                        if($walletcashinfo['state']==3){echo 'selected="selected"';}
+                                {/php} value="3">提现失败</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="desc">修改描述</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value="{$walletcashinfo.desc}"
+                                   name="desc" id="desc" class="form-control" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+
+jQuery(document).ready(function() {
+
+});
+
+
+$('#editwalletcashform').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'fa fa-check',
+            invalid: 'fa fa-times',
+            validating: 'fa fa-refresh'
+        },
+        //container:'custom',
+        fields: {
+
+        }
+    })
+    .on('success.form.bv', function(e) {
+
+    });
+
+
+</script>
+
+
+
+
+

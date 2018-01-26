@@ -33,28 +33,19 @@
                                 <input type="checkbox" class="group-checkable">
                             </th>-->
                             <th class="sorting_disabled" width="8%">
+                                提现ID
+                            </th>
+                            <th class="sorting_disabled" width="8%">
                                 用户ID
                             </th>
+                            <th width="10%">
+                                提现金额
+                            </th>
                             <th width="8%">
-                                手机号
+                                联系方式
                             </th>
                             <th width="10%">
-                                头像
-                            </th>
-                            <th width="25%">
-                                昵称
-                            </th>
-                            <th width="10%">
-                                性别
-                            </th>
-                            <th width="8%">
-                                认证状态
-                            </th>
-                            <th width="8%">
-                                用户状态
-                            </th>
-                            <th width="8%">
-                                钱包余额
+                                提现状态
                             </th>
                             <th class="sorting_disabled" width="13%">
                                 创建时间
@@ -65,42 +56,24 @@
                         </tr>
                         <tr role="row" class="filter">
                             <td>
+                                <input type="text" class="form-control form-filter input-sm" name="walletcashid">
+                            </td>
+                            <td>
                                 <input type="text" class="form-control form-filter input-sm" name="userid">
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="mobile">
-                            </td>
-                            <td>
                                 -
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="nickname">
+                                <input type="text" class="form-control form-filter input-sm" name="contact">
                             </td>
                             <td>
-                                <select name="sex" id="sex" class="form-control form-filter input-sm" >
+                                <select name="state" id="state" class="form-control form-filter input-sm" >
                                     <option value="-1">全部</option>
-                                    <option value="0">未知</option>
-                                    <option value="1">男</option>
-                                    <option value="2">女</option>
+                                    <option value="1">新创建</option>
+                                    <option value="2">提现成功</option>
+                                    <option value="3">提现失败</option>
                                 </select>
-                            </td>
-                            <td>
-                                <select name="verify_state" id="verify_state" class="form-control form-filter input-sm" >
-                                    <option value="-1">全部</option>
-                                    <option value="0">未认证</option>
-                                    <option value="1">设计师</option>
-                                    <option value="2">商家</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select name="status" id="status" class="form-control form-filter input-sm" >
-                                    <option value="-1">全部</option>
-                                    <option value="1">正常</option>
-                                    <option value="2">禁用</option>
-                                </select>
-                            </td>
-                            <td>
-                                -
                             </td>
                             <td>
                                 <div id="createstarttimepicker" class="input-group date date-picker">
@@ -206,7 +179,7 @@ var Datatable = function() {
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [2,7,9]
+                        'targets': [3,6]
                     }],
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
@@ -451,16 +424,7 @@ var DataList = function () {
 
     var initPickers = function () {
         //init date pickers
-         $('#limitstarttimepicker').datetimepicker({
-            language: 'en',
-            format : 'yyyy-MM-dd hh:mm:ss',
-            pickTime: true
-        });
-        $('#limitendtimepicker').datetimepicker({
-            language: 'en',
-            format : 'yyyy-MM-dd hh:mm:ss',
-            pickTime: true
-        });
+
 
         $('#createstarttimepicker').datetimepicker({
             language: 'en',
@@ -540,12 +504,9 @@ var DataList = function () {
 
         //main function to initiate the module
         init: function () {
-
             handleList();
             initPickers();
-
         }
-
     };
 
 }();
@@ -573,104 +534,77 @@ jQuery(document).ready(function() {
             this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
         }
     });
+
 });
 
 
 
-
-//修改用户状态
-function changestatus(userid,status)
+//修改状态
+function editwalletcash(walletcashid)
 {
-    $.ajax({
-        url: 'changestatus',
-        type: 'POST',
-        dataType: 'JSON',
-        timeout: 30000, //超时时间：30秒
-        data: {userid:userid,status:status},
-        error: function () {
 
-            dialog.setClosable(true);
-
-            //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
-            showNotify(-1,'修改用户错误',1,'warning',0);
-        },
-        success: function (data) {
-            //$button.enable();
-            //dialog.setClosable(true);
-            //$button.find('.fa-spinner').remove();
-            if(data.code==0)
-            {
-                $('.dialog_notify').remove();
-                //dialog.close();
-                $('.filter-submit').click();
-            }
-            showNotify(data.code,data.msg,1,data.msg_type,0);
-        }
-    });
-
-}
-
-
-//删除用户
-function removeuser(userid)
-{
-    BootstrapDialog.confirm('请确认','确定删除此用户?', function(result){
-        if(result) {
-            $.ajax({
-                url: 'removeuser',
-                type: 'POST',
-                dataType: 'JSON',
-                timeout: 30000, //超时时间：30秒
-                data: {userid:userid},
-                error: function () {
-                    //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
-                    showNotify(-1,'删除用户错误',1,'warning',0);
-                },
-                success: function (data) {
-                    if(data.code==0)
-                    {
-                        $('.dialog_notify').remove();
-                        $('.filter-submit').click();
-                    }
-                    showNotify(data.code,data.msg,1,data.msg_type,0);
-                }
-            });
-        }
-        else
-        {
-            return false;
-        }
-    });
-
-}
-
-
-function viewuserbase(userid)
-{
     BootstrapDialog.show({
-        title:'查看',
+        title:'修改状态',
         modalDialogClass:'modal-dialog-lg',
         message: function(dialog) {
             var $message = $('<div></div>');
-            var userToLoad = dialog.getData('url');
-            $message.load(userToLoad);
+            var walletcashToLoad = dialog.getData('url');
+            $message.load(walletcashToLoad);
             return $message;
         },
-        closable: true,
+        closable: false,
         draggable: true,
         data: {
-            'url': ''+'viewuserbase?userid='+userid
+            'url': ''+'editwalletcash?walletcashid='+walletcashid
         },
-        buttons: [
+        buttons: [{
+            id: 'btn-1',
+            label: '修改',
+            cssClass: 'btn-primary',
+            action: function(dialog) {
+                var $button = this; // 'this' here is a jQuery object that wrapping the <button> DOM element.
+                $button.disable();
+                $button.prepend('<i class="fa fa-spinner fa-spin"></i>');
+                dialog.setClosable(false);
+
+                var formData=$('#editwalletcashform').serialize();
+                $.ajax({
+                    url: 'editwalletcash',
+                    type: 'POST',
+                    dataType: 'JSON',
+                    timeout: 30000, //超时时间：30秒
+                    data: formData,
+                    error: function () {
+                        $button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+
+                        //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
+                        showNotify(-1,'修改任务错误',1,'warning',0);
+                    },
+                    success: function (data) {
+                        $button.enable();
+                        dialog.setClosable(true);
+                        $button.find('.fa-spinner').remove();
+                        if(data.code==0)
+                        {
+                            $('.dialog_notify').remove();
+                            dialog.close();
+                            $('.filter-submit').click();
+                        }
+                        showNotify(data.code,data.msg,1,data.msg_type,0);
+                    }
+                });
+            }
+        },
         {
-            label: '关闭',
+            label: '取消',
             action: function(dialog){
                 dialog.close();
             }
         }]
     });
 }
-
 
 
 </script>

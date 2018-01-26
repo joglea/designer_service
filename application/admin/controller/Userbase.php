@@ -115,8 +115,10 @@ class Userbase extends Admin{
             }
             //$where['delflag']=0;
             $userlist=model('Userbase')->alias('a')
+                ->join('ds_wallet c',' a.userid = c.userid ','LEFT')
                 ->join('ds_userinfo b',' a.userid = b.userid ')->where($where)->limit($start,$pagesize)
-                ->order($order)->field('a.tel,b.*')->select();
+                ->order($order)->field('a.tel,b.*,c.now_money')->select();
+
             //var_dump(model('Userbase')->getLastSql());exit;
             $usercount=model('Userbase')->alias('a')
                 ->join('ds_userinfo b','a.userid=b.userid')->where($where)->count();
@@ -179,6 +181,8 @@ class Userbase extends Admin{
                     $status_btn = '<a title="启用" id="channge_status_'.$v['userid'].'" class="btn green btn-xs" href="javascript:;" onclick="changestatus('.$v['userid'].',1)"><i class="fa fa-12px fa-edit"></i>启用</a>';
                 }
                 $data[$k][]=$status;
+
+                $data[$k][]=$v['now_money'];
 
                 $data[$k][]=date('Y-m-d H:i:s',$v['createtime']);
                 $data[$k][]='<div style="text-align:center;">'.
@@ -345,5 +349,7 @@ class Userbase extends Admin{
         $this->assign('userinfo',$userinfo);
         echo $this->fetch();
     }
+
+
 
 }
