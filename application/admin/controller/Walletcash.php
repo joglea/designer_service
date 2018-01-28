@@ -74,24 +74,24 @@ class Walletcash extends Admin{
             $pagesize = input('post.length',config('PAGE_SIZE')>0?config('PAGE_SIZE'):10);
 
             //tp3.1 I方法获取数据时  提交参数为[]数组时  会取不到高维数据
-            $walletcashcolumn=isset($_POST['walletcash'])?$_POST['walletcash']:[];
+            $ordercolumn=isset($_POST['order'])?$_POST['order']:[];
 
             $order='';
-            if(count($walletcashcolumn)>0){
-                if(0==$walletcashcolumn[0]['column']){
-                    $order=' walletcashid '.$walletcashcolumn[0]['dir'].' ';
+            if(count($ordercolumn)>0){
+                if(0==$ordercolumn[0]['column']){
+                    $order=' orderid '.$ordercolumn[0]['dir'].' ';
                 }
-                elseif(1==$walletcashcolumn[0]['column']){
-                    $order=' userid '.$walletcashcolumn[0]['dir'].' ';
+                elseif(1==$ordercolumn[0]['column']){
+                    $order=' userid '.$ordercolumn[0]['dir'].' ';
                 }
-                else if(2==$walletcashcolumn[0]['column']){
-                    $order=' money '.$walletcashcolumn[0]['dir'].' ';
+                else if(2==$ordercolumn[0]['column']){
+                    $order=' money '.$ordercolumn[0]['dir'].' ';
                 }
-                else if(4==$walletcashcolumn[0]['column']){
-                    $order=' state '.$walletcashcolumn[0]['dir'].' ';
+                else if(4==$ordercolumn[0]['column']){
+                    $order=' state '.$ordercolumn[0]['dir'].' ';
                 }
-                else if(5==$walletcashcolumn[0]['column']){
-                    $order=' createtime '.$walletcashcolumn[0]['dir'].' ';
+                else if(5==$ordercolumn[0]['column']){
+                    $order=' createtime '.$ordercolumn[0]['dir'].' ';
                 }
             }
             $where['delflag']=0;
