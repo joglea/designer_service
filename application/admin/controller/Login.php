@@ -412,6 +412,7 @@ class Login extends Base
         else {
 
             if ((($_FILES["image_url_upload"]["type"] == "image/gif")
+                    || ($_FILES["image_url_upload"]["type"] == "image/jpg")
                     || ($_FILES["image_url_upload"]["type"] == "image/jpeg")
                     || ($_FILES["image_url_upload"]["type"] == "image/pjpeg")|| ($_FILES["image_url_upload"]["type"] == "image/png"))
                 && ($_FILES["image_url_upload"]["size"] < 10000000)
