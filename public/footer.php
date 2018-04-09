@@ -29,9 +29,6 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-4 col-sm-8">
-                             <iframe width="100%" height="330" class="share_self" frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=330&fansRow=2&ptype=1&speed=0&skin=10&isTitle=1&noborder=0&isWeibo=1&isFans=0&uid=6027409917&verifier=1df8a21b&colors=232323,232323,666666,c4c4c4,232323&dpc=1"></iframe>
-                        </div>
                         <div class="col-md-4 col-md-offset-1 col-sm-12">
                             <h6>订阅</h6>
                             <p>
@@ -80,7 +77,7 @@
                         <div class="row">
                             <div class="col-sm-6 text-center-xs">
                                 <span class="type--fine-print">&copy; Copyright
-                                    <span class="update-year">2016</span> Zaowuren Studio - All Rights Reserved</span>
+                                    <span class="update-year">2016</span> OuXin Network - All Rights Reserved</span>
                             </div>
                             <div class="col-sm-6 text-right text-center-xs">
                                 <a href="#top" class="inner-link top-link">
