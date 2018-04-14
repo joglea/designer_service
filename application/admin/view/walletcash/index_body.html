@@ -47,6 +47,9 @@
                             <th width="10%">
                                 提现状态
                             </th>
+                            <th width="10%">
+                                提现描述
+                            </th>
                             <th class="sorting_disabled" width="13%">
                                 创建时间
                             </th>
@@ -74,6 +77,10 @@
                                     <option value="2">提现成功</option>
                                     <option value="3">提现失败</option>
                                 </select>
+                            </td>
+
+                            <td>
+                                -
                             </td>
                             <td>
                                 <div id="createstarttimepicker" class="input-group date date-picker">
@@ -179,7 +186,7 @@ var Datatable = function() {
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [3,6]
+                        'targets': [3,5,7]
                     }],
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)

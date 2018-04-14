@@ -79,7 +79,7 @@ class Walletcash extends Admin{
             $order='';
             if(count($ordercolumn)>0){
                 if(0==$ordercolumn[0]['column']){
-                    $order=' orderid '.$ordercolumn[0]['dir'].' ';
+                    $order=' walletcashid '.$ordercolumn[0]['dir'].' ';
                 }
                 elseif(1==$ordercolumn[0]['column']){
                     $order=' userid '.$ordercolumn[0]['dir'].' ';
@@ -114,8 +114,6 @@ class Walletcash extends Admin{
                 if($v['state']==1){
                     $editbtn = '<a title=""  class=" btn green btn-xs" href="javascript:;" onclick="editwalletcash('.$v['walletcashid'].')"><i class="fa fa-12px fa-edit"></i>修改</a>';
                     $data[$k][]='新创建<br/>';
-
-
                 }
                 elseif($v['state']==2){
                     $editbtn = '';
@@ -129,6 +127,7 @@ class Walletcash extends Admin{
                     $editbtn = '';
                     $data[$k][]='-';
                 }
+                $data[$k][]=$v['desc'];
 
                 $data[$k][]=date('Y-m-d H:i:s',$v['createtime']);
                 $data[$k][]='<div style="text-align:center;">'.
