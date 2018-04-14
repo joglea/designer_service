@@ -1085,7 +1085,7 @@ class Task extends Front
             }
             $tasktype = model('tasktype')->where(['tasktypeid'=>$task['tasktypeid'],'delflag'=>0])->find();
             $signupList = model('tasksignup')->where(
-                ['taskid'=>$taskId,'userid'=>['in',$signupIdsArr],
+                ['taskid'=>$taskId,'signupid'=>['in',$signupIdsArr],
                  'suit_state'=>1,'delflag'=>0])->select();
             //var_dump(model('tasksignup')->getLastSql());
             if(!$signupList){
