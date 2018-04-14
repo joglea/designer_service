@@ -1109,6 +1109,7 @@ class Task extends Front
             $price = bcmul($task['price'],$pay_rate,2);
 
             if($price>$wallet['now_money']){
+                model('task')->commit();
                 $this->returndata( 14004, 'wallet money too less ', $this->curTime, $data);
             }
 
