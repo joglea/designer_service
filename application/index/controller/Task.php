@@ -319,6 +319,7 @@ class Task extends Front
                         $newUserInfoList[$oneTaskUser['userid']]['avatar']:'',
                     'nickname'=>isset($newUserInfoList[$oneTaskUser['userid']])?
                         $newUserInfoList[$oneTaskUser['userid']]['nickname']:'',
+                    'suit_state'=>$oneTaskUser['suit_state']
 
                 ];
             }
