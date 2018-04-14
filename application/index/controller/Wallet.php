@@ -31,13 +31,22 @@ class Wallet extends Front
 
             //新建可以报名的任务列表
             $walletWhere = ['userid'=>$this->curUserInfo['userid']];
-
-
             $wallet = model('wallet')->where($walletWhere)->find();
+            $cashinfo = [];
+            $isexistwalletcash = model('walletcash')
+                ->where(['userid'=>$this->curUserInfo['userid'],'delflag'=>0,'state'=>1])->find();
+            if($isexistwalletcash){
+                $cashinfo=[
+                    'money'=>$isexistwalletcash['money'],
+                    'desc'=>$isexistwalletcash['desc']
+                ];
+            }
 
             $data['wallet'] = [
-                'now_money'=>$wallet?$wallet['now_money']:0
+                'now_money'=>$wallet?$wallet['now_money']:0,
+                'cash_info'=>$cashinfo
             ];
+
             $this->returndata(10000, '获取成功', $this->curTime, $data);
 
         }catch (Exception $e){

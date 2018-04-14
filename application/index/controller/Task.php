@@ -405,6 +405,9 @@ class Task extends Front
             $this->getAllControl();
             $acceptList = [];
             foreach($signupList as $oneSignup){
+                if(!isset($newTaskList[$oneSignup['taskid']])){
+                    continue;
+                }
                 $acceptList[]=[
                     'taskid'=>$oneSignup['taskid'],
                     'title'=>$newTaskList[$oneSignup['taskid']]['title'],
