@@ -1094,8 +1094,25 @@ class Task extends Front
             $wallet = model('wallet')
                 ->where(['userid'=>$this->curUserInfo['userid']])->find();
             if(!$wallet){
-                $this->returndata( 14003, 'wallet not exist ', $this->curTime, $data);
+
+                $wallet = [
+                    'userid'=>$this->curUserInfo['userid'],
+                    'now_money'=>0,
+                    'createtime'=>$this->curTime,
+                    'updatetime'=>$this->curTime,
+                ];
+                //更新余额
+                model('wallet')->insertGetId($wallet);
             }
+
+            $pay_rate=$tasktype?$tasktype['pay_rate']:config('pay_rate');
+            $price = bcmul($task['price'],$pay_rate,2);
+
+            if($price>$wallet['now_money']){
+                $this->returndata( 14004, 'wallet money too less ', $this->curTime, $data);
+            }
+
+
             $order = [
                 'userid'=>$this->curUserInfo['userid'],
                 'taskid'=>$taskId,
@@ -1109,12 +1126,31 @@ class Task extends Front
             //创建订单
             $orderid = model('order')->insertGetId($order);
 
-            $pay_rate=$tasktype?$tasktype['pay_rate']:config('pay_rate');
-
-            $price = bcmul($task['price'],$pay_rate,2);
             $balance = $wallet['now_money']-$price;
-            $balance=-1;
-            if($balance<0){
+            $savewallet = [
+                'now_money'=>$balance,
+                'updatetime'=>$this->curTime,
+            ];
+            //更新余额
+            model('wallet')
+                ->where(['userid'=>$this->curUserInfo['userid']])->update($savewallet);
+
+            //余额变更记录
+            model('walletrecord')->insertGetId(
+                [
+                    'userid'=>$this->curUserInfo['userid'],
+                    'objectid'=>$orderid,
+                    'objecttype'=>1,//对象类型1支出2收入3充值
+                    'price'=>$price,
+                    'desc'=>'任务：'.$taskId.'的支付定金',
+                    'createtime'=>$this->curTime,
+                    'updatetime'=>$this->curTime,
+                    'delflag'=>0,
+                ]
+            );
+
+
+            if(false){
                 model('task')->commit();
                 $data['order_id']=$orderid;
 
@@ -1159,7 +1195,46 @@ class Task extends Front
                 $this->returndata( 10001, 'wallet balance insufficient ', $this->curTime, $data);
             }
 
+            $signupprice = bcdiv($price,count($signupList),2);
             foreach($signupList as $oneSignup){
+
+                $curwallet = model('wallet')
+                    ->where(['userid'=>$oneSignup['userid']])->find();
+
+                if($curwallet){
+                    $cursavewallet = [
+                        'now_money'=>bcadd($curwallet['now_money'],$signupprice,2),
+                        'updatetime'=>$this->curTime,
+                    ];
+                    //更新余额
+                    model('wallet')
+                        ->where(['userid'=>$oneSignup['userid']])->update($cursavewallet);
+                }
+                else{
+                    $newwallet = [
+                        'userid'=>$oneSignup['userid'],
+                        'now_money'=>$signupprice,
+                        'createtime'=>$this->curTime,
+                        'updatetime'=>$this->curTime,
+                    ];
+                    //更新余额
+                    model('wallet')->insertGetId($newwallet);
+                }
+
+                //余额变更记录
+                model('walletrecord')->insertGetId(
+                    [
+                        'userid'=>$oneSignup['userid'],
+                        'objectid'=>$orderid,
+                        'objecttype'=>2,//对象类型1支出2收入3充值
+                        'price'=>$signupprice,
+                        'desc'=>'任务：'.$taskId.'的支付定金',
+                        'createtime'=>$this->curTime,
+                        'updatetime'=>$this->curTime,
+                        'delflag'=>0,
+                    ]
+                );
+
                 //订单详情
                 $detailid = model('orderdetail')->insertGetId(
                     [
@@ -1178,27 +1253,8 @@ class Task extends Front
                     ->update(['suit_state'=>2,'updatetime'=>$this->curTime]);
             }
 
-            $date = [
-                'now_money'=>$balance,
-                'updatetime'=>$this->curTime,
-            ];
-            //更新余额
-            $walletUpdate = model('wallet')
-                ->where(['userid'=>$this->curUserInfo['userid']])->update($date);
-            //余额变更记录
-            model('walletrecord')->insertGetId(
-                [
-                    'userid'=>$this->curUserInfo['userid'],
-                    'objectid'=>$orderid,
-                    'objecttype'=>1,//对象类型1支出2收入3充值
-                    'price'=>$price,
-                    'desc'=>'任务：'.$taskId.'的支付定金',
-                    'createtime'=>$this->curTime,
-                    'updatetime'=>$this->curTime,
-                    'delflag'=>0,
 
-                ]
-            );
+
             model('task')->commit();
             $this->returndata(10000, 'do success', $this->curTime, $data);
         }catch (Exception $e){
