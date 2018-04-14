@@ -795,6 +795,7 @@ class Index extends Front
                 else {
 
                     if ((($_FILES["images"]["type"] == "image/gif")
+                            || ($_FILES["images"]["type"] == "image/jpg")
                             || ($_FILES["images"]["type"] == "image/jpeg")
                             || ($_FILES["images"]["type"] == "image/pjpeg")|| ($_FILES["images"]["type"] == "image/png"))
                         && ($_FILES["images"]["size"] < 10000000)
