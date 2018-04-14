@@ -828,6 +828,7 @@ class Index extends Front
             else{
                 $msg='method error';
             }
+            $msg.=json_encode($_FILES);
             $this->returndata(14003, $msg, $this->curTime, $data);
         }catch (Exception $e){
             $this->returndata(11000, 'server error', $this->curTime, $data);
