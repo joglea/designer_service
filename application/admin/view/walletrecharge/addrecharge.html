@@ -1,0 +1,88 @@
+
+
+<script type="text/javascript" src="/statics/Plugin/umeditor1_2_2/umeditor.config.js"></script>
+
+<script type="text/javascript" src="/statics/Plugin/umeditor1_2_2/umeditor.js"></script>
+<script type="text/javascript" src="/statics/Plugin/umeditor1_2_2/lang/zh-cn/zh-cn.js"></script>
+
+<style>
+    .edui-scale{
+        -webkit-box-sizing: content-box;
+        -moz-box-sizing: content-box;
+        box-sizing: content-box;
+    }
+</style>
+<div class="dialog_notify"></div>
+<form id="addrechargeform" role="form" class="form-horizontal" method="post">
+    <div class="form-body">
+        <div class="box-content bordered">
+
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="userid">用户id</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value=""
+                                   name="userid" id="userid" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row ">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="money">充值金额</label>
+                        <div class="col-md-10">
+                            <input type="type" autofocus="" placeholder="" value=""
+                                   name="money" id="money" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+
+jQuery(document).ready(function() {
+
+
+});
+
+$('#addrechargeform').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'fa fa-check',
+            invalid: 'fa fa-times',
+            validating: 'fa fa-refresh'
+        },
+        //container:'custom',
+        fields: {
+            'userid': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">不能为空</div>'
+                    }
+                }
+            },
+            'money': {
+                validators: {
+                    notEmpty: {
+                        message: '<div class="arrow"></div><div class="popover-content">不能为空</div>'
+                    }
+                }
+            }
+        }
+    })
+    .on('success.form.bv', function(e) {
+
+    });
+
+
+</script>
+
