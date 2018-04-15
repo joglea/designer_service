@@ -155,7 +155,7 @@ class Order extends Admin{
 
                 }
                 elseif($v['state']==2){
-                    $state = '已支付定金';
+                    $state = '已支付';
                     //$btn = '<a title="" id="tail_pay_'.$v['orderid'].'" class="btn green btn-xs" href="javascript:;" onclick="tailpay('.$v['orderid'].',)"><i class="fa fa-12px fa-edit"></i>支付尾款</a>';
 
                 }

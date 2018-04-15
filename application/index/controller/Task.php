@@ -1333,7 +1333,7 @@ class Task extends Front
                 'taskid'=>$taskId,
                 'total_price'=>$task['price'],
                 'pay_rate'=>$pay_rate,
-                'state'=>2,
+                'state'=>4,
                 'createtime'=>$this->curTime,
                 'updatetime'=>$this->curTime,
                 'delflag'=>0,
@@ -1359,7 +1359,7 @@ class Task extends Front
                     'objectid'=>$orderid,
                     'objecttype'=>1,//对象类型1支出2收入3充值
                     'price'=>$price,
-                    'desc'=>'任务：'.$taskId.'的支付定金',
+                    'desc'=>'任务：'.$taskId.'的支付尾款',
                     'createtime'=>$this->curTime,
                     'updatetime'=>$this->curTime,
                     'delflag'=>0,
@@ -1446,7 +1446,7 @@ class Task extends Front
                         'objectid'=>$orderid,
                         'objecttype'=>2,//对象类型1支出2收入3充值
                         'price'=>$signupprice,
-                        'desc'=>'任务：'.$taskId.'的支付定金',
+                        'desc'=>'任务：'.$taskId.'的支付尾款',
                         'createtime'=>$this->curTime,
                         'updatetime'=>$this->curTime,
                         'delflag'=>0,
