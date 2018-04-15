@@ -1253,8 +1253,12 @@ class Task extends Front
                     )
                     ->update(['suit_state'=>2,'updatetime'=>$this->curTime]);
             }
-
-
+            //更新任务状态
+            $newtask = [
+                'state'=>3,//任务状态 1新建接受报名 2停止报名 3订金预付 4尾款支付 5关闭
+                'updatetime'=>$this->curTime
+            ];
+            model('task')->where(['taskid'=>$taskId])->update($newtask);
 
             model('task')->commit();
             $this->returndata(10000, 'do success', $this->curTime, $data);
@@ -1476,6 +1480,13 @@ class Task extends Front
                     ['taskid'=>$taskId,'signupid'=>['neq',$oneSignup['signupid']],'delflag'=>0]
                 )
                 ->update(['suit_state'=>4,'updatetime'=>$this->curTime]);
+
+            //更新任务状态
+            $newtask = [
+                'state'=>4,//任务状态 1新建接受报名 2停止报名 3订金预付 4尾款支付 5关闭
+                'updatetime'=>$this->curTime
+            ];
+            model('task')->where(['taskid'=>$taskId])->update($newtask);
 
             model('task')->commit();
             $this->returndata(10000, 'do success', $this->curTime, $data);
