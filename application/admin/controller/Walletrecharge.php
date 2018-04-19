@@ -150,7 +150,7 @@ class Walletrecharge extends Admin{
 
                     if(!$wallet){
                         $wallet = [
-                            'userid'=>$this->curUserInfo['userid'],
+                            'userid'=>$rechargeinfo['userid'],
                             'now_money'=>$rechargeinfo["money"],
                             'createtime'=>$this->curTime,
                             'updatetime'=>$this->curTime,
