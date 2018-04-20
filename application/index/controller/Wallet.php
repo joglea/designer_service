@@ -161,7 +161,7 @@ class Wallet extends Front
                     }
                     else{
                         $updatewallet = [
-                            'now_money'=>bcmul($wallet['now_money'],$money,2),
+                            'now_money'=>bcsub($wallet['now_money'],$money,2),
                             'updatetime'=>$this->curTime,
                         ];
                         //更新余额
