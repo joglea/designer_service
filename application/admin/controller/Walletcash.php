@@ -201,8 +201,6 @@ class Walletcash extends Admin{
 
                                 ]
                             );
-                        }
-                        elseif($walletcashinfo["state"]==3){
                             $wallet = model('wallet')
                                 ->where(['userid'=>$isExist['userid']])->find();
 
@@ -225,6 +223,9 @@ class Walletcash extends Admin{
                                 //更新余额
                                 model('wallet')->insertGetId($data);
                             }
+                        }
+                        elseif($walletcashinfo["state"]==3){
+
 
                         }
                         model('Walletcash')->commit();
@@ -233,6 +234,7 @@ class Walletcash extends Admin{
                         $msgtype=MSG_TYPE_SUCCESS;
                     }
                     else{
+                        model('Walletcash')->rollback();
                         $code=-9;
                         $msg='保存失败';
                         $msgtype=MSG_TYPE_DANGER;
