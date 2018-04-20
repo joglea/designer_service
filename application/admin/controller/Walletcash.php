@@ -187,7 +187,7 @@ class Walletcash extends Admin{
                     //var_dump($ret);exit;
                     if($ret>0||0===$ret){
                         if($walletcashinfo["state"]==2){
-                            //余额变更记录
+                            //提现成功  直接插入余额变更记录
                             model('walletrecord')->insertGetId(
                                 [
                                     'userid'=>$isExist['userid'],
@@ -201,6 +201,10 @@ class Walletcash extends Admin{
 
                                 ]
                             );
+
+                        }
+                        elseif($walletcashinfo["state"]==3){
+                            //提现失败需要加会余额
                             $wallet = model('wallet')
                                 ->where(['userid'=>$isExist['userid']])->find();
 
@@ -223,9 +227,6 @@ class Walletcash extends Admin{
                                 //更新余额
                                 model('wallet')->insertGetId($data);
                             }
-                        }
-                        elseif($walletcashinfo["state"]==3){
-
 
                         }
                         model('Walletcash')->commit();
