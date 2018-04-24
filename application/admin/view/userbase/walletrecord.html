@@ -1,4 +1,9 @@
 
+<div class="toolbar-title clearfix" style="margin-bottom:10px;">
+    <span style="font-size:32px;color:red;">{$nickname}</span>的钱包记录：
+    <span class="pull-right">{$pageHeaderRightButton}</span>
+</div>
+<div class="dialog_notify"></div>
 <!-- Add mousewheel plugin (this is optional) -->
 <script type="text/javascript" src="/statics/Plugin/fancyBox-master/lib/jquery.mousewheel.pack.js"></script>
 
@@ -17,8 +22,10 @@
 <!-- Add Media helper (this is optional) -->
 <script type="text/javascript" src="/statics/Plugin/fancyBox-master/source/helpers/jquery.fancybox-media.js?v=1.0.5"></script>
 
+
+
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12" style="padding:0;">
 
         <!-- Begin: life time stats -->
         <div class="portlet">
@@ -26,82 +33,52 @@
             <div class="portlet-body">
                 <div class="table-container">
 
-                    <table class="table table-striped table-bordered table-hover" id="datatable_list">
+                    <table class="table table-striped table-bordered table-hover" id="datatable_walletrecord_list">
                         <thead>
                         <tr role="row" class="heading">
                             <!--<th width="1%">
                                 <input type="checkbox" class="group-checkable">
                             </th>-->
-                            <th class="sorting_disabled" width="8%">
-                                用户ID
+                            <th class="sorting_disabled" width="5%">
+                                记录id
                             </th>
                             <th width="8%">
-                                手机号
-                            </th>
-                            <th width="10%">
-                                头像
-                            </th>
-                            <th width="25%">
-                                昵称
-                            </th>
-                            <th width="10%">
-                                性别
+                                类型
                             </th>
                             <th width="8%">
-                                认证状态
+                                金额
                             </th>
                             <th width="8%">
-                                用户状态
-                            </th>
-                            <th width="8%">
-                                钱包余额
+                                描述
                             </th>
                             <th class="sorting_disabled" width="13%">
                                 创建时间
                             </th>
-                            <th class="sorting_disabled" width="8%">
+                            <th class="sorting_disabled" width="12%">
                                 操作
                             </th>
                         </tr>
                         <tr role="row" class="filter">
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="userid">
+                                <input type="text" class="form-control form-filter input-sm" name="walletrecordid">
                             </td>
+
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="mobile">
-                            </td>
-                            <td>
-                                -
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="nickname">
-                            </td>
-                            <td>
-                                <select name="sex" id="sex" class="form-control form-filter input-sm" >
-                                    <option value="-1">全部</option>
-                                    <option value="0">未知</option>
-                                    <option value="1">男</option>
-                                    <option value="2">女</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select name="verify_state" id="verify_state" class="form-control form-filter input-sm" >
-                                    <option value="-1">全部</option>
-                                    <option value="0">未认证</option>
-                                    <option value="1">设计师</option>
-                                    <option value="2">商家</option>
-                                </select>
-                            </td>
-                            <td>
-                                <select name="status" id="status" class="form-control form-filter input-sm" >
-                                    <option value="-1">全部</option>
-                                    <option value="1">正常</option>
-                                    <option value="2">禁用</option>
+
+                                <select name="objecttype" id="objecttype" class="form-control form-filter input-sm">
+                                    <option value="0">全部</option>
+                                    <option value="1">支出</option>
+                                    <option value="2">收入</option>
+                                    <option value="3">提现</option>
                                 </select>
                             </td>
                             <td>
                                 -
                             </td>
+                            <td>
+                                -
+                            </td>
+
                             <td>
                                 <div id="createstarttimepicker" class="input-group date date-picker">
                                     <input class="form-control form-filter " name="createstarttime" id="createstarttime"
@@ -140,7 +117,7 @@
 </div>
 
 <script>
-var Datatable = function() {
+var Datatable_walletrecord = function() {
 
     var tableOptions; // main options
     var dataTable; // datatable object
@@ -181,7 +158,7 @@ var Datatable = function() {
                 loadingMessage: 'Loading...',
                 dataTable: {
                     "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r><'table-scrollable't><'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>", // datatable layout
-                    "pageLength": 10, // default records per page
+                    "pageLength": 100, // default records per page
                     "language": { // language settings
                         // metronic spesific
                         "metronicGroupActions": "_TOTAL_ records selected:  ",
@@ -205,8 +182,8 @@ var Datatable = function() {
 
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
-                        'orderable': false,
-                        'targets': [2,7,9]
+                            'orderable': false,
+                        'targets': [2,3,5]
                     }],
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
@@ -264,7 +241,6 @@ var Datatable = function() {
                             if (tableOptions.onError) {
                                 tableOptions.onError.call(undefined, the);
                             }
-
                             Metronic.alert({
                                 type: 'danger',
                                 icon: 'warning',
@@ -451,23 +427,14 @@ var DataList = function () {
 
     var initPickers = function () {
         //init date pickers
-         $('#limitstarttimepicker').datetimepicker({
-            language: 'en',
-            format : 'yyyy-MM-dd hh:mm:ss',
-            pickTime: true
-        });
-        $('#limitendtimepicker').datetimepicker({
-            language: 'en',
-            format : 'yyyy-MM-dd hh:mm:ss',
-            pickTime: true
-        });
 
+        
         $('#createstarttimepicker').datetimepicker({
             language: 'en',
             format : 'yyyy-MM-dd hh:mm:ss',
             pickTime: true
         });
-        $('#createendtimepicker').datetimepicker({
+         $('#createendtimepicker').datetimepicker({
             language: 'en',
             format : 'yyyy-MM-dd hh:mm:ss',
             pickTime: true
@@ -476,10 +443,10 @@ var DataList = function () {
     }
 
     var handleList = function() {
-        var grid = new Datatable();
+        var grid = new Datatable_walletrecord();
 
         grid.init({
-            src: $("#datatable_list"),
+            src: $("#datatable_walletrecord_list"),
             onSuccess: function (grid) {
                 // execute some code after table records loaded
             },
@@ -492,18 +459,19 @@ var DataList = function () {
                     [10, 20, 50, 100, 150],
                     [10, 20, 50, 100, 150] // change per page values here
                 ],
-                "pageLength": 50, // default record count per page
+                "pageLength": 100, // default record count per page
                 "ajax": {
-                    "url": "{url('user/index')}" // ajax source
+                    "url": "{:url(CONTROLLER_NAME.'/walletrecord')}?userid={$userid}" // ajax source
+
                 },
                 "order": [
-                    [0, "desc"]
+                    [4, "desc"]
                 ] // set first column as a default sort by asc
             }
         });
 
         //手动刷新列表
-        $('.refresh').on('click',function(){
+        $('.sub_refresh').on('click',function(){
             grid.getDataTable().ajax.reload();
         });
         // handle group actionsubmit button click
@@ -553,150 +521,26 @@ var DataList = function () {
 jQuery(document).ready(function() {
     DataList.init();
     
-
     $('.fancybox').fancybox({openEffect  : 'none',
-        closeEffect : 'none',
+    closeEffect : 'none',
 
-        prevEffect : 'none',
-        nextEffect : 'none',
+    prevEffect : 'none',
+    nextEffect : 'none',
 
-        closeBtn  : false,
+    closeBtn  : false,
 
-        helpers : {
-            title : {
-                type : 'inside'
-            },
-            buttons	: {}
+    helpers : {
+        title : {
+            type : 'inside'
         },
+        buttons	: {}
+    },
 
-        afterLoad : function() {
-            this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
-        }
-    });
+    afterLoad : function() {
+        this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
+    }});
 });
 
-
-
-
-//修改用户状态
-function changestatus(userid,status)
-{
-    $.ajax({
-        url: 'changestatus',
-        type: 'POST',
-        dataType: 'JSON',
-        timeout: 30000, //超时时间：30秒
-        data: {userid:userid,status:status},
-        error: function () {
-
-            dialog.setClosable(true);
-
-            //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
-            showNotify(-1,'修改用户错误',1,'warning',0);
-        },
-        success: function (data) {
-            //$button.enable();
-            //dialog.setClosable(true);
-            //$button.find('.fa-spinner').remove();
-            if(data.code==0)
-            {
-                $('.dialog_notify').remove();
-                //dialog.close();
-                $('.filter-submit').click();
-            }
-            showNotify(data.code,data.msg,1,data.msg_type,0);
-        }
-    });
-
-}
-
-
-//删除用户
-function removeuser(userid)
-{
-    BootstrapDialog.confirm('请确认','确定删除此用户?', function(result){
-        if(result) {
-            $.ajax({
-                url: 'removeuser',
-                type: 'POST',
-                dataType: 'JSON',
-                timeout: 30000, //超时时间：30秒
-                data: {userid:userid},
-                error: function () {
-                    //出现错误，直接显示通知。判断是否有dialog，有的话就显示在上面，没有就显示在全局通知。
-                    showNotify(-1,'删除用户错误',1,'warning',0);
-                },
-                success: function (data) {
-                    if(data.code==0)
-                    {
-                        $('.dialog_notify').remove();
-                        $('.filter-submit').click();
-                    }
-                    showNotify(data.code,data.msg,1,data.msg_type,0);
-                }
-            });
-        }
-        else
-        {
-            return false;
-        }
-    });
-
-}
-
-
-function viewuserbase(userid)
-{
-    BootstrapDialog.show({
-        title:'查看',
-        modalDialogClass:'modal-dialog-lg',
-        message: function(dialog) {
-            var $message = $('<div></div>');
-            var userToLoad = dialog.getData('url');
-            $message.load(userToLoad);
-            return $message;
-        },
-        closable: true,
-        draggable: true,
-        data: {
-            'url': ''+'viewuserbase?userid='+userid
-        },
-        buttons: [
-        {
-            label: '关闭',
-            action: function(dialog){
-                dialog.close();
-            }
-        }]
-    });
-}
-
-
-
-function walletrecord(userid){
-    BootstrapDialog.show({
-        title:'钱包记录列表',
-        modalDialogClass:'modal-dialog-lg',
-        message: function(dialog) {
-            var $message = $('<div id="walletrecord_list"></div>');
-            var walletrecordToLoad = dialog.getData('url');
-            $message.load(walletrecordToLoad);
-            return $message;
-        },
-        closable: true,
-        draggable: true,
-        data: {
-            'url': ''+'walletrecord?userid='+userid
-        },
-        buttons: [
-        {
-            label: '关闭',
-            action: function(dialog){
-                dialog.close();
-            }
-        }]
-    });
-}
 
 
 

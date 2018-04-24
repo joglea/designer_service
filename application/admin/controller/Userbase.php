@@ -182,7 +182,8 @@ class Userbase extends Admin{
                 }
                 $data[$k][]=$status;
 
-                $data[$k][]=$v['now_money'];
+                $data[$k][]=($v['now_money']>0?$v['now_money']:0).
+                    '<br/><a title="钱包记录" id="wallet_record_'.$v['userid'].'" class="btn green btn-xs" href="javascript:;" onclick="walletrecord('.$v['userid'].')"><i class="fa fa-12px fa-search"></i>钱包记录</a>';
 
                 $data[$k][]=date('Y-m-d H:i:s',$v['createtime']);
                 $data[$k][]='<div style="text-align:center;">'.
@@ -350,6 +351,146 @@ class Userbase extends Admin{
         echo $this->fetch();
     }
 
+
+
+    /**
+     * 钱包记录列表
+     * @param int $in
+     *
+     * @return mixed
+     */
+    public function walletrecord($in=0){
+
+        $userid = input('get.userid');
+        if($userid<=0){
+            $userid= input('post.userid');
+        }
+
+        $this->setPageHeaderRightButton(
+            array(
+                array(
+                    'class'=>'btn btn-fit-height grey-salt sub_refresh',
+                    'icon'=>"<i class='fa fa-refresh'></i>",
+                    'text'=>'刷新'),
+            )
+        );
+        if(IS_POST&&$in==0){
+
+            //var_dump($competitioninfo);exit;
+            $where = array();
+            $where['userid']=$userid;
+
+            $object_type = input('post.objecttype','0');  //
+            if($object_type >0)
+            {
+                $where['objecttype'] = $object_type;
+            }
+
+            $starttime = input('post.createstarttime','','strtotime');  //开始时间
+            $endtime = input('post.createendtime','','strtotime');  //结束时间
+            if('' != $starttime )
+            {
+                if('' != $endtime ){
+                    $where['createtime'] = array('between',array(($starttime),($endtime)));
+                }
+                else{
+                    $where['createtime'] = array('egt',($starttime));
+                }
+            }
+            else{
+                if('' != $endtime )
+                {
+                    $where['createtime'] = array('elt',($endtime));
+                }
+            }
+
+            $where['delflag']=0;
+            $draw = input('post.draw','1');
+            $start = input('post.start','0');
+            $pagesize = input('post.length',config('PAGE_SIZE')>0?config('PAGE_SIZE'):10);
+
+            //tp3.1 I方法获取数据时  提交参数为[]数组时  会取不到高维数据
+            $ordercolumn=isset($_POST['order'])?$_POST['order']:[];
+
+            $order='';
+            if(count($ordercolumn)>0){
+                if(0==$ordercolumn[0]['column']){
+                    $order=' walletrecordid '.$ordercolumn[0]['dir'].' ';
+                }
+                else if(1==$ordercolumn[0]['column']){
+                    $order=' objecttype '.$ordercolumn[0]['dir'].' ';
+                }
+                else if(4==$ordercolumn[0]['column']){
+                    $order=' createtime '.$ordercolumn[0]['dir'].' ';
+                }
+            }
+            //var_dump($where);exit;
+            $walletrecord=model('walletrecord')
+                ->where($where)->limit($start,$pagesize)
+                ->order($order)->select();
+            //var_dump(model('minarecommend')->getLastSql());exit;
+            $walletrecordcount=model('walletrecord')
+                ->where($where)
+                ->count();
+            $recordsfiltered=$walletrecordcount;
+            $recordstotal=$walletrecordcount;
+            //var_dump(model('minarecommend')->getLastSql(),$walletrecord);exit;
+            //var_dump($this->allControl);exit;
+
+            $data=array();
+            foreach($walletrecord as $k=>$v){
+                $data[$k][]=$v['walletrecordid'];
+
+                $color = 'green';
+                if($v['objecttype']==1){
+                    $objecttype = '支出';
+                    $color ='red';
+                }
+                elseif($v['objecttype']==2){
+                    $objecttype = '收入';
+                }
+                elseif($v['objecttype']==3){
+                    $objecttype = '提现';
+                    $color ='red';
+                }
+                else{
+                    $objecttype='-';
+                }
+                $data[$k][]=$objecttype;
+                $data[$k][]='<span style="color:'.$color.'">'.$v['price'].'</span>';
+                $data[$k][]=$v['desc'];
+                $data[$k][]=date('Y-m-d H:i:s',$v['createtime']);
+                $data[$k][]='<div style="text-align:center;">'.
+
+                    '</div>';
+
+            }
+            //var_dump($data);exit;
+            //var_dump($where,$this->usercount,$this->userlist);exit;
+            echo json_encode(array("data"=>$data,"draw"=>$draw,"recordsTotal"=>$recordstotal,"recordsFiltered"=>$recordsfiltered));exit;
+
+        }
+        else{
+
+
+            $useridinfo = model('userinfo')->where([
+                'userid'=>$userid
+            ])->find();
+            if(!$useridinfo){
+                echo '不存在';exit;
+            }
+            $this->assign('userid',$userid);
+            $this->assign('nickname',$useridinfo['nickname']);
+            //echo $this->fetch();
+            if($in==1){
+                return $this->fetch('walletrecord');
+            }
+            else{
+                echo $this->fetch('walletrecord');exit;
+            }
+        }
+
+    }
 
 
 }
