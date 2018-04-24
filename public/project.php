@@ -22,7 +22,7 @@
                         <a href="#">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/work2.jpg" />
+                                    <img alt="Pic" data-original="img/vi1.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
@@ -40,7 +40,7 @@
                         <a href="#">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/work17.jpg" />
+                                    <img alt="Pic" data-original="img/vi2.png" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
@@ -54,17 +54,17 @@
                             <!--end hover element-->
                         </a>
                     </div>
-                    <div class="col-sm-6 masonry__item" data-masonry-filter="UI,VI,产品">
+                    <div class="col-sm-6 masonry__item" data-masonry-filter="VI">
                         <a href="#">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/project-paobu.jpg" />
+                                    <img alt="Pic" data-original="img/vi3.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>跑团大战</h5>
+                                        <h5>VI</h5>
                                         <span>
-                                            <em>产品 / VI / APPUI</em>
+                                            <em> VI </em>
                                         </span>
                                     </div>
                                 </div>
@@ -72,35 +72,17 @@
                             <!--end hover element-->
                         </a>
                     </div>
-                    <div class="col-sm-6 masonry__item" data-masonry-filter="产品,VI,UI">
+                    <div class="col-sm-6 masonry__item" data-masonry-filter="VI">
                         <a href="javascript:;">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/project-juju.jpg" />
+                                    <img alt="Pic" data-original="img/vi4.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>JUJU</h5>
+                                        <h5>VI</h5>
                                         <span>
-                                            <em>产品 / VI / APPUI / 网站UI</em>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--end hover element-->
-                        </a>
-                    </div>
-                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="UI">
-                        <a href="javascript:;">
-                            <div class="hover-element hover-element-1" data-title-position="top,right">
-                                <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/project-youyan.jpg" />
-                                </div>
-                                <div class="hover-element__reveal" data-overlay="9">
-                                    <div class="boxed">
-                                        <h5>有眼事体</h5>
-                                        <span>
-                                            <em>网站UI</em>
+                                            <em>产品 / VI </em>
                                         </span>
                                     </div>
                                 </div>
@@ -112,11 +94,29 @@
                         <a href="javascript:;">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/work8.jpg" />
+                                    <img alt="Pic" data-original="img/ui1.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>ODP清单</h5>
+                                        <h5>APP UI</h5>
+                                        <span>
+                                            <em></em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end hover element-->
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="UI">
+                        <a href="javascript:;">
+                            <div class="hover-element hover-element-1" data-title-position="top,right">
+                                <div class="hover-element__initial">
+                                    <img alt="Pic" data-original="img/ui2.jpg" />
+                                </div>
+                                <div class="hover-element__reveal" data-overlay="9">
+                                    <div class="boxed">
+                                        <h5>APP UI</h5>
                                         <span>
                                             <em>Android / IOS UI</em>
                                         </span>
@@ -126,15 +126,33 @@
                             <!--end hover element-->
                         </a>
                     </div>
-                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="环境设计">
-                        <a href="javascript:;">
+                    <div class="col-sm-6 masonry__item" data-masonry-filter="UI">
+                        <a href="#">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/work15.jpg" />
+                                    <img alt="Pic" data-original="img/ui3.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>环境设计</h5>
+                                        <h5>APP UI</h5>
+                                        <span>
+                                            <em>产品/APPUI</em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end hover element-->
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="平面">
+                        <a href="javascript:;">
+                            <div class="hover-element hover-element-1" data-title-position="top,right">
+                                <div class="hover-element__initial">
+                                    <img alt="Pic" data-original="img/2d1.jpg" />
+                                </div>
+                                <div class="hover-element__reveal" data-overlay="9">
+                                    <div class="boxed">
+                                        <h5>平面</h5>
                                         <span>
                                             <em></em>
                                         </span>
@@ -144,17 +162,17 @@
                             <!--end hover element-->
                         </a>
                     </div>
-                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="产品">
+                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="平面">
                         <a href="javascript:;">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/project-baihe.jpg" />
+                                    <img alt="Pic" data-original="img/2d2.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>白禾订购</h5>
+                                        <h5>海报设计</h5>
                                         <span>
-                                            <em>产品VI / 网站UI</em>
+                                            <em>平面设计</em>
                                         </span>
                                     </div>
                                 </div>
@@ -162,17 +180,17 @@
                             <!--end hover element-->
                         </a>
                     </div>
-                    <div class="col-sm-6 masonry__item" data-masonry-filter="产品,VI,UI">
-                        <a href="javascript:;">
+                    <div class="col-sm-6 masonry__item" data-masonry-filter="平面">
+                        <a href="#">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/project-chihuo.jpg" />
+                                    <img alt="Pic" data-original="img/2d3.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>吃货盒子</h5>
+                                        <h5>海报设计</h5>
                                         <span>
-                                            <em>产品VI / 包装VI / 网站UI</em>
+                                            <em>平面设计</em>
                                         </span>
                                     </div>
                                 </div>
@@ -180,17 +198,17 @@
                             <!--end hover element-->
                         </a>
                     </div>
-                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="产品">
+                    <div class="col-sm-6 masonry__item" data-masonry-filter="平面">
                         <a href="javascript:;">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/work13.jpg" />
+                                    <img alt="Pic" data-original="img/2d4.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>VI</h5>
+                                        <h5>海报设计</h5>
                                         <span>
-                                            <em></em>
+                                            <em>平面设计</em>
                                         </span>
                                     </div>
                                 </div>
@@ -198,17 +216,107 @@
                             <!--end hover element-->
                         </a>
                     </div>
-                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="环境设计">
+                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="平面">
                         <a href="javascript:;">
                             <div class="hover-element hover-element-1" data-title-position="top,right">
                                 <div class="hover-element__initial">
-                                    <img alt="Pic" data-original="img/project-wanju.jpg" />
+                                    <img alt="Pic" data-original="img/2d5.jpg" />
                                 </div>
                                 <div class="hover-element__reveal" data-overlay="9">
                                     <div class="boxed">
-                                        <h5>玩具餐馆</h5>
+                                        <h5>海报设计</h5>
                                         <span>
-                                            <em>自媒体运营 / 环境设计</em>
+                                            <em>平面设计</em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end hover element-->
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="平面">
+                        <a href="javascript:;">
+                            <div class="hover-element hover-element-1" data-title-position="top,right">
+                                <div class="hover-element__initial">
+                                    <img alt="Pic" data-original="img/2d6.jpg" />
+                                </div>
+                                <div class="hover-element__reveal" data-overlay="9">
+                                    <div class="boxed">
+                                        <h5>海报设计</h5>
+                                        <span>
+                                            <em>平面设计</em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end hover element-->
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="包装设计">
+                        <a href="javascript:;">
+                            <div class="hover-element hover-element-1" data-title-position="top,right">
+                                <div class="hover-element__initial">
+                                    <img alt="Pic" data-original="img/pa1.jpeg" />
+                                </div>
+                                <div class="hover-element__reveal" data-overlay="9">
+                                    <div class="boxed">
+                                        <h5>包装设计</h5>
+                                        <span>
+                                            <em>包装设计/ 品牌设计</em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end hover element-->
+                        </a>
+                    </div>
+                    <div class="col-md-3 col-sm-6 masonry__item" data-masonry-filter="包装设计">
+                        <a href="javascript:;">
+                            <div class="hover-element hover-element-1" data-title-position="top,right">
+                                <div class="hover-element__initial">
+                                    <img alt="Pic" data-original="img/pa2.jpeg" />
+                                </div>
+                                <div class="hover-element__reveal" data-overlay="9">
+                                    <div class="boxed">
+                                        <h5>包装设计</h5>
+                                        <span>
+                                            <em>包装设计 / 平面设计</em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end hover element-->
+                        </a>
+                    </div>
+                    <div class="col-sm-6 masonry__item" data-masonry-filter="包装设计">
+                        <a href="#">
+                            <div class="hover-element hover-element-1" data-title-position="top,right">
+                                <div class="hover-element__initial">
+                                    <img alt="Pic" data-original="img/pa3.jpeg" />
+                                </div>
+                                <div class="hover-element__reveal" data-overlay="9">
+                                    <div class="boxed">
+                                        <h5>包装设计</h5>
+                                        <span>
+                                            <em>产品 / VI / 包装设计</em>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end hover element-->
+                        </a>
+                    </div>
+                    <div class="col-sm-6 masonry__item" data-masonry-filter="包装设计">
+                        <a href="javascript:;">
+                            <div class="hover-element hover-element-1" data-title-position="top,right">
+                                <div class="hover-element__initial">
+                                    <img alt="Pic" data-original="img/pa4.jpeg" />
+                                </div>
+                                <div class="hover-element__reveal" data-overlay="9">
+                                    <div class="boxed">
+                                        <h5>包装设计</h5>
+                                        <span>
+                                            <em>产品 / VI / 包装设计</em>
                                         </span>
                                     </div>
                                 </div>

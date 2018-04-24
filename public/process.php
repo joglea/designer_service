@@ -8,7 +8,7 @@
                     <div class="row">
                         <div class="col-sm-10 col-sm-offset-1 text-center">
                             <h3>开发流程</h3>
-                            <p class="lead">严格的开发流程，确保项目从概念到最终展现有一个完美的交付，同时提供最为完善的售后支持服务。</p>
+                            <p class="lead">严格的开发流程，确保项目从概念到最终展现有一个完美的交付。</p>
                         </div>
                     </div>
                     <!--end row-->
@@ -34,15 +34,15 @@
                         <div class="col-sm-5">
                             <div class="feature feature-1 text-right text-center-xs">
                                 <i class="icon icon-Fingerprint-2"></i>
-                                <h5>需求分析</h5>
-                                <p>运营反馈、竞争对手分析、数据分析、用户访谈&用户调研。</p>
+                                <h5>用户分析</h5>
+                                <p>分析客户的产品，市场定位，以及目标人群。</p>
                             </div>
                         </div>
                         <div class="col-sm-5 col-sm-offset-2">
                             <div class="feature feature-1 text-center-xs">
                                 <i class="icon icon-Check-2"></i>
-                                <h5>技术评估</h5>
-                                <p>产品经理制定产品方案、设计师进行视觉和交互设计、开发制定技术方案、测试撰写测试用例。</p>
+                                <h5>可行性评估</h5>
+                                <p>产品经理对整个项目进行评估，同时有针对性的推荐设计师。</p>
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                                 <div class="piechart__overlay">
                                     <div class="piechart__description">
                                         <h6>第二阶段:</h6>
-                                        <span class="h4">开发</span>
+                                        <span class="h4">设计</span>
                                     </div>
                                 </div>
                             </div>
@@ -69,17 +69,17 @@
                         <div class="col-sm-5">
                             <div class="feature feature-1 text-right text-center-xs">
                                 <i class="icon icon-Code-Window"></i>
-                                <h5>原型开发</h5>
-                                <p>产品经理制定产品原型、流程给设计师进行视觉和交互设计，确认产品的信息结构、交互、视觉等方案是否可行。
-                                <br/>开发工程师进行程序框架的设计及相关功能的开发，预估各个节点的明确时间，保证产品最终能按时上线。</p>
+                                <h5>设计初稿</h5>
+                                <p>所选中的设计师进行初稿的设计，同时产品经理进行跟进。
+                                <br/>产品经理对各个节点与质量进行实时把关，以确保产品的质量。</p>
                             </div>
                         </div>
                         <div class="col-sm-5 col-sm-offset-2">
                             <div class="feature feature-1 text-center-xs">
                                 <i class="icon icon-Loop"></i>
-                                <h5>迭代改进</h5>
-                                <p>跟进整个开发进度，为需求变更做决策。转换重心，进入到下个版本的需求调研阶段。
-                                <br/>跟进整个产品测试，测试所有功能点，完成最后一道验收。</p>
+                                <h5>稿件改进</h5>
+                                <p>初稿交付与平台，平台资深设计师与产品经理进行评估与意见，
+                                <br/>客户参与沟通与考量，设计师根据意见进行改稿。</p>
                             </div>
                         </div>
                     </div>
@@ -106,10 +106,8 @@
                         <div class="col-sm-6 col-sm-offset-3">
                             <div class="feature feature-1 text-center">
                                 <i class="icon icon--lg icon-Box-Open"></i>
-                                <h5>部署 & 支持</h5>
-                                <p>相关服务器按照客户要求进行部署安装上线。
-                                <br/>移动App提交应用市场进行审核、上线。
-                                <br/>跟进产品上线效果，包括产品bug情况、用户反馈、运营效果等。
+                                <h5>服务完成&售后</h5>
+                                <p>服务流程完成，交付客户。同时为客户提供使用方式与意见。
                                 </p>
                             </div>
                         </div>

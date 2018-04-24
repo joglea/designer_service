@@ -1,4 +1,5 @@
 <?php include('header.php');?>
+
         <div class="main-container">
             <section class="height-70 bg--dark imagebg page-title page-title--animate parallax" data-overlay="6">
                 <div class="background-image-holder">
@@ -42,35 +43,22 @@
             </section>
             <section>
                 <div class="container">
-                    <div class="row">
-                        <div class="col-sm-8 col-sm-offset-2">
-                            <form class="form--square form-email" data-success="Thanks for your enquiry, we'll be in touch soon" data-error="Please fill all required fields">
-                                <h4 class="text-center">或者在这里跟我们联系&hellip;</h4>
-                                <div class="input-with-icon col-sm-12">
-                                    <i class="icon-MaleFemale"></i>
-                                    <input class="validate-required" type="text" name="name" placeholder="您的名字" />
-                                </div>
-                                <div class="input-with-icon col-sm-6">
-                                    <i class="icon-Email"></i>
-                                    <input class="validate-required validate-email" type="email" name="email" placeholder="邮箱地址" />
-                                </div>
-                                <div class="input-with-icon col-sm-6">
-                                    <i class="icon-Phone-2"></i>
-                                    <input type="tel" name="telephone" placeholder="手机号码" />
-                                </div>
-                                <div class="col-sm-12">
-                                    <textarea class="validate-required" name="message" placeholder="您的留言" rows="8"></textarea>
-                                </div>
-                                <div class="col-sm-12">
-                                    <button type="submit" class="btn btn--primary">
-                                        提交表单
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div class="row">
+                    <div class="col-sm-6">
+
+                        <form action="sendmail.php" method="post">
+                            <p>您的名字：<input type="text" name="name" /></p>
+                        	<p>邮箱地址：<input type="text" name="mail" /></p>
+                        	<p>手机号码：<input type="text" name="number" /></p>
+                        	<p>您的留言：<textarea name="content" cols="50" rows="5"></textarea></p>
+                        	<p><input type="submit" value="提交"  /></p>
+                        </form>
+
+                         </div>
+                     </div>
                     <!--end of row-->
                 </div>
                 <!--end of container-->
             </section>
+
 <?php include('footer.php');?>

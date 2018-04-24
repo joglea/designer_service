@@ -4,12 +4,12 @@
                         <div class="col-md-3 col-sm-4">
                             <img alt="logo" class="logo" src="img/logo-light.png" />
                             <p>
-                                <em>做最好的造物人。</em>
+                                <em>做最好的商业设计！</em>
                             </p>
                             <ul class="footer__navigation">
                                 <li>
-                                    <a href="team.php">
-                                        <span>团队介绍</span>
+                                    <a href="about.php">
+                                        <span>公司</span>
                                     </a>
                                 </li>
                                 <li>
@@ -68,6 +68,10 @@
                                 </li>
                             </ul>
                         </div>
+                        <div class="col-md-3 col-sm-4">
+                        <img src="/img/2d.jpg">
+                        </div>
+
                     </div>
                     <!--end of row-->
                 </div>

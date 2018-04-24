@@ -25,22 +25,22 @@
                     <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                         <div class="feature feature-1 service-1 text-center">
                             <i class="icon icon--lg icon-Sidebar-Window"></i>
-                            <h4>设计</h4>
+                            <h4>UI</h4>
                             <p>我们富有创造性的设计</p>
                             <hr>
                             <h6>包括</h6>
                             <ul class="bullets">
                                 <li>
-                                    <em>UI设计</em>
+                                    <em>APP界面设计</em>
                                 </li>
                                 <li>
                                     <em>平面设计</em>
                                 </li>
                                 <li>
-                                    <em>产品设计</em>
+                                    <em>网页设计</em>
                                 </li>
                                 <li>
-                                    <em>VI设计</em>
+                                    <em>小程序界面设计</em>
                                 </li>
                             </ul>
                         </div>
@@ -57,22 +57,22 @@
                     <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                         <div class="feature feature-1 service-1 text-center">
                             <i class="icon icon--lg icon-Compass-4"></i>
-                            <h4>开发</h4>
-                            <p>我们有着5年的企业级别的软件开发经验，为您的需求定制最优的解决方案，保持产品持续的改进迭代。</p>
+                            <h4>VI</h4>
+                            <p>我们有着丰富的设计师资源，并予以针对性的企业咨询。</p>
                             <hr>
                             <h6>方向包括</h6>
                             <ul class="bullets">
                                 <li>
-                                    <em>网站开发</em>
+                                    <em>LOGO</em>
                                 </li>
                                 <li>
-                                    <em>Android App开发</em>
+                                    <em>宣传海报</em>
                                 </li>
                                 <li>
-                                    <em>IOS App开发</em>
+                                    <em>画册</em>
                                 </li>
                                 <li>
-                                    <em>微信网页开发</em>
+                                    <em>名片</em>
                                 </li>
                             </ul>
                         </div>
@@ -95,13 +95,7 @@
                             <h6>包括</h6>
                             <ul class="bullets">
                                 <li>
-                                    <em>摄影</em>
-                                </li>
-                                <li>
-                                    <em>用户反馈和调查</em>
-                                </li>
-                                <li>
-                                    <em>持续的改进</em>
+                                    <em>我们正在不断的拓展我们的业务，对产品，室内的设计与需求，将是我们下一个议题！</em>
                                 </li>
                             </ul>
                         </div>
