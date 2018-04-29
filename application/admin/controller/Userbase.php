@@ -634,7 +634,13 @@ class Userbase extends Admin{
                 $picList = json_decode($onedesignworks['pic'],true);
                 $picturestr = '';
                 foreach($picList as $onePic){
-                    $newPic=$this->allControl['design_works_pic_url'].$onePic;
+                    if(substr($onePic,0,4)=='http'){
+                        $newPic=$onePic;
+                    }
+                    else{
+                        $newPic=$this->allControl['design_works_pic_url'].$onePic;
+                    }
+
                     $picturestr .=
                         '<a class="fancybox" style="margin:0 3px" href="'.$newPic .
                         '" data-fancybox-group="designworkspic" ><img style="margin:2px 0;max-width:36px;max-height:36px;" src="'.$newPic.'" /></a>'.
