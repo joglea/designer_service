@@ -1,0 +1,56 @@
+<div class="toolbar-title clearfix" style="margin-bottom:10px;">
+	<span>{$userinfo.nickname}:</span>
+	<span class="pull-right"></span>
+</div>
+<div class="dialog_notify"></div>
+<div class="box-content bordered">
+
+	    <table class="table table-striped table-bordered  table-condensed table-hover">
+	        <thead>
+	            <tr>
+				  	<th width="30" class="text-center">ID</th>
+				  	<th width="60" class="text-center">标题</th>
+				  	<th width="60" class="text-center">图片</th>
+				  	<th width="120" class="text-center">介绍</th>
+		  		</tr>
+	        </thead>
+	        <tbody>
+
+                {foreach name="designworkslist" item="onedesignworks" key="wekey" }
+			  	<tr >
+				    <td class="text-center">{$onedesignworks.designworksid}</td>
+				    <td class="text-center">{$onedesignworks.title}</td>
+				    <td class="text-center">
+						{$onedesignworks.pic}
+					</td>
+                    <td class="text-center">{$onedesignworks.desc}</td>
+			  	</tr>
+			  	{/foreach}
+			  	
+	        </tbody>
+	    </table>
+
+</div>
+
+<script>
+$('.fancybox').fancybox({openEffect  : 'none',
+        closeEffect : 'none',
+
+        prevEffect : 'none',
+        nextEffect : 'none',
+
+        closeBtn  : false,
+
+        helpers : {
+            title : {
+                type : 'inside'
+            },
+            buttons	: {}
+        },
+
+        afterLoad : function() {
+            this.title = 'Image ' + (this.index + 1) + ' of ' + this.group.length + (this.title ? ' - ' + this.title : '');
+        }
+    });
+</script>
+

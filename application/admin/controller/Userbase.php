@@ -182,6 +182,16 @@ class Userbase extends Admin{
                 }
                 $data[$k][]=$status;
 
+                $data[$k][]='<a style="margin-top:3px;" onclick="workexplist('.$v['userid'].')" href="javascript:" title="工作经历" class="btn btn-primary btn-xs">'.
+                        '<i class="fa fa-list"></i> 工作经历'.
+                    '</a>'.
+                    '<a style="margin-top:3px;" onclick="educationexplist('.$v['userid'].')" href="javascript:" title="教育经历" class="btn btn-primary btn-xs">'.
+                        '<i class="fa fa-list"></i> 教育经历'.
+                    '</a>'.
+                    '<a style="margin-top:3px;" onclick="designworkslist('.$v['userid'].')" href="javascript:" title="设计作品" class="btn btn-primary btn-xs">'.
+                        '<i class="fa fa-list"></i> 设计作品'.
+                    '</a>';
+
                 $data[$k][]=($v['now_money']>0?$v['now_money']:0).
                     '<br/><a title="钱包记录" id="wallet_record_'.$v['userid'].'" class="btn green btn-xs" href="javascript:;" onclick="walletrecord('.$v['userid'].')"><i class="fa fa-12px fa-search"></i>钱包记录</a>';
 
@@ -493,4 +503,160 @@ class Userbase extends Admin{
     }
 
 
+
+
+    /**
+     * 工作经历列表
+     * @param int $in
+     *
+     * @return mixed
+     */
+    public function workexplist($in=0){
+
+        if($in==1){
+            $userid = input('post.userid',0);
+        }
+        else{
+            $userid = input('get.userid',0);
+        }
+        if(!($userid>0)){
+            echo '参数错误';exit;
+        }
+        $userinfo=model('userinfo')->where(array('userid'=>$userid))->find();
+        $this->assign('userinfo',$userinfo);
+        $WorkexpWhere = ['userid'=>$userid,'delflag'=>0];
+        $order = 'begindate desc,expid desc';
+
+        $WorkexpList = model('Workexp')->where($WorkexpWhere)->order($order)
+            ->select();
+
+        $newWorkexpList = [];
+        if($WorkexpList){
+            foreach($WorkexpList as $oneWorkexp){
+                $newWorkexpList[]=[
+                    'expid'=>$oneWorkexp['expid'],
+                    'begindate'=>$oneWorkexp['begindate'],
+                    'enddate'=>$oneWorkexp['enddate'],
+                    'companyname'=>$oneWorkexp['companyname'],
+                    'desc'=>$oneWorkexp['desc'],
+                ];
+            }
+        }
+
+        $this->assign('workexplist',$newWorkexpList);
+        if($in==1){
+            return $this->fetch('workexplist');
+        }
+        else{
+            echo $this->fetch('workexplist');exit;
+        }
+
+    }
+
+
+    /**
+     * 教育经历列表
+     * @param int $in
+     *
+     * @return mixed
+     */
+    public function educationexplist($in=0){
+
+        if($in==1){
+            $userid = input('post.userid',0);
+        }
+        else{
+            $userid = input('get.userid',0);
+        }
+        if(!($userid>0)){
+            echo '参数错误';exit;
+        }
+        $userinfo=model('userinfo')->where(array('userid'=>$userid))->find();
+        $this->assign('userinfo',$userinfo);
+        $educationexpWhere = ['userid'=>$userid,'delflag'=>0];
+        $order = 'begindate desc,expid desc';
+
+        $educationexpList = model('educationexp')->where($educationexpWhere)->order($order)
+            ->select();
+
+        $neweducationexpList = [];
+        if($educationexpList){
+            foreach($educationexpList as $oneeducationexp){
+                $neweducationexpList[]=[
+                    'expid'=>$oneeducationexp['expid'],
+                    'begindate'=>$oneeducationexp['begindate'],
+                    'enddate'=>$oneeducationexp['enddate'],
+                    'schoolname'=>$oneeducationexp['schoolname'],
+                    'desc'=>$oneeducationexp['desc'],
+                ];
+            }
+        }
+
+        $this->assign('educationexplist',$neweducationexpList);
+        if($in==1){
+            return $this->fetch('educationexplist');
+        }
+        else{
+            echo $this->fetch('educationexplist');exit;
+        }
+
+    }
+
+
+    /**
+     * 设计作品列表
+     * @param int $in
+     *
+     * @return mixed
+     */
+    public function designworkslist($in=0){
+
+        if($in==1){
+            $userid = input('post.userid',0);
+        }
+        else{
+            $userid = input('get.userid',0);
+        }
+        if(!($userid>0)){
+            echo '参数错误';exit;
+        }
+        $userinfo=model('userinfo')->where(array('userid'=>$userid))->find();
+        $this->assign('userinfo',$userinfo);
+        $designworksWhere = ['userid'=>$userid,'delflag'=>0];
+        $order = 'createtime desc,designworksid desc';
+
+        $designworksList = model('designworks')->where($designworksWhere)->order($order)
+            ->select();
+
+        $newdesignworksList = [];
+        if($designworksList){
+            foreach($designworksList as $onedesignworks){
+                $picList = json_decode($onedesignworks['pic'],true);
+                $picturestr = '';
+                foreach($picList as $onePic){
+                    $newPic=$this->allControl['design_works_pic_url'].$onePic;
+                    $picturestr .=
+                        '<a class="fancybox" style="margin:0 3px" href="'.$newPic .
+                        '" data-fancybox-group="designworkspic" ><img style="margin:2px 0;max-width:36px;max-height:36px;" src="'.$newPic.'" /></a>'.
+                        '';
+                }
+
+                $newdesignworksList[]=[
+                    'designworksid'=>$onedesignworks['designworksid'],
+                    'title'=>$onedesignworks['title'],
+                    'pic'=>$picturestr,
+                    'desc'=>$onedesignworks['desc'],
+                ];
+            }
+        }
+
+        $this->assign('designworkslist',$newdesignworksList);
+        if($in==1){
+            return $this->fetch('designworkslist');
+        }
+        else{
+            echo $this->fetch('designworkslist');exit;
+        }
+
+    }
 }

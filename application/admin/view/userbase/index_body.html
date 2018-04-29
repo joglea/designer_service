@@ -38,10 +38,10 @@
                             <th width="8%">
                                 手机号
                             </th>
-                            <th width="10%">
+                            <th width="6%">
                                 头像
                             </th>
-                            <th width="25%">
+                            <th width="6%">
                                 昵称
                             </th>
                             <th width="10%">
@@ -52,6 +52,9 @@
                             </th>
                             <th width="8%">
                                 用户状态
+                            </th>
+                            <th width="8%">
+                                简历信息
                             </th>
                             <th width="8%">
                                 钱包余额
@@ -98,6 +101,9 @@
                                     <option value="1">正常</option>
                                     <option value="2">禁用</option>
                                 </select>
+                            </td>
+                            <td>
+                                -
                             </td>
                             <td>
                                 -
@@ -206,7 +212,7 @@ var Datatable = function() {
                     "orderCellsTop": true,
                     "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                         'orderable': false,
-                        'targets': [2,7,9]
+                        'targets': [2,7,8,10]
                     }],
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
@@ -698,6 +704,88 @@ function walletrecord(userid){
     });
 }
 
+
+function workexplist(userid)
+{
+	BootstrapDialog.show({
+		modalDialogClass:'modal-dialog-lg',
+    	title:'工作经历列表',
+        message: function(dialog) {
+            var $message = $('<div id="workexp_list"></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: true,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/workexplist?userid='+userid
+        },
+        buttons: [
+        {
+            label: '关闭',
+            action: function(dialog){
+            	dialog.close();
+            }
+        }]
+    });
+}
+
+
+
+function educationexplist(userid)
+{
+	BootstrapDialog.show({
+		modalDialogClass:'modal-dialog-lg',
+    	title:'教育经历列表',
+        message: function(dialog) {
+            var $message = $('<div id="educationexp_list"></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: true,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/educationexplist?userid='+userid
+        },
+        buttons: [
+        {
+            label: '关闭',
+            action: function(dialog){
+            	dialog.close();
+            }
+        }]
+    });
+}
+
+
+
+function designworkslist(userid)
+{
+	BootstrapDialog.show({
+		modalDialogClass:'modal-dialog-lg',
+    	title:'设计作品列表',
+        message: function(dialog) {
+            var $message = $('<div id="designworks_list"></div>');
+            var pageToLoad = dialog.getData('url');
+            $message.load(pageToLoad);
+            return $message;
+        },
+        closable: true,
+        draggable: true,
+        data: {
+            'url': '__URL__'+'/designworkslist?userid='+userid
+        },
+        buttons: [
+        {
+            label: '关闭',
+            action: function(dialog){
+            	dialog.close();
+            }
+        }]
+    });
+}
 
 
 </script>
